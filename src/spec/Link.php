@@ -9,10 +9,39 @@ use cebe\openapi\SpecBaseObject;
  *
  * @link https://github.com/OAI/OpenAPI-Specification/blob/3.0.2/versions/3.0.2.md#linkObject
  *
+ * @property-read string $operationRef
+ * @property-read string $operationId
+ * @property-read string $parameters
+ * @property-read mixed $requestBody
+ * @property-read Server $server
+ *
  * @author Carsten Brandt <mail@cebe.cc>
  */
-class Link
+class Link extends SpecBaseObject
 {
-    // TODO implement
+    /**
+     * @return array array of attributes available in this object.
+     */
+    protected function attributes(): array
+    {
+        return [
+            'operationRef' => Type::STRING,
+            'operationId' => Type::STRING,
+            'parameters' => [Type::STRING, Type::ANY], // TODO: how to specify {expression}?
+            'requestBody' => Type::ANY, // TODO: how to specify {expression}?
+            'server' => Server::class,
+        ];
+    }
 
+    /**
+     * Perform validation on this object, check data against OpenAPI Specification rules.
+     *
+     * Call `addError()` in case of validation errors.
+     */
+    protected function performValidation()
+    {
+        if ($this->hasProperty('operationId') && $this->hasProperty('operationRef')) {
+            $this->addError('operationId and operationRef are mutually exclusive.');
+        }
+    }
 }
