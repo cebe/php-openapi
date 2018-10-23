@@ -23,8 +23,8 @@ class Tag extends SpecBaseObject
     protected function attributes(): array
     {
         return [
-            'name' => 'string',
-            'description' => 'string',
+            'name' => Type::STRING,
+            'description' => Type::STRING,
             'externalDocs' => ExternalDocumentation::class,
         ];
     }

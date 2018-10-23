@@ -23,9 +23,9 @@ class Server extends SpecBaseObject
     protected function attributes(): array
     {
         return [
-            'url' => 'string',
-            'description' => 'string',
-            'variables' => ['string', ServerVariable::class],
+            'url' => Type::STRING,
+            'description' => Type::STRING,
+            'variables' => [Type::STRING, ServerVariable::class],
         ];
     }
 

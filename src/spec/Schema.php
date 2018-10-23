@@ -64,26 +64,26 @@ class Schema extends SpecBaseObject
     protected function attributes(): array
     {
         return [
-            'type' => 'string',
+            'type' => Type::STRING,
             'allOf' => [Schema::class], // TODO allow reference
             'oneOf' => [Schema::class],
             'anyOf' => [Schema::class],
             'not' => Schema::class,
             'items' => Schema::class,
-            'properties' => ['string', Schema::class],
+            'properties' => [Type::STRING, Schema::class],
             //'additionalProperties' => 'boolean' | ['string', Schema::class], // TODO can be bool?
-            'description' => 'string',
-            'format' => 'string',
-            'default' => 'any',
+            'description' => Type::STRING,
+            'format' => Type::STRING,
+            'default' => Type::ANY,
 
-            'nullable' => 'boolean',
+            'nullable' => Type::BOOLEAN,
             'discriminator' => Discriminator::class,
-            'readOnly' => 'boolean',
-            'writeOnly' => 'boolean',
+            'readOnly' => Type::BOOLEAN,
+            'writeOnly' => Type::BOOLEAN,
             'xml' => Xml::class,
             'externalDocs' => ExternalDocumentation::class,
-            'example' => 'any',
-            'deprecated' => 'boolean',
+            'example' => Type::ANY,
+            'deprecated' => Type::BOOLEAN,
         ];
     }
 

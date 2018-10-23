@@ -41,12 +41,12 @@ JSON
         $this->assertEquals([], $server->getErrors());
         $this->assertTrue($result);
 
-        $this->assertEquals("https://{username}.gigantic-server.com:{port}/{basePath}", $server->url);
-        $this->assertEquals("The production API server", $server->description);
+        $this->assertEquals('https://{username}.gigantic-server.com:{port}/{basePath}', $server->url);
+        $this->assertEquals('The production API server', $server->description);
         $this->assertCount(3, $server->variables);
-        $this->assertEquals("demo", $server->variables['username']->default);
-        $this->assertEquals("this value is assigned by the service provider, in this example `gigantic-server.com`", $server->variables['username']->description);
-        $this->assertEquals("8443", $server->variables['port']->default);
+        $this->assertEquals('demo', $server->variables['username']->default);
+        $this->assertEquals('this value is assigned by the service provider, in this example `gigantic-server.com`', $server->variables['username']->description);
+        $this->assertEquals('8443', $server->variables['port']->default);
     }
 
 }

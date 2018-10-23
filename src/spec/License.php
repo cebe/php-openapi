@@ -22,8 +22,8 @@ class License extends SpecBaseObject
     protected function attributes(): array
     {
         return [
-            'name' => 'string',
-            'url' => 'string',
+            'name' => Type::STRING,
+            'url' => Type::STRING,
         ];
     }
 

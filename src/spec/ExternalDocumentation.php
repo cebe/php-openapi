@@ -22,8 +22,8 @@ class ExternalDocumentation extends SpecBaseObject
     protected function attributes(): array
     {
         return [
-            'description' => 'string',
-            'url' => 'string',
+            'description' => Type::STRING,
+            'url' => Type::STRING,
         ];
     }
 

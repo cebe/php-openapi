@@ -28,7 +28,7 @@ class OpenApi extends SpecBaseObject
     protected function attributes(): array
     {
         return [
-            'openapi' => 'string',
+            'openapi' => Type::STRING,
             'info' => Info::class,
             'servers' => [Server::class],
             'paths' => Paths::class,
