@@ -41,6 +41,7 @@ class OpenApiTest extends \PHPUnit\Framework\TestCase
         $this->assertEquals("Swagger Petstore", $openapi->info->title);
         // info.license
         $this->assertInstanceOf(\cebe\openapi\spec\License::class, $openapi->info->license);
+        $this->assertEquals("MIT", $openapi->info->license->name);
         // info.contact
         $this->assertNull($openapi->info->contact);
 
@@ -50,17 +51,8 @@ class OpenApiTest extends \PHPUnit\Framework\TestCase
         $this->assertCount(1, $openapi->servers);
         foreach ($openapi->servers as $server) {
             $this->assertInstanceOf(\cebe\openapi\spec\Server::class, $server);
+            $this->assertEquals("http://petstore.swagger.io/v1", $server->url);
 
         }
-
-        /*
-        openapi: "3.0.0"
-        info:
-          version: 1.0.0
-          title: Swagger Petstore
-          license:
-            name: MIT
-        servers:
-          - url: http://petstore.swagger.io/v1*/
     }
 }
