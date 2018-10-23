@@ -46,8 +46,8 @@ You may also access additional properties added by specification extensions.
 
 This library is currently work in progress, the following list tracks completeness:
 
-- [ ] read OpenAPI 3.0 JSON
-- [ ] read OpenAPI 3.0 YAML
+- [x] read OpenAPI 3.0 JSON
+- [x] read OpenAPI 3.0 YAML
 - [ ] OpenAPI 3.0 Schema
   - [x] OpenAPI Object
   - [x] Info Object
