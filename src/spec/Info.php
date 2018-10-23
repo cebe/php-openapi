@@ -9,7 +9,7 @@ use cebe\openapi\SpecBaseObject;
  *
  * The metadata MAY be used by the clients if needed, and MAY be presented in editing or documentation generation tools for convenience.
  *
- * @link https://github.com/OAI/OpenAPI-Specification/blob/master/versions/3.0.2.md#infoObject
+ * @link https://github.com/OAI/OpenAPI-Specification/blob/3.0.2/versions/3.0.2.md#infoObject
  *
  * @property-read string $title
  * @property-read string $description

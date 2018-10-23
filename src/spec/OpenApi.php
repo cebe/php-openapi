@@ -7,7 +7,7 @@ use cebe\openapi\SpecBaseObject;
 /**
  * This is the root document object of the OpenAPI document.
  *
- * @link https://github.com/OAI/OpenAPI-Specification/blob/master/versions/3.0.2.md#openapi-object
+ * @link https://github.com/OAI/OpenAPI-Specification/blob/3.0.2/versions/3.0.2.md#openapi-object
  *
  * @property-read string $openapi
  * @property-read Info $info

@@ -58,6 +58,7 @@ abstract class SpecBaseObject
                                 }
                                 $this->_properties[$property][] = $item;
                             } else {
+                                // TODO implement reference objects
                                 $this->_properties[$property][] = new $type[0]($item);
                             }
                         }
@@ -75,6 +76,7 @@ abstract class SpecBaseObject
                                 }
                                 $this->_properties[$property][$key] = $item;
                             } else {
+                                // TODO implement reference objects
                                 $this->_properties[$property][$key] = new $type[1]($item);
                             }
                         }
@@ -99,7 +101,7 @@ abstract class SpecBaseObject
     {
         foreach($this->_properties as $k => $v) {
             if ($v instanceof self) {
-                $v->performValidation();
+                $v->validate();
             }
         }
         $this->performValidation();

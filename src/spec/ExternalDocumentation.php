@@ -7,7 +7,7 @@ use cebe\openapi\SpecBaseObject;
 /**
  * Allows referencing an external resource for extended documentation.
  *
- * @link https://github.com/OAI/OpenAPI-Specification/blob/master/versions/3.0.2.md#externalDocumentationObject
+ * @link https://github.com/OAI/OpenAPI-Specification/blob/3.0.2/versions/3.0.2.md#externalDocumentationObject
  *
  * @property-read string $description
  * @property-read string $url

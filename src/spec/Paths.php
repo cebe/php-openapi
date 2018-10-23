@@ -10,7 +10,7 @@ use cebe\openapi\SpecBaseObject;
  * The path is appended to the URL from the Server Object in order to construct the full URL.
  * The Paths MAY be empty, due to ACL constraints.
  *
- * @link https://github.com/OAI/OpenAPI-Specification/blob/master/versions/3.0.2.md#pathsObject
+ * @link https://github.com/OAI/OpenAPI-Specification/blob/3.0.2/versions/3.0.2.md#pathsObject
  *
  * @author Carsten Brandt <mail@cebe.cc>
  */

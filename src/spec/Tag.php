@@ -7,7 +7,7 @@ use cebe\openapi\SpecBaseObject;
 /**
  * Adds metadata to a single tag that is used by the Operation Object.
  *
- * @link https://github.com/OAI/OpenAPI-Specification/blob/master/versions/3.0.2.md#tagObject
+ * @link https://github.com/OAI/OpenAPI-Specification/blob/3.0.2/versions/3.0.2.md#tagObject
  *
  * @property-read string $name
  * @property-read string $description

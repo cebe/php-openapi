@@ -55,7 +55,7 @@ This library is currently work in progress, the following list tracks completene
   - [x] License Object
   - [x] Server Object
   - [x] Server Variable Object
-  - [ ] Components Object
+  - [x] Components Object
   - [ ] Paths Object
   - [ ] Path Item Object
   - [ ] Operation Object

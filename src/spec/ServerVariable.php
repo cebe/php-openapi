@@ -7,7 +7,7 @@ use cebe\openapi\SpecBaseObject;
 /**
  * An object representing a Server Variable for server URL template substitution.
  *
- * @link https://github.com/OAI/OpenAPI-Specification/blob/master/versions/3.0.2.md#serverVariableObject
+ * @link https://github.com/OAI/OpenAPI-Specification/blob/3.0.2/versions/3.0.2.md#serverVariableObject
  *
  * @property-read string[] $enum
  * @property-read string $default

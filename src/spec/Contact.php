@@ -7,7 +7,7 @@ use cebe\openapi\SpecBaseObject;
 /**
  * Contact information for the exposed API.
  *
- * @link https://github.com/OAI/OpenAPI-Specification/blob/master/versions/3.0.2.md#contactObject
+ * @link https://github.com/OAI/OpenAPI-Specification/blob/3.0.2/versions/3.0.2.md#contactObject
  *
  * @property-read string $name
  * @property-read string $url

@@ -7,7 +7,7 @@ use cebe\openapi\SpecBaseObject;
 /**
  * An object representing a Server.
  *
- * @link https://github.com/OAI/OpenAPI-Specification/blob/master/versions/3.0.2.md#serverObject
+ * @link https://github.com/OAI/OpenAPI-Specification/blob/3.0.2/versions/3.0.2.md#serverObject
  *
  * @property-read string $url
  * @property-read string $description
