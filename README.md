@@ -72,9 +72,12 @@ This library is currently work in progress, the following list tracks completene
   - [ ] Header Object
   - [ ] Tag Object
   - [ ] Reference Object
-  - [ ] Schema Object
-  - [ ] Discriminator Object
-  - [ ] XML Object
+  - [x] Schema Object
+    - [x] load/read
+       - [ ] `additionalProperties` field
+    - [ ] validation
+  - [x] Discriminator Object
+  - [x] XML Object
   - [ ] Security Scheme Object
   - [ ] OAuth Flows Object
   - [ ] OAuth Flow Object

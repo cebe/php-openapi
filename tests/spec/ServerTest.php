@@ -1,6 +1,7 @@
 <?php
 
-use Symfony\Component\Yaml\Yaml;
+use cebe\openapi\Reader;
+use cebe\openapi\spec\Server;
 
 /**
  *
@@ -11,8 +12,8 @@ class ServerTest extends \PHPUnit\Framework\TestCase
 {
     public function testRead()
     {
-        /** @var $server \cebe\openapi\spec\Server */
-        $server = \cebe\openapi\Reader::readFromJson(<<<JSON
+        /** @var $server Server */
+        $server = Reader::readFromJson(<<<JSON
 {
   "url": "https://{username}.gigantic-server.com:{port}/{basePath}",
   "description": "The production API server",
@@ -34,7 +35,7 @@ class ServerTest extends \PHPUnit\Framework\TestCase
   }
 }
 JSON
-        , \cebe\openapi\spec\Server::class);
+        , Server::class);
 
         $result = $server->validate();
         $this->assertEquals([], $server->getErrors());

@@ -55,7 +55,7 @@ class Components extends SpecBaseObject
         // All the fixed fields declared above are objects that MUST use keys that match the regular expression: ^[a-zA-Z0-9\.\-_]+$.
         foreach (array_keys($this->attributes()) as $attribute) {
             foreach($this->$attribute as $k => $v) {
-                if (!preg_match('^[a-zA-Z0-9\.\-_]+$', $k)) {
+                if (!preg_match('~^[a-zA-Z0-9\.\-_]+$~', $k)) {
                     $this->addError("Invalid key '$k' used in Components Object for attribute '$attribute', does not match ^[a-zA-Z0-9\.\-_]+\$.");
                 }
             }

@@ -1,5 +1,6 @@
 <?php
 
+use cebe\openapi\spec\OpenApi;
 use Symfony\Component\Yaml\Yaml;
 
 /**
@@ -11,7 +12,7 @@ class OpenApiTest extends \PHPUnit\Framework\TestCase
 {
     public function testEmpty()
     {
-        $openapi = new \cebe\openapi\spec\OpenApi([]);
+        $openapi = new OpenApi([]);
 
         $this->assertFalse($openapi->validate());
         $this->assertEquals([
@@ -26,7 +27,7 @@ class OpenApiTest extends \PHPUnit\Framework\TestCase
         $openApiFile = __DIR__ . '/../../vendor/oai/openapi-specification/examples/v3.0/petstore.yaml';
 
         $yaml = Yaml::parse(file_get_contents($openApiFile));
-        $openapi = new \cebe\openapi\spec\OpenApi($yaml);
+        $openapi = new OpenApi($yaml);
 
         $result = $openapi->validate();
         $this->assertEquals([], $openapi->getErrors());

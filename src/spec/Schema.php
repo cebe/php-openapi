@@ -17,10 +17,83 @@ use cebe\openapi\SpecBaseObject;
  *
  * @link https://github.com/OAI/OpenAPI-Specification/blob/3.0.2/versions/3.0.2.md#schemaObject
  *
+ * @property-read string $title
+ * @property-read int|float $multipleOf
+ * @property-read int|float $maximum
+ * @property-read int|float $exclusiveMaximum
+ * @property-read int|float $minimum
+ * @property-read int|float $exclusiveMinimum
+ * @property-read int $maxLength
+ * @property-read int $minLength
+ * @property-read string $pattern (This string SHOULD be a valid regular expression, according to the [ECMA 262 regular expression dialect](https://www.ecma-international.org/ecma-262/5.1/#sec-7.8.5))
+ * @property-read int $maxItems
+ * @property-read int $minItems
+ * @property-read bool $uniqueItems
+ * @property-read int $maxProperties
+ * @property-read int $minProperties
+ * @property-read string[] $required list of required properties
+ * @property-read array $enum
+ *
+ * @property-read string $type
+ * @property-read Schema[] $allOf
+ * @property-read Schema[] $oneOf
+ * @property-read Schema[] $anyOf
+ * @property-read Schema|null $not
+ * @property-read Schema|null $items
+ * @property-read Schema[] $properties
+ * @property-read string $description
+ * @property-read string $format
+ * @property-read mixed $default
+ *
+ * @property-read bool $nullable
+ * @property-read Discriminator|null $discriminator
+ * @property-read bool $readOnly
+ * @property-read bool $writeOnly
+ * @property-read Xml|null $xml
+ * @property-read ExternalDocumentation|null $externalDocs
+ * @property-read mixed $example
+ * @property-read bool $deprecated
+ *
  * @author Carsten Brandt <mail@cebe.cc>
  */
-class Schema
+class Schema extends SpecBaseObject
 {
-    // TODO implement
+    /**
+     * @return array array of attributes available in this object.
+     */
+    protected function attributes(): array
+    {
+        return [
+            'type' => 'string',
+            'allOf' => [Schema::class], // TODO allow reference
+            'oneOf' => [Schema::class],
+            'anyOf' => [Schema::class],
+            'not' => Schema::class,
+            'items' => Schema::class,
+            'properties' => ['string', Schema::class],
+            //'additionalProperties' => 'boolean' | ['string', Schema::class], // TODO can be bool?
+            'description' => 'string',
+            'format' => 'string',
+            'default' => 'any',
 
+            'nullable' => 'boolean',
+            'discriminator' => Discriminator::class,
+            'readOnly' => 'boolean',
+            'writeOnly' => 'boolean',
+            'xml' => Xml::class,
+            'externalDocs' => ExternalDocumentation::class,
+            'example' => 'any',
+            'deprecated' => 'boolean',
+        ];
+    }
+
+    /**
+     * Perform validation on this object, check data against OpenAPI Specification rules.
+     *
+     * Call `addError()` in case of validation errors.
+     */
+    protected function performValidation()
+    {
+        // TODO: Implement performValidation() method.
+    }
 }

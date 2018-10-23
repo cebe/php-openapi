@@ -40,8 +40,14 @@ abstract class SpecBaseObject
                 continue;
             }
 
-            if ($type === 'string') {
+            if ($type === 'string' || $type === 'any') {
                 $this->_properties[$property] = $data[$property];
+            } elseif ($type === 'boolean') {
+                if (!is_bool($data[$property])) {
+                    $this->_errors[] = "property '$property' must be boolean, but " . gettype($data[$property]) . " given.";
+                    continue;
+                }
+                $this->_properties[$property] = (bool) $data[$property];
             } elseif (is_array($type)) {
                 if (!is_array($data[$property])) {
                     $this->_errors[] = "property '$property' must be array, but " . gettype($data[$property]) . " given.";
