@@ -2,6 +2,8 @@
 
 namespace cebe\openapi\spec;
 
+use cebe\openapi\SpecBaseObject;
+
 /**
  * Holds a set of reusable objects for different aspects of the OAS.
  *

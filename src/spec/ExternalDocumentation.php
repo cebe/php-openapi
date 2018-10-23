@@ -2,6 +2,8 @@
 
 namespace cebe\openapi\spec;
 
+use cebe\openapi\SpecBaseObject;
+
 /**
  * Allows referencing an external resource for extended documentation.
  *

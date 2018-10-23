@@ -3,7 +3,6 @@
 namespace cebe\openapi;
 
 use cebe\openapi\spec\OpenApi;
-use cebe\openapi\spec\SpecBaseObject;
 use Symfony\Component\Yaml\Yaml;
 
 /**

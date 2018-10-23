@@ -2,6 +2,8 @@
 
 namespace cebe\openapi\spec;
 
+use cebe\openapi\SpecBaseObject;
+
 /**
  * Contact information for the exposed API.
  *

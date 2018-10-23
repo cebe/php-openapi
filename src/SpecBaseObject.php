@@ -1,12 +1,14 @@
 <?php
 
-namespace cebe\openapi\spec;
+namespace cebe\openapi;
 
 use cebe\openapi\exceptions\ReadonlyPropertyException;
 use cebe\openapi\exceptions\UnknownPropertyException;
 
 /**
+ * Base class for all spec objects.
  *
+ * Implements property management and validation basics.
  *
  * @author Carsten Brandt <mail@cebe.cc>
  */
@@ -45,9 +47,38 @@ abstract class SpecBaseObject
                     $this->_errors[] = "property '$property' must be array, but " . gettype($data[$property]) . " given.";
                     continue;
                 }
-                $this->_properties[$property] = [];
-                foreach($data[$property] as $item) {
-                    $this->_properties[$property][] = new $type[0]($item);
+                switch (count($type)) {
+                    case 1:
+                        // array
+                        $this->_properties[$property] = [];
+                        foreach($data[$property] as $item) {
+                            if ($type[0] === 'string') {
+                                if (!is_string($item)) {
+                                    $this->_errors[] = "property '$property' must be array of strings, but array has " . gettype($item) . " element.";
+                                }
+                                $this->_properties[$property][] = $item;
+                            } else {
+                                $this->_properties[$property][] = new $type[0]($item);
+                            }
+                        }
+                        break;
+                    case 2:
+                        // map
+                        if ($type[0] !== 'string') {
+                            throw new \Exception('Invalid map key type: ' . $type[0]);
+                        }
+                        $this->_properties[$property] = [];
+                        foreach($data[$property] as $key => $item) {
+                            if ($type[1] === 'string') {
+                                if (!is_string($item)) {
+                                    $this->_errors[] = "property '$property' must be map<string, string>, but entry '$key' is of type " . gettype($item) . ".";
+                                }
+                                $this->_properties[$property][$key] = $item;
+                            } else {
+                                $this->_properties[$property][$key] = new $type[1]($item);
+                            }
+                        }
+                        break;
                 }
             } else {
                 $this->_properties[$property] = new $type($data[$property]);
@@ -66,7 +97,6 @@ abstract class SpecBaseObject
      */
     public function validate(): bool
     {
-        $this->_errors = [];
         foreach($this->_properties as $k => $v) {
             if ($v instanceof self) {
                 $v->performValidation();

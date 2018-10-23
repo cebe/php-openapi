@@ -2,6 +2,8 @@
 
 namespace cebe\openapi\spec;
 
+use cebe\openapi\SpecBaseObject;
+
 /**
  * License information for the exposed API.
  *

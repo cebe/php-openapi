@@ -2,6 +2,8 @@
 
 namespace cebe\openapi\spec;
 
+use cebe\openapi\SpecBaseObject;
+
 /**
  * An object representing a Server Variable for server URL template substitution.
  *
