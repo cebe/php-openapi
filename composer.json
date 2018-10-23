@@ -19,8 +19,9 @@
 	},
 	"require": {
 		"php": ">=7.0.0",
+		"ext-json": "*",
 		"symfony/yaml": "^3.3"
-	},
+    },
 	"require-dev": {
 		"cebe/indent": "*",
 		"phpunit/phpunit": "^6.5",
