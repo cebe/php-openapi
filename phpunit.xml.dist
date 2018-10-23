@@ -1,0 +1,19 @@
+<?xml version="1.0" encoding="utf-8"?>
+<phpunit bootstrap="./tests/bootstrap.php"
+		colors="true"
+		convertErrorsToExceptions="true"
+		convertNoticesToExceptions="true"
+		convertWarningsToExceptions="true"
+		stopOnFailure="false">
+		<testsuites>
+			<testsuite name="Test Suite">
+				<directory suffix="Test.php">./tests</directory>
+			</testsuite>
+		</testsuites>
+		<filter>
+			<blacklist>
+				<directory>./vendor</directory>
+				<directory>./tests</directory>
+			</blacklist>
+		</filter>
+</phpunit>

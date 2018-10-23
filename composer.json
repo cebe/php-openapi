@@ -9,7 +9,7 @@
 		{
 			"name": "Carsten Brandt",
 			"email": "mail@cebe.cc",
-			"homepage": "http://cebe.cc/",
+			"homepage": "https://cebe.cc/",
 			"role": "Creator"
 		}
 	],
@@ -18,19 +18,41 @@
 		"source": "https://github.com/cebe/php-openapi"
 	},
 	"require": {
-		"php": ">=7.0.0"
+		"php": ">=7.0.0",
+		"symfony/yaml": "^3.3"
 	},
 	"require-dev": {
-		"cebe/indent": "*"
+		"cebe/indent": "*",
+		"phpunit/phpunit": "^6.5",
+		"oai/openapi-specification": "3.0.2"
 	},
 	"autoload": {
 		"psr-4": {
-			"cebe\\openapi\\": ""
+			"cebe\\openapi\\": "src/"
+		}
+	},
+	"config": {
+		"platform": {
+			"php": "7.0.0"
 		}
 	},
 	"extra": {
 		"branch-alias": {
 			"dev-master": "1.0.x-dev"
 		}
-	}
+	},
+	"repositories": [
+		{
+			"type": "package",
+			"package": {
+				"name": "oai/openapi-specification",
+				"version": "3.0.2",
+				"source": {
+					"url": "https://github.com/OAI/OpenAPI-Specification",
+					"type": "git",
+					"reference": "3.0.2"
+				}
+			}
+		}
+	]
 }
