@@ -1,6 +1,6 @@
 # php-openapi
 
-READ OpenAPI yaml and json files and make the content accessable in PHP objects.
+READ [OpenAPI](https://www.openapis.org/) YAML and JSON files and make the content accessible in PHP objects.
 
 ## Install
 
