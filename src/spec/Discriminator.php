@@ -10,7 +10,7 @@ use cebe\openapi\SpecBaseObject;
  * @link https://github.com/OAI/OpenAPI-Specification/blob/3.0.2/versions/3.0.2.md#discriminatorObject
  *
  * @property-read string $propertyName
- * @property-read string[] $ mapping
+ * @property-read string[] $mapping
  *
  * @author Carsten Brandt <mail@cebe.cc>
  */
@@ -22,8 +22,8 @@ class Discriminator extends SpecBaseObject
     protected function attributes(): array
     {
         return [
-            'propertyName' => 'string',
-            ' mapping' => ['string', 'string'],
+            'propertyName' => Type::STRING,
+            'mapping' => [Type::STRING, Type::STRING],
         ];
     }
 

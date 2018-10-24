@@ -23,9 +23,9 @@ class Contact extends SpecBaseObject
     protected function attributes(): array
     {
         return [
-            'name' => 'string',
-            'url' => 'string',
-            'email' => 'string',
+            'name' => Type::STRING,
+            'url' => Type::STRING,
+            'email' => Type::STRING,
         ];
     }
 

@@ -23,9 +23,9 @@ class ServerVariable extends SpecBaseObject
     protected function attributes(): array
     {
         return [
-            'enum' => ['string'],
-            'default' => 'string',
-            'description' => 'string',
+            'enum' => [Type::STRING],
+            'default' => Type::STRING,
+            'description' => Type::STRING,
         ];
     }
 

@@ -28,12 +28,12 @@ class Info extends SpecBaseObject
     protected function attributes(): array
     {
         return [
-            'title' => 'string',
-            'description' => 'string',
-            'termsOfService' => 'string',
+            'title' => Type::STRING,
+            'description' => Type::STRING,
+            'termsOfService' => Type::STRING,
             'contact' => Contact::class,
             'license' => License::class,
-            'version' => 'string',
+            'version' => Type::STRING,
         ];
     }
 

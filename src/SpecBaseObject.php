@@ -4,6 +4,7 @@ namespace cebe\openapi;
 
 use cebe\openapi\exceptions\ReadonlyPropertyException;
 use cebe\openapi\exceptions\UnknownPropertyException;
+use cebe\openapi\spec\Type;
 
 /**
  * Base class for all spec objects.
@@ -40,25 +41,25 @@ abstract class SpecBaseObject
                 continue;
             }
 
-            if ($type === 'string' || $type === 'any') {
+            if ($type === Type::STRING || $type === Type::ANY) {
                 $this->_properties[$property] = $data[$property];
-            } elseif ($type === 'boolean') {
-                if (!is_bool($data[$property])) {
+            } elseif ($type === Type::BOOLEAN) {
+                if (!\is_bool($data[$property])) {
                     $this->_errors[] = "property '$property' must be boolean, but " . gettype($data[$property]) . " given.";
                     continue;
                 }
                 $this->_properties[$property] = (bool) $data[$property];
-            } elseif (is_array($type)) {
-                if (!is_array($data[$property])) {
+            } elseif (\is_array($type)) {
+                if (!\is_array($data[$property])) {
                     $this->_errors[] = "property '$property' must be array, but " . gettype($data[$property]) . " given.";
                     continue;
                 }
-                switch (count($type)) {
+                switch (\count($type)) {
                     case 1:
                         // array
                         $this->_properties[$property] = [];
                         foreach($data[$property] as $item) {
-                            if ($type[0] === 'string') {
+                            if ($type[0] === Type::STRING) {
                                 if (!is_string($item)) {
                                     $this->_errors[] = "property '$property' must be array of strings, but array has " . gettype($item) . " element.";
                                 }
@@ -71,14 +72,14 @@ abstract class SpecBaseObject
                         break;
                     case 2:
                         // map
-                        if ($type[0] !== 'string') {
+                        if ($type[0] !== Type::STRING) {
                             throw new \Exception('Invalid map key type: ' . $type[0]);
                         }
                         $this->_properties[$property] = [];
                         foreach($data[$property] as $key => $item) {
                             if ($type[1] === 'string') {
                                 if (!is_string($item)) {
-                                    $this->_errors[] = "property '$property' must be map<string, string>, but entry '$key' is of type " . gettype($item) . ".";
+                                    $this->_errors[] = "property '$property' must be map<string, string>, but entry '$key' is of type " . \gettype($item) . '.';
                                 }
                                 $this->_properties[$property][$key] = $item;
                             } else {
@@ -105,13 +106,13 @@ abstract class SpecBaseObject
      */
     public function validate(): bool
     {
-        foreach($this->_properties as $k => $v) {
+        foreach($this->_properties as $v) {
             if ($v instanceof self) {
                 $v->validate();
             }
         }
         $this->performValidation();
-        return count($this->getErrors()) === 0;
+        return \count($this->getErrors()) === 0;
     }
 
     /**
@@ -121,7 +122,7 @@ abstract class SpecBaseObject
     public function getErrors(): array
     {
         $errors = [$this->_errors];
-        foreach($this->_properties as $k => $v) {
+        foreach($this->_properties as $v) {
             if ($v instanceof self) {
                 $errors[] = $v->getErrors();
             }
@@ -173,12 +174,12 @@ abstract class SpecBaseObject
         if (isset(static::attributes()[$name])) {
             return is_array(static::attributes()[$name]) ? [] : null;
         }
-        throw new UnknownPropertyException('Getting unknown property: ' . get_class($this) . '::' . $name);
+        throw new UnknownPropertyException('Getting unknown property: ' . \get_class($this) . '::' . $name);
     }
 
     public function __set($name, $value)
     {
-        throw new ReadonlyPropertyException('Setting read-only property: ' . get_class($this) . '::' . $name);
+        throw new ReadonlyPropertyException('Setting read-only property: ' . \get_class($this) . '::' . $name);
     }
 
     public function __isset($name)
@@ -192,6 +193,6 @@ abstract class SpecBaseObject
 
     public function __unset($name)
     {
-        throw new ReadonlyPropertyException('Unsetting read-only property: ' . get_class($this) . '::' . $name);
+        throw new ReadonlyPropertyException('Unsetting read-only property: ' . \get_class($this) . '::' . $name);
     }
 }

@@ -1,6 +1,7 @@
 <?php
 
 use cebe\openapi\Reader;
+use cebe\openapi\spec\Type;
 
 
 /**
@@ -25,8 +26,8 @@ JSON
         $this->assertEquals([], $schema->getErrors());
         $this->assertTrue($result);
 
-        $this->assertEquals("string", $schema->type);
-        $this->assertEquals("email", $schema->format);
+        $this->assertEquals(Type::STRING, $schema->type);
+        $this->assertEquals('email', $schema->format);
     }
 
     public function testReadObject()
@@ -59,9 +60,9 @@ JSON
         $this->assertEquals([], $schema->getErrors());
         $this->assertTrue($result);
 
-        $this->assertEquals("object", $schema->type);
+        $this->assertEquals(Type::OBJECT, $schema->type);
         $this->assertEquals(['name'], $schema->required);
-        $this->assertEquals('integer', $schema->properties['age']->type);
+        $this->assertEquals(Type::INTEGER, $schema->properties['age']->type);
         $this->assertEquals(0, $schema->properties['age']->minimum);
     }
 

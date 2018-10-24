@@ -19,11 +19,11 @@ class Xml extends SpecBaseObject
     protected function attributes(): array
     {
         return [
-            'name' => 'string',
-            'namespace' => 'string',
-            'prefix' => 'string',
-            'attribute' => 'boolean',
-            'wrapped' => 'boolean',
+            'name' => Type::STRING,
+            'namespace' => Type::STRING,
+            'prefix' => Type::STRING,
+            'attribute' => Type::BOOLEAN,
+            'wrapped' => Type::BOOLEAN,
         ];
     }
 
