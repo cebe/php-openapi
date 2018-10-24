@@ -64,6 +64,8 @@ abstract class SpecBaseObject
                                     $this->_errors[] = "property '$property' must be array of strings, but array has " . gettype($item) . " element.";
                                 }
                                 $this->_properties[$property][] = $item;
+                            } elseif ($type[0] === Type::ANY || $type[0] === Type::BOOLEAN || $type[0] === Type::INTEGER) { // TODO simplify handling of scalar types
+                                $this->_properties[$property][] = $item;
                             } else {
                                 // TODO implement reference objects
                                 $this->_properties[$property][] = new $type[0]($item);
@@ -81,6 +83,8 @@ abstract class SpecBaseObject
                                 if (!is_string($item)) {
                                     $this->_errors[] = "property '$property' must be map<string, string>, but entry '$key' is of type " . \gettype($item) . '.';
                                 }
+                                $this->_properties[$property][$key] = $item;
+                            } elseif ($type[1] === Type::ANY || $type[1] === Type::BOOLEAN || $type[1] === Type::INTEGER) { // TODO simplify handling of scalar types
                                 $this->_properties[$property][$key] = $item;
                             } else {
                                 // TODO implement reference objects
@@ -185,7 +189,7 @@ abstract class SpecBaseObject
     public function __isset($name)
     {
         if (isset($this->_properties[$name]) || isset(static::attributes()[$name])) {
-            return $this->__get($name) === null;
+            return $this->__get($name) !== null;
         }
 
         return false;

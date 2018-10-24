@@ -42,7 +42,7 @@ class Link extends SpecBaseObject
      */
     protected function performValidation()
     {
-        if ($this->hasProperty('operationId') && $this->hasProperty('operationRef')) {
+        if (!empty($this->operationId) && !empty($this->operationRef)) {
             $this->addError('operationId and operationRef are mutually exclusive.');
         }
     }

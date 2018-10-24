@@ -15,12 +15,10 @@ class LinkTest extends \PHPUnit\Framework\TestCase
         /** @var $link Link */
         $link = Reader::readFromJson(<<<JSON
 {
-    "address": {
-        "operationId": "getUserAddress",
-        "parameters": {
-            "userId": "test.path.id"
-        }
-    }                
+    "operationId": "getUserAddress",
+    "parameters": {
+        "userId": "test.path.id"
+    }
 }
 JSON
         , Link::class);
@@ -40,18 +38,15 @@ JSON
     {
         /** @var $link Link */
         $link = Reader::readFromJson(<<<JSON
-        {
-            "address": {
-                "operationId": "getUserAddress",
-                "operationRef": "getUserAddressRef"
-            }                
-        }
+{
+    "operationId": "getUserAddress",
+    "operationRef": "getUserAddressRef"
+}
 JSON
                 , Link::class);
 
         $result = $link->validate();
-
-        $this->assertFalse($result);
         $this->assertEquals(['operationId and operationRef are mutually exclusive.'], $link->getErrors());
+        $this->assertFalse($result);
     }
 }
