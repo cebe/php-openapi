@@ -11,8 +11,9 @@ use cebe\openapi\SpecBaseObject;
  *
  * @property-read string $operationRef
  * @property-read string $operationId
- * @property-read string $parameters
+ * @property-read array $parameters
  * @property-read mixed $requestBody
+ * @property-read string $description
  * @property-read Server $server
  *
  * @author Carsten Brandt <mail@cebe.cc>
@@ -29,6 +30,7 @@ class Link extends SpecBaseObject
             'operationId' => Type::STRING,
             'parameters' => [Type::STRING, Type::ANY], // TODO: how to specify {expression}?
             'requestBody' => Type::ANY, // TODO: how to specify {expression}?
+            'description' => Type::STRING,
             'server' => Server::class,
         ];
     }
