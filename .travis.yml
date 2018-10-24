@@ -7,6 +7,5 @@ php:
   - nightly
 
 install: make install
-  - composer install
-
 script: make test
+
