@@ -1,6 +1,6 @@
 # php-openapi
 
-READ [OpenAPI](https://www.openapis.org/) YAML and JSON files and make the content accessible in PHP objects.
+READ [OpenAPI](https://www.openapis.org/) 3.0.x YAML and JSON files and make the content accessible in PHP objects.
 
 ## Install
 
@@ -38,7 +38,7 @@ foreach($openapi->paths as $path => $definition) {
 }
 ```
 
-Object properties are exactly like in the [OpenAPI specification](https://github.com/OAI/OpenAPI-Specification/blob/master/versions/3.0.2.md#openapi-specification).
+Object properties are exactly like in the [OpenAPI specification](https://github.com/OAI/OpenAPI-Specification/blob/3.0.2/versions/3.0.2.md#openapi-specification).
 You may also access additional properties added by specification extensions.
 
 
