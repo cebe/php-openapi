@@ -1,0 +1,12 @@
+language: php
+
+php:
+  - '7.0'
+  - '7.1'
+  - '7.2'
+  - nightly
+
+install: make install
+  - composer install
+
+script: make test
