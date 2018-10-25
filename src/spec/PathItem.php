@@ -22,7 +22,7 @@ use cebe\openapi\SpecBaseObject;
  * @property-read Operation $patch
  * @property-read Operation $trace
  * @property-read Server $servers
- * @property-read Parameter|Reference $parameters
+ * @property-read Parameter[]|Reference[] $parameters
  * 
  * @author Carsten Brandt <mail@cebe.cc>
  */
