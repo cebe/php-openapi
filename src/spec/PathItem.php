@@ -10,7 +10,7 @@ use cebe\openapi\SpecBaseObject;
  * A Path Item MAY be empty, due to ACL constraints. The path itself is still exposed to the documentation 
  * viewer but they will not know which operations and parameters are available.
  *
- * // TODO $ref
+ * // @TODO $ref
  * @property-read string $summary
  * @property-read string $description
  * @property-read Operation $get
@@ -46,7 +46,7 @@ class PathItem extends SpecBaseObject
             'patch' => Operation::class,
             'trace' => Operation::class,
             'servers' => [Server::class],
-            'parameters' => [Parameter::class],
+            'parameters' => [Parameter::class], // @TODO Reference::class
         ];
     }
 
@@ -57,7 +57,6 @@ class PathItem extends SpecBaseObject
      */
     protected function performValidation()
     {
-        // TODO are there any required arguments?
-        // $this->requireProperties(['propertyName']);
+        // no required arguments
     }
 }
