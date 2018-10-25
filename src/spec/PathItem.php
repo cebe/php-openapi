@@ -46,7 +46,7 @@ class PathItem extends SpecBaseObject
             'patch' => Operation::class,
             'trace' => Operation::class,
             'servers' => [Server::class],
-            'parameters' => [Parameter::class, Reference::class] // @TODO how todes property-read notation looks for this example?
+            'parameters' => [Parameter::class],
         ];
     }
 
