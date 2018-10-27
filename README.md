@@ -62,7 +62,7 @@ This library is currently work in progress, the following list tracks completene
   - [x] Server Variable Object
   - [x] Components Object
   - [ ] Paths Object
-  - [ ] Path Item Object
+  - [x] Path Item Object
   - [ ] Operation Object
   - [x] External Documentation Object
   - [ ] Parameter Object
