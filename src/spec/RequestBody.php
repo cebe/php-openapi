@@ -10,7 +10,7 @@ use cebe\openapi\SpecBaseObject;
  * @link https://github.com/OAI/OpenAPI-Specification/blob/3.0.2/versions/3.0.2.md#requestBodyObject
  *
  * @property-read string $description
- * @property-read array $content
+ * @property-read MediaType[] $content
  * @property-read string $required
  * 
  * @author Carsten Brandt <mail@cebe.cc>
