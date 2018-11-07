@@ -118,7 +118,7 @@ abstract class SpecBaseObject implements SpecObjectInterface
             if ($v instanceof SpecObjectInterface) {
                 $v->validate();
             } elseif (is_array($v)) {
-                foreach($v as $item) {
+                foreach ($v as $item) {
                     if ($item instanceof SpecObjectInterface) {
                         $item->validate();
                     }
@@ -140,7 +140,7 @@ abstract class SpecBaseObject implements SpecObjectInterface
             if ($v instanceof SpecObjectInterface) {
                 $errors[] = $v->getErrors();
             } elseif (is_array($v)) {
-                foreach($v as $item) {
+                foreach ($v as $item) {
                     if ($item instanceof SpecObjectInterface) {
                         $errors[] = $item->getErrors();
                     }

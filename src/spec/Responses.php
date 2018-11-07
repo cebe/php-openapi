@@ -1,5 +1,10 @@
 <?php
 
+/**
+ * @copyright Copyright (c) 2018 Carsten Brandt <mail@cebe.cc> and contributors
+ * @license https://github.com/cebe/php-openapi/blob/master/LICENSE
+ */
+
 namespace cebe\openapi\spec;
 
 use cebe\openapi\SpecObjectInterface;
@@ -21,7 +26,7 @@ class Responses implements SpecObjectInterface
      */
     public function __construct(array $data)
     {
-        foreach($data as $statusCode => $response) {
+        foreach ($data as $statusCode => $response) {
             if ((is_numeric($statusCode) && $statusCode >= 100 && $statusCode <= 600) || $statusCode === 'default') {
                 $this->_responses[$statusCode] = $response;
             } else {
@@ -64,7 +69,7 @@ class Responses implements SpecObjectInterface
     public function validate(): bool
     {
         $valid = true;
-        foreach($this->_responses as $key => $response) {
+        foreach ($this->_responses as $key => $response) {
             if ($response === null) {
                 continue;
             }

@@ -29,7 +29,7 @@ class Paths implements SpecObjectInterface
 
     public function __construct(array $data)
     {
-        foreach($data as $path => $object) {
+        foreach ($data as $path => $object) {
             // TODO support reference
             if ($object === null) {
                 $this->_paths[$path] = null;
@@ -74,7 +74,7 @@ class Paths implements SpecObjectInterface
     {
         $valid = true;
         $this->_errors = [];
-        foreach($this->_paths as $key => $path) {
+        foreach ($this->_paths as $key => $path) {
             if ($path === null) {
                 continue;
             }

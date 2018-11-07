@@ -1,12 +1,12 @@
 <?php
+
 /**
- * Created by PhpStorm.
- * User: cebe
- * Date: 07.11.18
- * Time: 23:46
+ * @copyright Copyright (c) 2018 Carsten Brandt <mail@cebe.cc> and contributors
+ * @license https://github.com/cebe/php-openapi/blob/master/LICENSE
  */
 
 namespace cebe\openapi\spec;
+
 use cebe\openapi\SpecBaseObject;
 
 /**
