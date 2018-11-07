@@ -66,7 +66,7 @@ This library is currently work in progress, the following list tracks completene
   - [ ] Operation Object
   - [x] External Documentation Object
   - [ ] Parameter Object
-  - [ ] Request Body Object
+  - [x] Request Body Object
   - [ ] Media Type Object
   - [ ] Encoding Object
   - [ ] Responses Object

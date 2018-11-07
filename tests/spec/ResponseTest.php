@@ -3,7 +3,6 @@
 use cebe\openapi\Reader;
 use cebe\openapi\spec\MediaType;
 use cebe\openapi\spec\Response;
-use cebe\openapi\spec\Schema;
 
 /**
  * @covers \cebe\openapi\spec\Response
@@ -12,7 +11,7 @@ class ResponseTest extends \PHPUnit\Framework\TestCase
 {
     public function testRead()
     {
-        /** @var $response Schema */
+        /** @var $response Response */
         $response = Reader::readFromJson(<<<'JSON'
 {
   "description": "A complex object array response",
@@ -38,7 +37,7 @@ JSON
         $this->assertArrayHasKey("application/json", $response->content);
         $this->assertInstanceOf(MediaType::class, $response->content["application/json"]);
 
-        /** @var $response Schema */
+        /** @var $response Response */
         $response = Reader::readFromJson(<<<'JSON'
 {
   "content": {
