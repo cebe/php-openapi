@@ -17,7 +17,6 @@ use cebe\openapi\SpecBaseObject;
  * @property-read string $description
  * @property-read string $url
  *
- * @author Carsten Brandt <mail@cebe.cc>
  */
 class ExternalDocumentation extends SpecBaseObject
 {

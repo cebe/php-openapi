@@ -59,7 +59,6 @@ use cebe\openapi\SpecBaseObject;
  * @property-read mixed $example
  * @property-read bool $deprecated
  *
- * @author Carsten Brandt <mail@cebe.cc>
  */
 class Schema extends SpecBaseObject
 {

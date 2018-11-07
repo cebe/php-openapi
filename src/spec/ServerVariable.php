@@ -18,7 +18,6 @@ use cebe\openapi\SpecBaseObject;
  * @property-read string $default
  * @property-read string $description
  *
- * @author Carsten Brandt <mail@cebe.cc>
  */
 class ServerVariable extends SpecBaseObject
 {

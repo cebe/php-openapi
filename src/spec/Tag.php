@@ -18,7 +18,6 @@ use cebe\openapi\SpecBaseObject;
  * @property-read string $description
  * @property-read ExternalDocumentation $externalDocs
  *
- * @author Carsten Brandt <mail@cebe.cc>
  */
 class Tag extends SpecBaseObject
 {

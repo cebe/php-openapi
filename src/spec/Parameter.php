@@ -14,7 +14,6 @@ use cebe\openapi\SpecBaseObject;
  *
  * @link https://github.com/OAI/OpenAPI-Specification/blob/3.0.2/versions/3.0.2.md#parameterObject
  *
- * @author Carsten Brandt <mail@cebe.cc>
  */
 class Parameter
 {

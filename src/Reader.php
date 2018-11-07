@@ -13,7 +13,6 @@ use Symfony\Component\Yaml\Yaml;
 /**
  *
  *
- * @author Carsten Brandt <mail@cebe.cc>
  */
 class Reader
 {

@@ -17,7 +17,6 @@ use cebe\openapi\SpecBaseObject;
  * @property-read string $propertyName
  * @property-read string[] $mapping
  *
- * @author Carsten Brandt <mail@cebe.cc>
  */
 class Discriminator extends SpecBaseObject
 {

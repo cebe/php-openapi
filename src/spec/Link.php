@@ -21,7 +21,6 @@ use cebe\openapi\SpecBaseObject;
  * @property-read string $description
  * @property-read Server $server
  *
- * @author Carsten Brandt <mail@cebe.cc>
  */
 class Link extends SpecBaseObject
 {

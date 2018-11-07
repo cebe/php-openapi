@@ -28,7 +28,6 @@ use cebe\openapi\SpecBaseObject;
  * @property-read Callback[]|Reference[] $callbacks
  *
  *
- * @author Carsten Brandt <mail@cebe.cc>
  */
 class Components extends SpecBaseObject
 {

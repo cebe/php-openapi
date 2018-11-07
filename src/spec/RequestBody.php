@@ -18,7 +18,6 @@ use cebe\openapi\SpecBaseObject;
  * @property-read MediaType[] $content
  * @property-read string $required
  *
- * @author Carsten Brandt <mail@cebe.cc>
  *
  * @TODO: Unsure how to define the content attribtue defintion and validation defintion.:
  * > REQUIRED. The content of the request body. The key is a media type or media type range and the value describes it.

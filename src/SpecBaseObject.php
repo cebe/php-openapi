@@ -16,7 +16,6 @@ use cebe\openapi\spec\Type;
  *
  * Implements property management and validation basics.
  *
- * @author Carsten Brandt <mail@cebe.cc>
  */
 abstract class SpecBaseObject
 {

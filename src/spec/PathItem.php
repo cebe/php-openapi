@@ -29,7 +29,6 @@ use cebe\openapi\SpecBaseObject;
  * @property-read Server $servers
  * @property-read Parameter[]|Reference[] $parameters
  *
- * @author Carsten Brandt <mail@cebe.cc>
  */
 class PathItem extends SpecBaseObject
 {

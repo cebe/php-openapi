@@ -18,7 +18,6 @@ use cebe\openapi\SpecBaseObject;
  * @property-read string $url
  * @property-read string $email
  *
- * @author Carsten Brandt <mail@cebe.cc>
  */
 class Contact extends SpecBaseObject
 {

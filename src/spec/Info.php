@@ -23,7 +23,6 @@ use cebe\openapi\SpecBaseObject;
  * @property-read License|null $license
  * @property-read string $version
  *
- * @author Carsten Brandt <mail@cebe.cc>
  */
 class Info extends SpecBaseObject
 {

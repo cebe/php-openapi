@@ -17,7 +17,6 @@ use cebe\openapi\SpecBaseObject;
  * @property-read string $name
  * @property-read string $url
  *
- * @author Carsten Brandt <mail@cebe.cc>
  */
 class License extends SpecBaseObject
 {
