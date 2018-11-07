@@ -5,9 +5,9 @@ namespace cebe\openapi\spec;
 use cebe\openapi\SpecBaseObject;
 
 /**
- * Describes the operations available on a single path. 
+ * Describes the operations available on a single path.
  *
- * A Path Item MAY be empty, due to ACL constraints. The path itself is still exposed to the documentation 
+ * A Path Item MAY be empty, due to ACL constraints. The path itself is still exposed to the documentation
  * viewer but they will not know which operations and parameters are available.
  *
  * // @TODO $ref
@@ -23,7 +23,7 @@ use cebe\openapi\SpecBaseObject;
  * @property-read Operation $trace
  * @property-read Server $servers
  * @property-read Parameter[]|Reference[] $parameters
- * 
+ *
  * @author Carsten Brandt <mail@cebe.cc>
  */
 class PathItem extends SpecBaseObject

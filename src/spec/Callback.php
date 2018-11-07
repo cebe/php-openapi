@@ -14,5 +14,4 @@ use cebe\openapi\SpecBaseObject;
 class Callback
 {
     // TODO implement
-
 }

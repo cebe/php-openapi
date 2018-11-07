@@ -36,7 +36,7 @@ abstract class SpecBaseObject
      */
     public function __construct(array $data)
     {
-        foreach($this->attributes() as $property => $type) {
+        foreach ($this->attributes() as $property => $type) {
             if (!isset($data[$property])) {
                 continue;
             }
@@ -58,7 +58,7 @@ abstract class SpecBaseObject
                     case 1:
                         // array
                         $this->_properties[$property] = [];
-                        foreach($data[$property] as $item) {
+                        foreach ($data[$property] as $item) {
                             if ($type[0] === Type::STRING) {
                                 if (!is_string($item)) {
                                     $this->_errors[] = "property '$property' must be array of strings, but array has " . gettype($item) . " element.";
@@ -78,7 +78,7 @@ abstract class SpecBaseObject
                             throw new \Exception('Invalid map key type: ' . $type[0]);
                         }
                         $this->_properties[$property] = [];
-                        foreach($data[$property] as $key => $item) {
+                        foreach ($data[$property] as $key => $item) {
                             if ($type[1] === 'string') {
                                 if (!is_string($item)) {
                                     $this->_errors[] = "property '$property' must be map<string, string>, but entry '$key' is of type " . \gettype($item) . '.';
@@ -98,7 +98,7 @@ abstract class SpecBaseObject
             }
             unset($data[$property]);
         }
-        foreach($data as $additionalProperty => $value) {
+        foreach ($data as $additionalProperty => $value) {
             $this->_properties[$additionalProperty] = $value;
         }
     }
@@ -110,7 +110,7 @@ abstract class SpecBaseObject
      */
     public function validate(): bool
     {
-        foreach($this->_properties as $v) {
+        foreach ($this->_properties as $v) {
             if ($v instanceof self) {
                 $v->validate();
             }
@@ -126,7 +126,7 @@ abstract class SpecBaseObject
     public function getErrors(): array
     {
         $errors = [$this->_errors];
-        foreach($this->_properties as $v) {
+        foreach ($this->_properties as $v) {
             if ($v instanceof self) {
                 $errors[] = $v->getErrors();
             }

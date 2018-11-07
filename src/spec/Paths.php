@@ -17,5 +17,4 @@ use cebe\openapi\SpecBaseObject;
 class Paths
 {
     // TODO implement
-
 }

@@ -18,5 +18,4 @@ use cebe\openapi\SpecBaseObject;
 class Header
 {
     // TODO implement
-
 }

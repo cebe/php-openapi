@@ -9,5 +9,4 @@ namespace cebe\openapi\exceptions;
  */
 class ReadonlyPropertyException extends \Exception
 {
-
 }
