@@ -15,18 +15,19 @@ use cebe\openapi\SpecBaseObject;
  * A Path Item MAY be empty, due to ACL constraints. The path itself is still exposed to the documentation
  * viewer but they will not know which operations and parameters are available.
  *
- * // @TODO $ref
+ * @link https://github.com/OAI/OpenAPI-Specification/blob/3.0.2/versions/3.0.2.md#pathItemObject
+ *
  * @property-read string $summary
  * @property-read string $description
- * @property-read Operation $get
- * @property-read Operation $put
- * @property-read Operation $post
- * @property-read Operation $delete
- * @property-read Operation $options
- * @property-read Operation $head
- * @property-read Operation $patch
- * @property-read Operation $trace
- * @property-read Server $servers
+ * @property-read Operation|null $get
+ * @property-read Operation|null $put
+ * @property-read Operation|null $post
+ * @property-read Operation|null $delete
+ * @property-read Operation|null $options
+ * @property-read Operation|null $head
+ * @property-read Operation|null $patch
+ * @property-read Operation|null $trace
+ * @property-read Server[] $servers
  * @property-read Parameter[]|Reference[] $parameters
  *
  */
@@ -38,7 +39,6 @@ class PathItem extends SpecBaseObject
     protected function attributes(): array
     {
         return [
-            // '$ref' => TYPE::REFERENCE,
             'summary' => Type::STRING,
             'description' => Type::STRING,
             'get' => Operation::class,

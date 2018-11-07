@@ -13,7 +13,7 @@ READ [OpenAPI](https://www.openapis.org/) 3.0.x YAML and JSON files and make the
 
 ## Requirements
 
-- PHP 7.0 or higher
+- PHP 7.1 or higher
 
 ## Usage
 

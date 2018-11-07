@@ -17,7 +17,7 @@ use cebe\openapi\spec\Type;
  * Implements property management and validation basics.
  *
  */
-abstract class SpecBaseObject
+abstract class SpecBaseObject implements SpecObjectInterface
 {
     private $_properties = [];
     private $_errors = [];
@@ -115,11 +115,11 @@ abstract class SpecBaseObject
     public function validate(): bool
     {
         foreach ($this->_properties as $v) {
-            if ($v instanceof self) {
+            if ($v instanceof SpecObjectInterface) {
                 $v->validate();
             } elseif (is_array($v)) {
                 foreach($v as $item) {
-                    if ($item instanceof self) {
+                    if ($item instanceof SpecObjectInterface) {
                         $item->validate();
                     }
                 }
@@ -137,11 +137,11 @@ abstract class SpecBaseObject
     {
         $errors = [$this->_errors];
         foreach ($this->_properties as $v) {
-            if ($v instanceof self) {
+            if ($v instanceof SpecObjectInterface) {
                 $errors[] = $v->getErrors();
             } elseif (is_array($v)) {
                 foreach($v as $item) {
-                    if ($item instanceof self) {
+                    if ($item instanceof SpecObjectInterface) {
                         $errors[] = $item->getErrors();
                     }
                 }
