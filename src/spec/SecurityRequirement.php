@@ -15,7 +15,23 @@ use cebe\openapi\SpecBaseObject;
  * @link https://github.com/OAI/OpenAPI-Specification/blob/3.0.2/versions/3.0.2.md#securityRequirementObject
  *
  */
-class SecurityRequirement
+class SecurityRequirement extends SpecBaseObject
 {
-    // TODO implement
+    /**
+     * @return array array of attributes available in this object.
+     */
+    protected function attributes(): array
+    {
+        // this object does not have a fixed set of attribute names
+        return [];
+    }
+
+    /**
+     * Perform validation on this object, check data against OpenAPI Specification rules.
+     *
+     * Call `addError()` in case of validation errors.
+     */
+    protected function performValidation()
+    {
+    }
 }

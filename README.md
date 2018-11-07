@@ -87,4 +87,4 @@ This library is currently work in progress, the following list tracks completene
   - [x] Security Scheme Object
   - [x] OAuth Flows Object
   - [x] OAuth Flow Object
-  - [ ] Security Requirement Object
+  - [x] Security Requirement Object

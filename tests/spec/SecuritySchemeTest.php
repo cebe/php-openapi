@@ -3,12 +3,14 @@
 use cebe\openapi\Reader;
 use cebe\openapi\spec\OAuthFlow;
 use cebe\openapi\spec\OAuthFlows;
+use cebe\openapi\spec\SecurityRequirement;
 use cebe\openapi\spec\SecurityScheme;
 
 /**
  * @covers \cebe\openapi\spec\SecurityScheme
  * @covers \cebe\openapi\spec\OAuthFlows
  * @covers \cebe\openapi\spec\OAuthFlow
+ * @covers \cebe\openapi\spec\SecurityRequirement
  */
 class SecuritySchemeTest extends \PHPUnit\Framework\TestCase
 {
@@ -138,5 +140,34 @@ YAML
             'write:pets' => 'modify pets in your account',
             'read:pets' =>  'read your pets',
         ], $securityScheme->flows->implicit->scopes);
+    }
+
+    public function testSecurityRequirement()
+    {
+        /** @var $securityRequirement SecurityRequirement */
+        $securityRequirement = Reader::readFromYaml(<<<YAML
+api_key: []
+YAML
+            , SecurityRequirement::class);
+
+        $result = $securityRequirement->validate();
+        $this->assertEquals([], $securityRequirement->getErrors());
+        $this->assertTrue($result);
+
+        $this->assertSame([], $securityRequirement->api_key);
+
+        /** @var $securityRequirement SecurityRequirement */
+        $securityRequirement = Reader::readFromYaml(<<<YAML
+petstore_auth:
+- write:pets
+- read:pets
+YAML
+            , SecurityRequirement::class);
+
+        $result = $securityRequirement->validate();
+        $this->assertEquals([], $securityRequirement->getErrors());
+        $this->assertTrue($result);
+
+        $this->assertSame(['write:pets', 'read:pets'], $securityRequirement->petstore_auth);
     }
 }
