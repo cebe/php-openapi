@@ -3,11 +3,6 @@
 use cebe\openapi\spec\OpenApi;
 use Symfony\Component\Yaml\Yaml;
 
-/**
- *
- *
- * @author Carsten Brandt <mail@cebe.cc>
- */
 class OpenApiTest extends \PHPUnit\Framework\TestCase
 {
     public function testEmpty()

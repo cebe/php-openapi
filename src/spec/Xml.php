@@ -14,6 +14,11 @@ use cebe\openapi\SpecBaseObject;
  *
  * @link https://github.com/OAI/OpenAPI-Specification/blob/3.0.2/versions/3.0.2.md#xmlObject
  *
+ * @property-read string $name
+ * @property-read string $namespace
+ * @property-read string $prefix
+ * @property-read boolean $attribute
+ * @property-read boolean $wrapped
  */
 class Xml extends SpecBaseObject
 {
@@ -33,11 +38,8 @@ class Xml extends SpecBaseObject
 
     /**
      * Perform validation on this object, check data against OpenAPI Specification rules.
-     *
-     * Call `addError()` in case of validation errors.
      */
     protected function performValidation()
     {
-        // TODO: Implement performValidation() method.
     }
 }

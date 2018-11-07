@@ -3,11 +3,6 @@
 use cebe\openapi\Reader;
 use cebe\openapi\spec\Link;
 
-/**
- *
- *
- * @author Alexander Makarov <sam@rmcreative.ru>
- */
 class LinkTest extends \PHPUnit\Framework\TestCase
 {
     public function testRead()

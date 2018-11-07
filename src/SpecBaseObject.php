@@ -117,6 +117,12 @@ abstract class SpecBaseObject
         foreach ($this->_properties as $v) {
             if ($v instanceof self) {
                 $v->validate();
+            } elseif (is_array($v)) {
+                foreach($v as $item) {
+                    if ($item instanceof self) {
+                        $item->validate();
+                    }
+                }
             }
         }
         $this->performValidation();
@@ -133,6 +139,12 @@ abstract class SpecBaseObject
         foreach ($this->_properties as $v) {
             if ($v instanceof self) {
                 $errors[] = $v->getErrors();
+            } elseif (is_array($v)) {
+                foreach($v as $item) {
+                    if ($item instanceof self) {
+                        $errors[] = $item->getErrors();
+                    }
+                }
             }
         }
         return array_merge(...$errors);

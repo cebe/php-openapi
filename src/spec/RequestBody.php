@@ -38,8 +38,6 @@ class RequestBody
     }
     /**
      * Perform validation on this object, check data against OpenAPI Specification rules.
-     *
-     * Call `addError()` in case of validation errors.
      */
     protected function performValidation()
     {

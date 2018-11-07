@@ -53,4 +53,7 @@ YAML
         $this->assertEquals("1.0.0", $openapi->info->version);
     }
 
+    
+    // TODO test invalid JSON
+    // TODO test invalid YAML
 }

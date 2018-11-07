@@ -7,11 +7,17 @@
 
 namespace cebe\openapi\spec;
 
+/**
+ * Data Types
+ *
+ * @link https://github.com/OAI/OpenAPI-Specification/blob/3.0.2/versions/3.0.2.md#dataTypes
+ */
 class Type
 {
     const ANY = 'any';
-    const STRING = 'string';
     const INTEGER = 'integer';
+    const NUMBER = 'number';
+    const STRING = 'string';
     const BOOLEAN = 'boolean';
     const OBJECT = 'object';
 }

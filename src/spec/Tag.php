@@ -16,7 +16,7 @@ use cebe\openapi\SpecBaseObject;
  *
  * @property-read string $name
  * @property-read string $description
- * @property-read ExternalDocumentation $externalDocs
+ * @property-read ExternalDocumentation|null $externalDocs
  *
  */
 class Tag extends SpecBaseObject
@@ -35,8 +35,6 @@ class Tag extends SpecBaseObject
 
     /**
      * Perform validation on this object, check data against OpenAPI Specification rules.
-     *
-     * Call `addError()` in case of validation errors.
      */
     protected function performValidation()
     {

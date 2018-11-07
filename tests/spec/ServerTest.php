@@ -2,11 +2,11 @@
 
 use cebe\openapi\Reader;
 use cebe\openapi\spec\Server;
+use cebe\openapi\spec\ServerVariable;
 
 /**
- *
- *
- * @author Carsten Brandt <mail@cebe.cc>
+ * @covers Server
+ * @covers ServerVariable
  */
 class ServerTest extends \PHPUnit\Framework\TestCase
 {
@@ -47,6 +47,37 @@ JSON
         $this->assertEquals('demo', $server->variables['username']->default);
         $this->assertEquals('this value is assigned by the service provider, in this example `gigantic-server.com`', $server->variables['username']->description);
         $this->assertEquals('8443', $server->variables['port']->default);
+
+        /** @var $server Server */
+        $server = Reader::readFromJson(<<<JSON
+{
+  "description": "The production API server"
+}
+JSON
+            , Server::class);
+
+        $result = $server->validate();
+        $this->assertEquals(['Missing required property: url'], $server->getErrors());
+        $this->assertFalse($result);
+
+
+        /** @var $server Server */
+        $server = Reader::readFromJson(<<<JSON
+{
+  "url": "https://{username}.gigantic-server.com:{port}/{basePath}",
+  "description": "The production API server",
+  "variables": {
+    "username": {
+      "description": "this value is assigned by the service provider, in this example `gigantic-server.com`"
+    }
+  }
+}
+JSON
+        , Server::class);
+
+        $result = $server->validate();
+        $this->assertEquals(['Missing required property: default'], $server->getErrors());
+        $this->assertFalse($result);
     }
 
 }

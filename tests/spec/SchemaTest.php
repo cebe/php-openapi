@@ -3,12 +3,6 @@
 use cebe\openapi\Reader;
 use cebe\openapi\spec\Type;
 
-
-/**
- *
- *
- * @author Carsten Brandt <mail@cebe.cc>
- */
 class SchemaTest extends \PHPUnit\Framework\TestCase
 {
     public function testRead()
