@@ -70,7 +70,7 @@ This library is currently work in progress, the following list tracks completene
   - [ ] Media Type Object
   - [ ] Encoding Object
   - [ ] Responses Object
-  - [ ] Response Object
+  - [x] Response Object
   - [ ] Callback Object
   - [ ] Example Object
   - [x] Link Object
