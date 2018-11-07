@@ -84,7 +84,7 @@ This library is currently work in progress, the following list tracks completene
     - [ ] validation
   - [x] Discriminator Object
   - [x] XML Object
-  - [ ] Security Scheme Object
-  - [ ] OAuth Flows Object
-  - [ ] OAuth Flow Object
+  - [x] Security Scheme Object
+  - [x] OAuth Flows Object
+  - [x] OAuth Flow Object
   - [ ] Security Requirement Object

@@ -4,7 +4,7 @@ use cebe\openapi\Reader;
 use cebe\openapi\spec\Xml;
 
 /**
- * @covers Xml
+ * @covers \cebe\openapi\spec\Xml
  */
 class XmlTest extends \PHPUnit\Framework\TestCase
 {

@@ -5,8 +5,8 @@ use cebe\openapi\spec\Server;
 use cebe\openapi\spec\ServerVariable;
 
 /**
- * @covers Server
- * @covers ServerVariable
+ * @covers \cebe\openapi\spec\Server
+ * @covers \cebe\openapi\spec\ServerVariable
  */
 class ServerTest extends \PHPUnit\Framework\TestCase
 {

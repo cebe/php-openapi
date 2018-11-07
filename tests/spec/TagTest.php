@@ -5,7 +5,7 @@ use cebe\openapi\spec\ExternalDocumentation;
 use cebe\openapi\spec\Tag;
 
 /**
- * @covers Tag
+ * @covers \cebe\openapi\spec\Tag
  */
 class TagTest extends \PHPUnit\Framework\TestCase
 {
