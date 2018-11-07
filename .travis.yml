@@ -7,5 +7,7 @@ php:
   - nightly
 
 install: make install
-script: make test
+script:
+  - make test
+  - make check-style
 

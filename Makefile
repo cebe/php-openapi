@@ -1,8 +1,12 @@
 
 all:
 
-style:
+check-style:
+	vendor/bin/php-cs-fixer fix src/ --diff --dry-run
+
+fix-style:
 	vendor/bin/indent --tabs composer.json
+	vendor/bin/php-cs-fixer fix src/ --diff
 
 install:
 	composer install --prefer-dist --no-interaction
@@ -10,5 +14,5 @@ install:
 test:
 	vendor/bin/phpunit
 
-.PHONY: all style install test
+.PHONY: all check-style fix-style install test
 
