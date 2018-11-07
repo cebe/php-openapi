@@ -1,20 +1,26 @@
 <?php
 
 use cebe\openapi\Reader;
+use cebe\openapi\spec\Discriminator;
+use cebe\openapi\spec\Schema;
 use cebe\openapi\spec\Type;
 
+/**
+ * @covers \cebe\openapi\spec\Schema
+ * @covers \cebe\openapi\spec\Discriminator
+ */
 class SchemaTest extends \PHPUnit\Framework\TestCase
 {
     public function testRead()
     {
-        /** @var $schema \cebe\openapi\spec\Schema */
+        /** @var $schema Schema */
         $schema = Reader::readFromJson(<<<JSON
 {
   "type": "string",
   "format": "email"
 }
 JSON
-        , \cebe\openapi\spec\Schema::class);
+        , Schema::class);
 
         $result = $schema->validate();
         $this->assertEquals([], $schema->getErrors());
@@ -26,7 +32,7 @@ JSON
 
     public function testReadObject()
     {
-        /** @var $schema \cebe\openapi\spec\Schema */
+        /** @var $schema Schema */
         $schema = Reader::readFromJson(<<<'JSON'
 {
   "type": "object",
@@ -48,7 +54,7 @@ JSON
   }
 }
 JSON
-        , \cebe\openapi\spec\Schema::class);
+        , Schema::class);
 
         $result = $schema->validate();
         $this->assertEquals([], $schema->getErrors());
@@ -60,4 +66,50 @@ JSON
         $this->assertEquals(0, $schema->properties['age']->minimum);
     }
 
+    public function testDiscriminator()
+    {
+        /** @var $schema Schema */
+        $schema = Reader::readFromYaml(<<<'YAML'
+oneOf:
+  - $ref: '#/components/schemas/Cat'
+  - $ref: '#/components/schemas/Dog'
+  - $ref: '#/components/schemas/Lizard'
+discriminator:
+  map:
+    cat: Cat
+    dog: Dog
+YAML
+            , Schema::class);
+
+        $result = $schema->validate();
+        $this->assertEquals([
+            'Missing required property: propertyName'
+        ], $schema->getErrors());
+        $this->assertFalse($result);
+
+        /** @var $schema Schema */
+        $schema = Reader::readFromYaml(<<<'YAML'
+oneOf:
+  - $ref: '#/components/schemas/Cat'
+  - $ref: '#/components/schemas/Dog'
+  - $ref: '#/components/schemas/Lizard'
+discriminator:
+  propertyName: type
+  mapping:
+    cat: Cat
+    monster: https://gigantic-server.com/schemas/Monster/schema.json
+YAML
+            , Schema::class);
+
+        $result = $schema->validate();
+        $this->assertEquals([], $schema->getErrors());
+        $this->assertTrue($result);
+
+        $this->assertInstanceOf(Discriminator::class, $schema->discriminator);
+        $this->assertEquals('type', $schema->discriminator->propertyName);
+        $this->assertEquals([
+            'cat' => 'Cat',
+            'monster' => 'https://gigantic-server.com/schemas/Monster/schema.json',
+        ], $schema->discriminator->mapping);
+    }
 }

@@ -96,6 +96,5 @@ class Schema extends SpecBaseObject
      */
     protected function performValidation()
     {
-        // TODO: Implement performValidation() method.
     }
 }
