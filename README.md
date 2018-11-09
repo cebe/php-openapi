@@ -61,21 +61,21 @@ This library is currently work in progress, the following list tracks completene
   - [x] Server Object
   - [x] Server Variable Object
   - [x] Components Object
-  - [ ] Paths Object
+  - [x] Paths Object
   - [x] Path Item Object
-  - [ ] Operation Object
+  - [x] Operation Object
   - [x] External Documentation Object
   - [x] Parameter Object
   - [x] Request Body Object
   - [x] Media Type Object
   - [x] Encoding Object
-  - [ ] Responses Object
+  - [x] Responses Object
   - [x] Response Object
   - [ ] Callback Object
   - [ ] Example Object
   - [x] Link Object
     - [ ] [Runtime Expressions](https://github.com/OAI/OpenAPI-Specification/blob/3.0.2/versions/3.0.2.md#runtime-expressions)
-  - [ ] Header Object
+  - [x] Header Object
   - [x] Tag Object
   - [ ] Reference Object
   - [x] Schema Object
