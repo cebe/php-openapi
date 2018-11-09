@@ -28,7 +28,7 @@ class Responses implements SpecObjectInterface
     {
         foreach ($data as $statusCode => $response) {
             if ((is_numeric($statusCode) && $statusCode >= 100 && $statusCode <= 600) || $statusCode === 'default') {
-                $this->_responses[$statusCode] = $response;
+                $this->_responses[$statusCode] = new Response($response);
             } else {
                 $this->_errors[] = "$statusCode is not a valid HTTP status code.";
             }

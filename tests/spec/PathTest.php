@@ -8,7 +8,6 @@ use cebe\openapi\spec\Paths;
 /**
  * @covers \cebe\openapi\spec\Paths
  * @covers \cebe\openapi\spec\PathItem
- * @covers \cebe\openapi\spec\Operation // TODO
  */
 class PathTest extends \PHPUnit\Framework\TestCase
 {
@@ -21,7 +20,7 @@ class PathTest extends \PHPUnit\Framework\TestCase
     "get": {
       "description": "Returns all pets from the system that the user has access to",
       "responses": {
-        "200": {          
+        "200": {
           "description": "A list of pets.",
           "content": {
             "application/json": {
@@ -62,7 +61,12 @@ JSON
 {
   "pets": {
     "get": {
-      "description": "Returns all pets from the system that the user has access to"
+      "description": "Returns all pets from the system that the user has access to",
+      "responses": {
+        "200": {
+          "description": "A list of pets."
+        }
+      }
     }
   }
 }

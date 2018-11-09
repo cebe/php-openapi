@@ -21,7 +21,14 @@ use cebe\openapi\SpecBaseObject;
  * @property-read bool $deprecated
  * @property-read bool $allowEmptyValue
  *
- * TODO implement more
+ * @property-read string $style
+ * @property-read boolean $explode
+ * @property-read boolean $allowReserved
+ * @property-read Schema|Reference|null $schema
+ * @property-read mixed $example
+ * @property-read Example[] $examples
+ *
+ * @property-read MediaType[] $content
  */
 class Parameter extends SpecBaseObject
 {
@@ -37,6 +44,15 @@ class Parameter extends SpecBaseObject
             'required' => Type::BOOLEAN,
             'deprecated' => Type::BOOLEAN,
             'allowEmptyValue' => Type::BOOLEAN,
+
+            'style' => Type::STRING,
+            'explode' => Type::BOOLEAN,
+            'allowReserved' => Type::BOOLEAN,
+            'schema' => Schema::class,
+            'example' => Type::ANY,
+            'examples' => [Type::STRING, Example::class],
+
+            'content' => [Type::STRING, MediaType::class],
         ];
     }
 
@@ -47,6 +63,15 @@ class Parameter extends SpecBaseObject
      */
     protected function performValidation()
     {
-        // TODO: Implement performValidation() method.
+        $this->requireProperties(['name', 'in']);
+        if ($this->in === 'path') {
+            $this->requireProperties(['required']);
+            if (!$this->required) {
+                $this->addError("Parameter 'required' must be true for 'in': 'path'.");
+            }
+        }
+        if (!empty($this->content) && !empty($this->schema)) {
+            $this->addError("A parameter MUST contain either a schema property, or a content property, but not both. ");
+        }
     }
 }

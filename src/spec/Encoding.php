@@ -10,25 +10,28 @@ namespace cebe\openapi\spec;
 use cebe\openapi\SpecBaseObject;
 
 /**
- * Each Media Type Object provides schema and examples for the media type identified by its key.
+ * A single encoding definition applied to a single schema property.
  *
- * @property-read Schema|Reference|null $schema
- * @property-read mixed $example
- * @property-read Example[]|Reference[] $examples
- * @property-read Encoding[] $encoding
+ * @property-read string $contentType
+ * @property-read Header[]|Reference[] $headers
+ * @property-read string $style
+ * @property-read boolean $explode
+ * @property-read boolean $allowReserved
  */
-class MediaType extends SpecBaseObject
+class Encoding extends SpecBaseObject
 {
+
     /**
      * @return array array of attributes available in this object.
      */
     protected function attributes(): array
     {
         return [
-            'schema' => Schema::class, // TODO support Reference
-            'example' => Type::ANY,
-            'examples' => [Type::STRING, Example::class], // TODO support Reference
-            'encoding' => [Type::STRING, Encoding::class],
+            'contentType' => Type::STRING,
+            'headers' => [Type::STRING, Header::class],
+            'style' => Type::STRING,
+            'explode' => Type::BOOLEAN,
+            'allowReserved' => Type::BOOLEAN,
         ];
     }
 

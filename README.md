@@ -65,10 +65,10 @@ This library is currently work in progress, the following list tracks completene
   - [x] Path Item Object
   - [ ] Operation Object
   - [x] External Documentation Object
-  - [ ] Parameter Object
+  - [x] Parameter Object
   - [x] Request Body Object
-  - [ ] Media Type Object
-  - [ ] Encoding Object
+  - [x] Media Type Object
+  - [x] Encoding Object
   - [ ] Responses Object
   - [x] Response Object
   - [ ] Callback Object

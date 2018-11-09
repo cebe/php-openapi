@@ -8,6 +8,7 @@
 namespace cebe\openapi;
 
 use cebe\openapi\exceptions\ReadonlyPropertyException;
+use cebe\openapi\exceptions\TypeErrorException;
 use cebe\openapi\exceptions\UnknownPropertyException;
 use cebe\openapi\spec\Type;
 
@@ -72,14 +73,14 @@ abstract class SpecBaseObject implements SpecObjectInterface
                                 $this->_properties[$property][] = $item;
                             } else {
                                 // TODO implement reference objects
-                                $this->_properties[$property][] = new $type[0]($item);
+                                $this->_properties[$property][] = $this->instantiate($type[0], $item);
                             }
                         }
                         break;
                     case 2:
                         // map
                         if ($type[0] !== Type::STRING) {
-                            throw new \Exception('Invalid map key type: ' . $type[0]);
+                            throw new TypeErrorException('Invalid map key type: ' . $type[0]);
                         }
                         $this->_properties[$property] = [];
                         foreach ($data[$property] as $key => $item) {
@@ -92,18 +93,31 @@ abstract class SpecBaseObject implements SpecObjectInterface
                                 $this->_properties[$property][$key] = $item;
                             } else {
                                 // TODO implement reference objects
-                                $this->_properties[$property][$key] = new $type[1]($item);
+                                $this->_properties[$property][$key] = $this->instantiate($type[1], $item);
                             }
                         }
                         break;
                 }
             } else {
-                $this->_properties[$property] = new $type($data[$property]);
+                $this->_properties[$property] = $this->instantiate($type, $data[$property]);
             }
             unset($data[$property]);
         }
         foreach ($data as $additionalProperty => $value) {
             $this->_properties[$additionalProperty] = $value;
+        }
+    }
+
+    private function instantiate($type, $data)
+    {
+        try {
+            return new $type($data);
+        } catch (\TypeError $e) {
+            throw new TypeErrorException(
+                "Unable to instantiate {$type} Object with data '" . print_r($data, true) . "'",
+                $e->getCode(),
+                $e
+            );
         }
     }
 
@@ -192,7 +206,12 @@ abstract class SpecBaseObject implements SpecObjectInterface
             return $this->_properties[$name];
         }
         if (isset(static::attributes()[$name])) {
-            return is_array(static::attributes()[$name]) ? [] : null;
+            if (is_array(static::attributes()[$name])) {
+                return [];
+            } elseif (static::attributes()[$name] === Type::BOOLEAN) {
+                return false;
+            }
+            return null;
         }
         throw new UnknownPropertyException('Getting unknown property: ' . \get_class($this) . '::' . $name);
     }

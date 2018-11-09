@@ -36,7 +36,7 @@ class Operation extends SpecBaseObject
     protected function attributes(): array
     {
         return [
-            'tags' => [Tag::class],
+            'tags' => [Type::STRING],
             'summary' => Type::STRING,
             'description' => Type::STRING,
             'externalDocs' => ExternalDocumentation::class,
