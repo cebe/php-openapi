@@ -71,7 +71,7 @@ class Parameter extends SpecBaseObject
             }
         }
         if (!empty($this->content) && !empty($this->schema)) {
-            $this->addError("A parameter MUST contain either a schema property, or a content property, but not both. ");
+            $this->addError("A Parameter Object MUST contain either a schema property, or a content property, but not both. ");
         }
     }
 }

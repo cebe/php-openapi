@@ -19,7 +19,18 @@ use cebe\openapi\SpecBaseObject;
  * @link https://github.com/OAI/OpenAPI-Specification/blob/3.0.2/versions/3.0.2.md#headerObject
  *
  */
-class Header
+class Header extends Parameter
 {
-    // TODO implement
+    public function performValidation()
+    {
+        if (!empty($this->name)) {
+            $this->addError("'name' must not be specified in Header Object.");
+        }
+        if (!empty($this->in)) {
+            $this->addError("'in' must not be specified in Header Object.");
+        }
+        if (!empty($this->content) && !empty($this->schema)) {
+            $this->addError("A Header Object MUST contain either a schema property, or a content property, but not both. ");
+        }
+    }
 }
