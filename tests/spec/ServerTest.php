@@ -57,7 +57,7 @@ JSON
             , Server::class);
 
         $result = $server->validate();
-        $this->assertEquals(['Missing required property: url'], $server->getErrors());
+        $this->assertEquals(['Server is missing required property: url'], $server->getErrors());
         $this->assertFalse($result);
 
 
@@ -76,7 +76,7 @@ JSON
         , Server::class);
 
         $result = $server->validate();
-        $this->assertEquals(['Missing required property: default'], $server->getErrors());
+        $this->assertEquals(['ServerVariable is missing required property: default'], $server->getErrors());
         $this->assertFalse($result);
     }
 

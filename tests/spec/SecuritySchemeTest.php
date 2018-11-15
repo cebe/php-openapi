@@ -37,7 +37,7 @@ YAML
         , SecurityScheme::class);
 
         $result = $securityScheme->validate();
-        $this->assertEquals(['Missing required property: type'], $securityScheme->getErrors());
+        $this->assertEquals(['SecurityScheme is missing required property: type'], $securityScheme->getErrors());
         $this->assertFalse($result);
 
         /** @var $securityScheme SecurityScheme */
@@ -48,8 +48,8 @@ YAML
 
         $result = $securityScheme->validate();
         $this->assertEquals([
-            'Missing required property: name',
-            'Missing required property: in',
+            'SecurityScheme is missing required property: name',
+            'SecurityScheme is missing required property: in',
         ], $securityScheme->getErrors());
         $this->assertFalse($result);
 
@@ -61,7 +61,7 @@ YAML
 
         $result = $securityScheme->validate();
         $this->assertEquals([
-            'Missing required property: scheme',
+            'SecurityScheme is missing required property: scheme',
         ], $securityScheme->getErrors());
         $this->assertFalse($result);
 
@@ -73,7 +73,7 @@ YAML
 
         $result = $securityScheme->validate();
         $this->assertEquals([
-            'Missing required property: flows',
+            'SecurityScheme is missing required property: flows',
         ], $securityScheme->getErrors());
         $this->assertFalse($result);
 
@@ -85,7 +85,7 @@ YAML
 
         $result = $securityScheme->validate();
         $this->assertEquals([
-            'Missing required property: openIdConnectUrl',
+            'SecurityScheme is missing required property: openIdConnectUrl',
         ], $securityScheme->getErrors());
         $this->assertFalse($result);
     }
@@ -103,7 +103,7 @@ YAML
 
         $result = $securityScheme->validate();
         $this->assertEquals([
-            'Missing required property: scopes',
+            'OAuthFlow is missing required property: scopes',
         ], $securityScheme->getErrors());
         $this->assertFalse($result);
 

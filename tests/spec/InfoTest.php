@@ -63,8 +63,8 @@ YAML
 
         $result = $info->validate();
         $this->assertEquals([
-            'Missing required property: title',
-            'Missing required property: version',
+            'Info is missing required property: title',
+            'Info is missing required property: version',
         ], $info->getErrors());
         $this->assertFalse($result);
 
@@ -85,8 +85,8 @@ YAML
 
         $result = $info->validate();
         $this->assertEquals([
-            'cebe\openapi\spec\Contact::$email does not seem to be a valid email address: support.example.com',
-            'cebe\openapi\spec\Contact::$url does not seem to be a valid URL: www.example.com/support',
+            'Contact::$email does not seem to be a valid email address: support.example.com',
+            'Contact::$url does not seem to be a valid URL: www.example.com/support',
         ], $info->getErrors());
         $this->assertFalse($result);
 
@@ -108,8 +108,8 @@ YAML
 
         $result = $info->validate();
         $this->assertEquals([
-            'Missing required property: name',
-            'cebe\openapi\spec\License::$url does not seem to be a valid URL: www.apache.org/licenses/LICENSE-2.0.html',
+            'License is missing required property: name',
+            'License::$url does not seem to be a valid URL: www.apache.org/licenses/LICENSE-2.0.html',
         ], $info->getErrors());
         $this->assertFalse($result);
 

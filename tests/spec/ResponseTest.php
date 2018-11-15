@@ -56,7 +56,7 @@ JSON
 
         $result = $response->validate();
         $this->assertEquals([
-            'Missing required property: description',
+            'Response is missing required property: description',
         ], $response->getErrors());
         $this->assertFalse($result);
     }

@@ -11,9 +11,9 @@ class OpenApiTest extends \PHPUnit\Framework\TestCase
 
         $this->assertFalse($openapi->validate());
         $this->assertEquals([
-            'Missing required property: openapi',
-            'Missing required property: info',
-            'Missing required property: paths',
+            'OpenApi is missing required property: openapi',
+            'OpenApi is missing required property: info',
+            'OpenApi is missing required property: paths',
         ], $openapi->getErrors());
     }
 

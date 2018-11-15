@@ -35,7 +35,7 @@ YAML
         , Tag::class);
 
         $result = $tag->validate();
-        $this->assertEquals(['Missing required property: name'], $tag->getErrors());
+        $this->assertEquals(['Tag is missing required property: name'], $tag->getErrors());
         $this->assertFalse($result);
 
         $this->assertInstanceOf(ExternalDocumentation::class, $tag->externalDocs);

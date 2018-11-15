@@ -83,7 +83,7 @@ YAML
 
         $result = $schema->validate();
         $this->assertEquals([
-            'Missing required property: propertyName'
+            'Discriminator is missing required property: propertyName'
         ], $schema->getErrors());
         $this->assertFalse($result);
 

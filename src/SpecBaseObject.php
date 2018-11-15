@@ -167,9 +167,10 @@ abstract class SpecBaseObject implements SpecObjectInterface
     /**
      * @param string $error error message to add.
      */
-    protected function addError(string $error)
+    protected function addError(string $error, $class = '')
     {
-        $this->_errors[] = $error;
+        $shortName = explode('\\', $class);
+        $this->_errors[] = end($shortName).$error;
     }
 
     protected function hasProperty(string $name): bool
@@ -181,7 +182,7 @@ abstract class SpecBaseObject implements SpecObjectInterface
     {
         foreach ($names as $name) {
             if (!isset($this->_properties[$name])) {
-                $this->addError("Missing required property: $name");
+                $this->addError(" is missing required property: $name", get_class($this));
             }
         }
     }
@@ -189,14 +190,14 @@ abstract class SpecBaseObject implements SpecObjectInterface
     protected function validateEmail(string $property)
     {
         if (!empty($this->$property) && strpos($this->$property, '@') === false) {
-            $this->addError(get_class($this) . '::$'.$property.' does not seem to be a valid email address: ' . $this->$property);
+            $this->addError('::$'.$property.' does not seem to be a valid email address: ' . $this->$property, get_class($this));
         }
     }
 
     protected function validateUrl(string $property)
     {
         if (!empty($this->$property) && strpos($this->$property, '//') === false) {
-            $this->addError(get_class($this) . '::$'.$property.' does not seem to be a valid URL: ' . $this->$property);
+            $this->addError('::$'.$property.' does not seem to be a valid URL: ' . $this->$property, get_class($this));
         }
     }
 
