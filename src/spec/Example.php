@@ -14,8 +14,30 @@ use cebe\openapi\SpecBaseObject;
  *
  * @link https://github.com/OAI/OpenAPI-Specification/blob/3.0.2/versions/3.0.2.md#exampleObject
  *
+ * @property-read string $summary
+ * @property-read string $description
+ * @property-read mixed $value
+ * @property-read string $externalValue
  */
-class Example
+class Example extends SpecBaseObject
 {
-    // TODO implement
+    /**
+     * @return array array of attributes available in this object.
+     */
+    protected function attributes(): array
+    {
+        return [
+            'summary' => Type::STRING,
+            'description' => Type::STRING,
+            'value' => Type::ANY,
+            'externalValue' => Type::STRING,
+        ];
+    }
+
+    /**
+     * Perform validation on this object, check data against OpenAPI Specification rules.
+     */
+    protected function performValidation()
+    {
+    }
 }

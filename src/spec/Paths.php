@@ -27,6 +27,11 @@ class Paths implements SpecObjectInterface
 
     private $_errors = [];
 
+
+    /**
+     * Create an object from spec data.
+     * @param array $data spec data read from YAML or JSON
+     */
     public function __construct(array $data)
     {
         foreach ($data as $path => $object) {

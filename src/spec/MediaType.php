@@ -12,6 +12,8 @@ use cebe\openapi\SpecBaseObject;
 /**
  * Each Media Type Object provides schema and examples for the media type identified by its key.
  *
+ * @link https://github.com/OAI/OpenAPI-Specification/blob/3.0.2/versions/3.0.2.md#mediaTypeObject
+ *
  * @property-read Schema|Reference|null $schema
  * @property-read mixed $example
  * @property-read Example[]|Reference[] $examples

@@ -189,14 +189,14 @@ abstract class SpecBaseObject implements SpecObjectInterface
     protected function validateEmail(string $property)
     {
         if (!empty($this->$property) && strpos($this->$property, '@') === false) {
-            $this->addError(__CLASS__ . '::$'.$property.' does not seem to be a valid email address: ' . $this->$property);
+            $this->addError(get_class($this) . '::$'.$property.' does not seem to be a valid email address: ' . $this->$property);
         }
     }
 
     protected function validateUrl(string $property)
     {
         if (!empty($this->$property) && strpos($this->$property, '//') === false) {
-            $this->addError(__CLASS__ . '::$'.$property.' does not seem to be a valid URL: ' . $this->$property);
+            $this->addError(get_class($this) . '::$'.$property.' does not seem to be a valid URL: ' . $this->$property);
         }
     }
 
