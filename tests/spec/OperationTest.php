@@ -2,9 +2,11 @@
 
 use cebe\openapi\Reader;
 use cebe\openapi\spec\Operation;
+use cebe\openapi\spec\ExternalDocumentation;
 
 /**
  * @covers \cebe\openapi\spec\Operation
+ * @covers \cebe\openapi\spec\ExternalDocumentation
  */
 class OperationTest extends \PHPUnit\Framework\TestCase
 {
@@ -51,6 +53,9 @@ security:
 - petstore_auth:
   - write:pets
   - read:pets
+externalDocs:
+  description: Find more info here
+  url: https://example.com
 YAML
         , Operation::class);
 
@@ -78,5 +83,9 @@ YAML
         $this->assertInstanceOf(\cebe\openapi\spec\SecurityRequirement::class, $operation->security[0]);
         $this->assertCount(2, $operation->security[0]->petstore_auth);
         $this->assertEquals(['write:pets', 'read:pets'], $operation->security[0]->petstore_auth);
+
+        $this->assertInstanceOf(ExternalDocumentation::class, $operation->externalDocs);
+        $this->assertEquals('Find more info here', $operation->externalDocs->description);
+        $this->assertEquals('https://example.com', $operation->externalDocs->url);
     }
 }

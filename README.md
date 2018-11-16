@@ -72,7 +72,7 @@ This library is currently work in progress, the following list tracks completene
   - [x] Responses Object
   - [x] Response Object
   - [ ] Callback Object
-  - [ ] Example Object
+  - [x] Example Object
   - [x] Link Object
     - [ ] [Runtime Expressions](https://github.com/OAI/OpenAPI-Specification/blob/3.0.2/versions/3.0.2.md#runtime-expressions)
   - [x] Header Object
