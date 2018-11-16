@@ -44,7 +44,7 @@ class Operation extends SpecBaseObject
             'parameters' => [Parameter::class],// TODO reference
             'requestBody' => RequestBody::class,
             'responses' => Responses::class,
-            'callbacks' => [Callback::class],// TODO reference
+            'callbacks' => [Type::STRING, Callback::class],// TODO reference
             'deprecated' => Type::BOOLEAN,
             'security' => [SecurityRequirement::class],
             'servers' => [Server::class],

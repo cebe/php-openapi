@@ -7,7 +7,8 @@
 
 namespace cebe\openapi\spec;
 
-use cebe\openapi\SpecBaseObject;
+use cebe\openapi\exceptions\TypeErrorException;
+use cebe\openapi\SpecObjectInterface;
 
 /**
  * A map of possible out-of band callbacks related to the parent operation.
@@ -15,7 +16,63 @@ use cebe\openapi\SpecBaseObject;
  * @link https://github.com/OAI/OpenAPI-Specification/blob/3.0.2/versions/3.0.2.md#callbackObject
  *
  */
-class Callback
+class Callback implements SpecObjectInterface
 {
-    // TODO implement
+    private $_url;
+    private $_pathItem;
+
+    private $_errors = [];
+
+
+    /**
+     * Create an object from spec data.
+     * @param array $data spec data read from YAML or JSON
+     * @throws TypeErrorException in case invalid data is supplied.
+     */
+    public function __construct(array $data)
+    {
+        if (count($data) !== 1) {
+            $this->_errors[] = 'Callback object must have exactly one URL.';
+            return;
+        }
+        $this->_pathItem = new PathItem(reset($data));
+        $this->_url = key($data);
+    }
+
+    /**
+     * @return string
+     */
+    public function getUrl()
+    {
+        return $this->_url;
+    }
+
+    /**
+     * @return PathItem
+     */
+    public function getRequest()
+    {
+        return $this->_pathItem;
+    }
+
+    /**
+     * Validate object data according to OpenAPI spec.
+     * @return bool whether the loaded data is valid according to OpenAPI spec
+     * @see getErrors()
+     */
+    public function validate(): bool
+    {
+        $pathItemValid = $this->_pathItem === null || $this->_pathItem->validate();
+        return $pathItemValid && empty($this->_errors);
+    }
+
+    /**
+     * @return string[] list of validation errors according to OpenAPI spec.
+     * @see validate()
+     */
+    public function getErrors(): array
+    {
+        $pathItemErrors = $this->_pathItem === null ? [] : $this->_pathItem->getErrors();
+        return array_merge($this->_errors, $pathItemErrors);
+    }
 }
