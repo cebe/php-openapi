@@ -98,6 +98,7 @@ YAML
         $this->assertTrue(isset($responses['default']));
 
         $this->assertCount(2, $responses->getResponses());
+        $this->assertCount(2, $responses);
         $this->assertInstanceOf(Response::class, $responses->getResponses()[200]);
         $this->assertInstanceOf(Response::class, $responses->getResponses()['200']);
         $this->assertInstanceOf(Response::class, $responses->getResponses()['default']);
@@ -113,6 +114,13 @@ YAML
 
         $this->assertEquals('a pet to be returned', $responses->getResponse('200')->description);
         $this->assertEquals('a pet to be returned', $responses['200']->description);
+
+        $keys = [];
+        foreach($responses as $k => $response) {
+            $keys[] = $k;
+            $this->assertInstanceOf(Response::class, $response);
+        }
+        $this->assertEquals([200, 'default'], $keys);
     }
 
     public function testResponseCodes()

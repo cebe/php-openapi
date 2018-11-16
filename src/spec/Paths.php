@@ -7,7 +7,13 @@
 
 namespace cebe\openapi\spec;
 
+use ArrayAccess;
+use ArrayIterator;
+use cebe\openapi\exceptions\ReadonlyPropertyException;
 use cebe\openapi\SpecObjectInterface;
+use Countable;
+use IteratorAggregate;
+use Traversable;
 
 /**
  * Holds the relative paths to the individual endpoints and their operations.
@@ -18,7 +24,7 @@ use cebe\openapi\SpecObjectInterface;
  * @link https://github.com/OAI/OpenAPI-Specification/blob/3.0.2/versions/3.0.2.md#pathsObject
  *
  */
-class Paths implements SpecObjectInterface
+class Paths implements SpecObjectInterface, ArrayAccess, Countable, IteratorAggregate
 {
     /**
      * @var PathItem[]
@@ -107,5 +113,72 @@ class Paths implements SpecObjectInterface
             $errors[] = $path->getErrors();
         }
         return array_merge(...$errors);
+    }
+
+    /**
+     * Whether a offset exists
+     * @link http://php.net/manual/en/arrayaccess.offsetexists.php
+     * @param mixed $offset An offset to check for.
+     * @return boolean true on success or false on failure.
+     * The return value will be casted to boolean if non-boolean was returned.
+     */
+    public function offsetExists($offset)
+    {
+        return $this->hasPath($offset);
+    }
+
+    /**
+     * Offset to retrieve
+     * @link http://php.net/manual/en/arrayaccess.offsetget.php
+     * @param mixed $offset The offset to retrieve.
+     * @return PathItem Can return all value types.
+     */
+    public function offsetGet($offset)
+    {
+        return $this->getPath($offset);
+    }
+
+    /**
+     * Offset to set
+     * @link http://php.net/manual/en/arrayaccess.offsetset.php
+     * @param mixed $offset The offset to assign the value to.
+     * @param mixed $value The value to set.
+     * @throws ReadonlyPropertyException because spec objects are read-only.
+     */
+    public function offsetSet($offset, $value)
+    {
+        throw new ReadonlyPropertyException('Setting read-only property: ' . \get_class($this) . '::' . $offset);
+    }
+
+    /**
+     * Offset to unset
+     * @link http://php.net/manual/en/arrayaccess.offsetunset.php
+     * @param mixed $offset The offset to unset.
+     * @throws ReadonlyPropertyException because spec objects are read-only.
+     */
+    public function offsetUnset($offset)
+    {
+        throw new ReadonlyPropertyException('Unsetting read-only property: ' . \get_class($this) . '::' . $offset);
+    }
+
+    /**
+     * Count elements of an object
+     * @link http://php.net/manual/en/countable.count.php
+     * @return int The custom count as an integer.
+     * The return value is cast to an integer.
+     */
+    public function count()
+    {
+        return count($this->_paths);
+    }
+
+    /**
+     * Retrieve an external iterator
+     * @link http://php.net/manual/en/iteratoraggregate.getiterator.php
+     * @return Traversable An instance of an object implementing <b>Iterator</b> or <b>Traversable</b>
+     */
+    public function getIterator()
+    {
+        return new ArrayIterator($this->_paths);
     }
 }

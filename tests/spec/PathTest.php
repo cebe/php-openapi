@@ -45,13 +45,22 @@ JSON
         $this->assertTrue($result);
 
         $this->assertTrue($paths->hasPath('/pets'));
+        $this->assertTrue(isset($paths['/pets']));
         $this->assertFalse($paths->hasPath('/dog'));
+        $this->assertFalse(isset($paths['/dog']));
 
         $this->assertInstanceOf(PathItem::class, $paths->getPath('/pets'));
+        $this->assertInstanceOf(PathItem::class, $paths['/pets']);
         $this->assertInstanceOf(Operation::class, $paths->getPath('/pets')->get);
         $this->assertNull($paths->getPath('/dog'));
+        $this->assertNull($paths['/dog']);
 
         $this->assertCount(1, $paths->getPaths());
+        $this->assertCount(1, $paths);
+        foreach($paths as $path => $pathItem) {
+            $this->assertEquals('/pets', $path);
+            $this->assertInstanceOf(PathItem::class, $pathItem);
+        }
     }
 
     public function testInvalidPath()

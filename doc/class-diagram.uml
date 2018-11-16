@@ -1,0 +1,226 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<Diagram>
+  <ID>PHP</ID>
+  <OriginalElement>\cebe\openapi\SpecObjectInterface</OriginalElement>
+  <nodes>
+    <node x="2464.0" y="270.0">\cebe\openapi\spec\SecurityRequirement</node>
+    <node x="1640.5" y="0.0">\cebe\openapi\SpecObjectInterface</node>
+    <node x="1727.0" y="85.0">\cebe\openapi\spec\Responses</node>
+    <node x="2763.0" y="270.0">\cebe\openapi\spec\PathItem</node>
+    <node x="718.0000000000001" y="270.0">\cebe\openapi\spec\Xml</node>
+    <node x="1833.0" y="270.0">\cebe\openapi\spec\Response</node>
+    <node x="1484.0" y="270.0">\cebe\openapi\spec\RequestBody</node>
+    <node x="1219.0" y="270.0">\cebe\openapi\spec\Encoding</node>
+    <node x="267.0" y="270.0">\cebe\openapi\spec\ExternalDocumentation</node>
+    <node x="1734.0" y="270.0">\cebe\openapi\spec\Server</node>
+    <node x="2111.0" y="270.0">\cebe\openapi\spec\MediaType</node>
+    <node x="125.0" y="270.0">\cebe\openapi\spec\Discriminator</node>
+    <node x="2657.0" y="270.0">\cebe\openapi\spec\Schema</node>
+    <node x="1474.0" y="85.0">\cebe\openapi\SpecBaseObject</node>
+    <node x="478.0" y="270.0">\cebe\openapi\spec\License</node>
+    <node x="875.0000000000001" y="270.0">\cebe\openapi\spec\OAuthFlow</node>
+    <node x="581.0000000000001" y="270.0">\cebe\openapi\spec\Components</node>
+    <node x="1331.0" y="270.0">\cebe\openapi\spec\ServerVariable</node>
+    <node x="0.0" y="270.0">\cebe\openapi\spec\Parameter</node>
+    <node x="2344.0" y="270.0">\cebe\openapi\spec\Operation</node>
+    <node x="1625.0" y="270.0">\cebe\openapi\spec\OpenApi</node>
+    <node x="1635.0" y="85.0">\cebe\openapi\spec\Paths</node>
+    <node x="1138.0" y="270.0">\cebe\openapi\spec\Link</node>
+    <node x="11.0" y="355.0">\cebe\openapi\spec\Header</node>
+    <node x="2988.0" y="270.0">\cebe\openapi\spec\Info</node>
+    <node x="2878.0" y="270.0">\cebe\openapi\spec\Example</node>
+    <node x="1950.0" y="270.0">\cebe\openapi\spec\SecurityScheme</node>
+    <node x="1003.0000000000001" y="270.0">\cebe\openapi\spec\OAuthFlows</node>
+    <node x="797.0000000000001" y="270.0">\cebe\openapi\spec\Tag</node>
+    <node x="1851.0" y="85.0">\cebe\openapi\spec\Callback</node>
+    <node x="2237.0" y="270.0">\cebe\openapi\spec\Contact</node>
+  </nodes>
+  <notes />
+  <edges>
+    <edge source="\cebe\openapi\spec\License" target="\cebe\openapi\SpecBaseObject">
+      <point x="0.0" y="-17.5" />
+      <point x="519.5" y="170.0" />
+      <point x="1493.7400000000002" y="170.0" />
+      <point x="-50.75999999999999" y="17.5" />
+    </edge>
+    <edge source="\cebe\openapi\spec\MediaType" target="\cebe\openapi\SpecBaseObject">
+      <point x="1.1368683772161603E-13" y="-17.5" />
+      <point x="2164.0" y="210.0" />
+      <point x="1572.7000000000003" y="210.0" />
+      <point x="28.200000000000045" y="17.5" />
+    </edge>
+    <edge source="\cebe\openapi\spec\ServerVariable" target="\cebe\openapi\SpecBaseObject">
+      <point x="0.0" y="-17.5" />
+      <point x="1397.5" y="250.0" />
+      <point x="1538.8600000000001" y="250.0" />
+      <point x="-5.639999999999873" y="17.5" />
+    </edge>
+    <edge source="\cebe\openapi\spec\Server" target="\cebe\openapi\SpecBaseObject">
+      <point x="0.0" y="-17.5" />
+      <point x="1773.5" y="240.0" />
+      <point x="1555.7800000000002" y="240.0" />
+      <point x="11.279999999999973" y="17.5" />
+    </edge>
+    <edge source="\cebe\openapi\spec\Info" target="\cebe\openapi\SpecBaseObject">
+      <point x="0.0" y="-17.5" />
+      <point x="3017.5" y="140.0" />
+      <point x="1612.1800000000003" y="140.0" />
+      <point x="67.68000000000006" y="17.5" />
+    </edge>
+    <edge source="\cebe\openapi\spec\Parameter" target="\cebe\openapi\SpecBaseObject">
+      <point x="0.0" y="-17.5" />
+      <point x="52.5" y="140.0" />
+      <point x="1476.8200000000002" y="140.0" />
+      <point x="-67.68000000000006" y="17.5" />
+    </edge>
+    <edge source="\cebe\openapi\spec\OAuthFlow" target="\cebe\openapi\SpecBaseObject">
+      <point x="0.0" y="-17.5" />
+      <point x="929.0000000000001" y="210.0" />
+      <point x="1516.3000000000002" y="210.0" />
+      <point x="-28.200000000000045" y="17.5" />
+    </edge>
+    <edge source="\cebe\openapi\spec\ExternalDocumentation" target="\cebe\openapi\SpecBaseObject">
+      <point x="0.0" y="-17.5" />
+      <point x="362.5" y="160.0" />
+      <point x="1488.1" y="160.0" />
+      <point x="-56.40000000000009" y="17.5" />
+    </edge>
+    <edge source="\cebe\openapi\spec\OAuthFlows" target="\cebe\openapi\SpecBaseObject">
+      <point x="0.0" y="-17.5" />
+      <point x="1060.5" y="220.0" />
+      <point x="1521.94" y="220.0" />
+      <point x="-22.559999999999945" y="17.5" />
+    </edge>
+    <edge source="\cebe\openapi\spec\Response" target="\cebe\openapi\SpecBaseObject">
+      <point x="0.0" y="-17.5" />
+      <point x="1881.5" y="230.0" />
+      <point x="1561.42" y="230.0" />
+      <point x="16.920000000000073" y="17.5" />
+    </edge>
+    <edge source="\cebe\openapi\spec\Tag" target="\cebe\openapi\SpecBaseObject">
+      <point x="0.0" y="-17.5" />
+      <point x="826.0000000000001" y="200.0" />
+      <point x="1510.6600000000003" y="200.0" />
+      <point x="-33.83999999999992" y="17.5" />
+    </edge>
+    <edge source="\cebe\openapi\spec\Responses" target="\cebe\openapi\SpecObjectInterface">
+      <point x="0.0" y="-17.5" />
+      <point x="1779.0" y="60.0" />
+      <point x="1746.125" y="60.0" />
+      <point x="21.125" y="17.5" />
+    </edge>
+    <edge source="\cebe\openapi\spec\Contact" target="\cebe\openapi\SpecBaseObject">
+      <point x="0.0" y="-17.5" />
+      <point x="2280.5" y="200.0" />
+      <point x="1578.3400000000001" y="200.0" />
+      <point x="33.83999999999992" y="17.5" />
+    </edge>
+    <edge source="\cebe\openapi\spec\Paths" target="\cebe\openapi\SpecObjectInterface">
+      <point x="0.0" y="-17.5" />
+      <point x="1671.0" y="60.0" />
+      <point x="1703.875" y="60.0" />
+      <point x="-21.125" y="17.5" />
+    </edge>
+    <edge source="\cebe\openapi\spec\Components" target="\cebe\openapi\SpecBaseObject">
+      <point x="0.0" y="-17.5" />
+      <point x="639.5000000000001" y="180.0" />
+      <point x="1499.38" y="180.0" />
+      <point x="-45.11999999999989" y="17.5" />
+    </edge>
+    <edge source="\cebe\openapi\spec\Callback" target="\cebe\openapi\SpecObjectInterface">
+      <point x="0.0" y="-17.5" />
+      <point x="1896.5" y="60.0" />
+      <point x="1788.375" y="60.0" />
+      <point x="63.375" y="17.5" />
+    </edge>
+    <edge source="\cebe\openapi\spec\Example" target="\cebe\openapi\SpecBaseObject">
+      <point x="0.0" y="-17.5" />
+      <point x="2923.0" y="150.0" />
+      <point x="1606.54" y="150.0" />
+      <point x="62.039999999999964" y="17.5" />
+    </edge>
+    <edge source="\cebe\openapi\SpecBaseObject" target="\cebe\openapi\SpecObjectInterface">
+      <point x="0.0" y="-17.5" />
+      <point x="1544.5" y="60.0" />
+      <point x="1661.625" y="60.0" />
+      <point x="-63.375" y="17.5" />
+    </edge>
+    <edge source="\cebe\openapi\spec\SecurityScheme" target="\cebe\openapi\SpecBaseObject">
+      <point x="0.0" y="-17.5" />
+      <point x="2020.5" y="220.0" />
+      <point x="1567.06" y="220.0" />
+      <point x="22.559999999999945" y="17.5" />
+    </edge>
+    <edge source="\cebe\openapi\spec\SecurityRequirement" target="\cebe\openapi\SpecBaseObject">
+      <point x="0.0" y="-17.5" />
+      <point x="2550.5" y="180.0" />
+      <point x="1589.6200000000003" y="180.0" />
+      <point x="45.12000000000012" y="17.5" />
+    </edge>
+    <edge source="\cebe\openapi\spec\RequestBody" target="\cebe\openapi\SpecBaseObject">
+      <point x="0.0" y="-17.5" />
+      <point x="0.0" y="17.5" />
+    </edge>
+    <edge source="\cebe\openapi\spec\Header" target="\cebe\openapi\spec\Parameter">
+      <point x="0.0" y="-17.5" />
+      <point x="0.0" y="17.5" />
+    </edge>
+    <edge source="\cebe\openapi\spec\Xml" target="\cebe\openapi\SpecBaseObject">
+      <point x="0.0" y="-17.5" />
+      <point x="747.5000000000001" y="190.0" />
+      <point x="1505.02" y="190.0" />
+      <point x="-39.48000000000002" y="17.5" />
+    </edge>
+    <edge source="\cebe\openapi\spec\OpenApi" target="\cebe\openapi\SpecBaseObject">
+      <point x="0.0" y="-17.5" />
+      <point x="1669.5" y="250.0" />
+      <point x="1550.1400000000003" y="250.0" />
+      <point x="5.6400000000001" y="17.5" />
+    </edge>
+    <edge source="\cebe\openapi\spec\Encoding" target="\cebe\openapi\SpecBaseObject">
+      <point x="0.0" y="-17.5" />
+      <point x="1265.0" y="240.0" />
+      <point x="1533.2200000000003" y="240.0" />
+      <point x="-11.279999999999973" y="17.5" />
+    </edge>
+    <edge source="\cebe\openapi\spec\Operation" target="\cebe\openapi\SpecBaseObject">
+      <point x="0.0" y="-17.5" />
+      <point x="2394.0" y="190.0" />
+      <point x="1583.98" y="190.0" />
+      <point x="39.48000000000002" y="17.5" />
+    </edge>
+    <edge source="\cebe\openapi\spec\PathItem" target="\cebe\openapi\SpecBaseObject">
+      <point x="0.0" y="-17.5" />
+      <point x="2810.5" y="160.0" />
+      <point x="1600.9" y="160.0" />
+      <point x="56.40000000000009" y="17.5" />
+    </edge>
+    <edge source="\cebe\openapi\spec\Schema" target="\cebe\openapi\SpecBaseObject">
+      <point x="0.0" y="-17.5" />
+      <point x="2700.0" y="170.0" />
+      <point x="1595.2600000000002" y="170.0" />
+      <point x="50.75999999999999" y="17.5" />
+    </edge>
+    <edge source="\cebe\openapi\spec\Discriminator" target="\cebe\openapi\SpecBaseObject">
+      <point x="0.0" y="-17.5" />
+      <point x="186.0" y="150.0" />
+      <point x="1482.46" y="150.0" />
+      <point x="-62.039999999999964" y="17.5" />
+    </edge>
+    <edge source="\cebe\openapi\spec\Link" target="\cebe\openapi\SpecBaseObject">
+      <point x="0.0" y="-17.5" />
+      <point x="1168.5" y="230.0" />
+      <point x="1527.58" y="230.0" />
+      <point x="-16.920000000000073" y="17.5" />
+    </edge>
+  </edges>
+  <settings layout="Hierarchic Group" zoom="1.0" x="598.0" y="150.0" />
+  <SelectedNodes>
+    <node>\cebe\openapi\spec\Responses</node>
+    <node>\cebe\openapi\spec\Paths</node>
+    <node>\cebe\openapi\spec\Callback</node>
+  </SelectedNodes>
+  <Categories />
+  <VISIBILITY>private</VISIBILITY>
+</Diagram>
+

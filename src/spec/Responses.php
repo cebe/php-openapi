@@ -7,15 +7,20 @@
 
 namespace cebe\openapi\spec;
 
+use ArrayAccess;
+use ArrayIterator;
 use cebe\openapi\exceptions\ReadonlyPropertyException;
 use cebe\openapi\SpecObjectInterface;
+use Countable;
+use IteratorAggregate;
+use Traversable;
 
 /**
  * A container for the expected responses of an operation.
  *
  * @link https://github.com/OAI/OpenAPI-Specification/blob/3.0.2/versions/3.0.2.md#responsesObject
  */
-class Responses implements SpecObjectInterface, \ArrayAccess
+class Responses implements SpecObjectInterface, ArrayAccess, Countable, IteratorAggregate
 {
     private $_responses = [];
     private $_errors = [];
@@ -144,5 +149,26 @@ class Responses implements SpecObjectInterface, \ArrayAccess
     public function offsetUnset($offset)
     {
         throw new ReadonlyPropertyException('Unsetting read-only property: ' . \get_class($this) . '::' . $offset);
+    }
+
+    /**
+     * Count elements of an object
+     * @link http://php.net/manual/en/countable.count.php
+     * @return int The custom count as an integer.
+     * The return value is cast to an integer.
+     */
+    public function count()
+    {
+        return count($this->_responses);
+    }
+
+    /**
+     * Retrieve an external iterator
+     * @link http://php.net/manual/en/iteratoraggregate.getiterator.php
+     * @return Traversable An instance of an object implementing <b>Iterator</b> or <b>Traversable</b>
+     */
+    public function getIterator()
+    {
+        return new ArrayIterator($this->_responses);
     }
 }
