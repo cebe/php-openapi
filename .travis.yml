@@ -9,6 +9,6 @@ php:
 install: make install
 script:
   - make test
-  - make check-style
+  - if [[ $TRAVIS_PHP_VERSION = "7.3" || $TRAVIS_PHP_VERSION = "nightly" ]]; then true; else make check-style; fi
   - make coverage
 
