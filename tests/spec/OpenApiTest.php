@@ -3,6 +3,9 @@
 use cebe\openapi\spec\OpenApi;
 use Symfony\Component\Yaml\Yaml;
 
+/**
+ * @covers cebe\openapi\spec\OpenApi
+ */
 class OpenApiTest extends \PHPUnit\Framework\TestCase
 {
     public function testEmpty()
@@ -50,5 +53,82 @@ class OpenApiTest extends \PHPUnit\Framework\TestCase
             $this->assertEquals('http://petstore.swagger.io/v1', $server->url);
 
         }
+
+        // paths
+        $this->assertInstanceOf(\cebe\openapi\spec\Paths::class, $openapi->paths);
+
+        // components
+        $this->assertInstanceOf(\cebe\openapi\spec\Components::class, $openapi->components);
+
+        // security
+        $this->assertAllInstanceOf(\cebe\openapi\spec\SecurityRequirement::class, $openapi->security);
+
+        // tags
+        $this->assertAllInstanceOf(\cebe\openapi\spec\Tag::class, $openapi->tags);
+
+        // externalDocs
+        $this->assertNull($openapi->externalDocs);
+    }
+
+    public function assertAllInstanceOf($className, $array)
+    {
+        foreach($array as $k => $v) {
+            $this->assertInstanceOf($className, $v, "Asserting that item with key '$k' is instance of $className");
+        }
+    }
+
+    public function specProvider()
+    {
+        return [
+            // TODO symfony/yaml can not read this file!?
+//            [__DIR__ . '/../../vendor/oai/openapi-specification/examples/v3.0/api-with-examples.yaml'],
+            [__DIR__ . '/../../vendor/oai/openapi-specification/examples/v3.0/callback-example.yaml'],
+            [__DIR__ . '/../../vendor/oai/openapi-specification/examples/v3.0/link-example.yaml'],
+            [__DIR__ . '/../../vendor/oai/openapi-specification/examples/v3.0/petstore.yaml'],
+            [__DIR__ . '/../../vendor/oai/openapi-specification/examples/v3.0/petstore-expanded.yaml'],
+            [__DIR__ . '/../../vendor/oai/openapi-specification/examples/v3.0/uspto.yaml'],
+        ];
+    }
+
+    /**
+     * @dataProvider specProvider
+     */
+    public function testSpecs($openApiFile)
+    {
+        $yaml = Yaml::parse(file_get_contents($openApiFile));
+        $openapi = new OpenApi($yaml);
+
+        $result = $openapi->validate();
+        $this->assertEquals([], $openapi->getErrors());
+        $this->assertTrue($result);
+
+        // openapi
+        $this->assertStringStartsWith('3.0.', $openapi->openapi);
+
+        // info
+        $this->assertInstanceOf(\cebe\openapi\spec\Info::class, $openapi->info);
+
+        // servers
+        $this->assertAllInstanceOf(\cebe\openapi\spec\Server::class, $openapi->servers);
+
+        // paths
+        if ($openapi->components !== null) {
+            $this->assertInstanceOf(\cebe\openapi\spec\Paths::class, $openapi->paths);
+        }
+
+        // components
+        if ($openapi->components !== null) {
+            $this->assertInstanceOf(\cebe\openapi\spec\Components::class, $openapi->components);
+        }
+
+        // security
+        $this->assertAllInstanceOf(\cebe\openapi\spec\SecurityRequirement::class, $openapi->security);
+
+        // tags
+        $this->assertAllInstanceOf(\cebe\openapi\spec\Tag::class, $openapi->tags);
+
+        // externalDocs
+        $this->assertNull($openapi->externalDocs);
+
     }
 }

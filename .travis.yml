@@ -9,4 +9,5 @@ install: make install
 script:
   - make test
   - make check-style
+  - make coverage
 
