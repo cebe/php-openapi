@@ -49,7 +49,7 @@ class Encoding extends SpecBaseObject
      */
     public function __construct(array $data)
     {
-        if (!isset($data['explode'])) {
+        if (!isset($data['explode']) && isset($data['style'])) {
             // Spec: When style is form, the default value is true.
             $data['explode'] = ($data['style'] === 'form');
         }
