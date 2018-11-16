@@ -7,6 +7,7 @@
 
 namespace cebe\openapi\spec;
 
+use cebe\openapi\exceptions\ReadonlyPropertyException;
 use cebe\openapi\SpecObjectInterface;
 
 /**
@@ -14,7 +15,7 @@ use cebe\openapi\SpecObjectInterface;
  *
  * @link https://github.com/OAI/OpenAPI-Specification/blob/3.0.2/versions/3.0.2.md#responsesObject
  */
-class Responses implements SpecObjectInterface
+class Responses implements SpecObjectInterface, \ArrayAccess
 {
     private $_responses = [];
     private $_errors = [];
@@ -23,14 +24,17 @@ class Responses implements SpecObjectInterface
     /**
      * Create an object from spec data.
      * @param array $data spec data read from YAML or JSON
+     * @throws \cebe\openapi\exceptions\TypeErrorException in case invalid data is supplied.
      */
     public function __construct(array $data)
     {
         foreach ($data as $statusCode => $response) {
-            if ((is_numeric($statusCode) && $statusCode >= 100 && $statusCode <= 600) || $statusCode === 'default') {
+            // From Spec: This field MUST be enclosed in quotation marks (for example, "200") for compatibility between JSON and YAML.
+            $statusCode = (string) $statusCode;
+            if (preg_match('~^(?:default|[1-5](?:[0-9][0-9]|XX))$~', $statusCode)) {
                 $this->_responses[$statusCode] = new Response($response);
             } else {
-                $this->_errors[] = "$statusCode is not a valid HTTP status code.";
+                $this->_errors[] = "Responses: $statusCode is not a valid HTTP status code.";
             }
         }
     }
@@ -94,5 +98,51 @@ class Responses implements SpecObjectInterface
             $errors[] = $response->getErrors();
         }
         return array_merge(...$errors);
+    }
+
+    /**
+     * Whether a offset exists
+     * @link http://php.net/manual/en/arrayaccess.offsetexists.php
+     * @param mixed $offset An offset to check for.
+     * @return boolean true on success or false on failure.
+     * The return value will be casted to boolean if non-boolean was returned.
+     */
+    public function offsetExists($offset)
+    {
+        return $this->hasResponse($offset);
+    }
+
+    /**
+     * Offset to retrieve
+     * @link http://php.net/manual/en/arrayaccess.offsetget.php
+     * @param mixed $offset The offset to retrieve.
+     * @return mixed Can return all value types.
+     */
+    public function offsetGet($offset)
+    {
+        return $this->getResponse($offset);
+    }
+
+    /**
+     * Offset to set
+     * @link http://php.net/manual/en/arrayaccess.offsetset.php
+     * @param mixed $offset The offset to assign the value to.
+     * @param mixed $value The value to set.
+     * @throws ReadonlyPropertyException because spec objects are read-only.
+     */
+    public function offsetSet($offset, $value)
+    {
+        throw new ReadonlyPropertyException('Setting read-only property: ' . \get_class($this) . '::' . $offset);
+    }
+
+    /**
+     * Offset to unset
+     * @link http://php.net/manual/en/arrayaccess.offsetunset.php
+     * @param mixed $offset The offset to unset.
+     * @throws ReadonlyPropertyException because spec objects are read-only.
+     */
+    public function offsetUnset($offset)
+    {
+        throw new ReadonlyPropertyException('Unsetting read-only property: ' . \get_class($this) . '::' . $offset);
     }
 }

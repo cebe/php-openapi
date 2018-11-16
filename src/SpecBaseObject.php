@@ -38,6 +38,7 @@ abstract class SpecBaseObject implements SpecObjectInterface
     /**
      * Create an object from spec data.
      * @param array $data spec data read from YAML or JSON
+     * @throws TypeErrorException in case invalid data is supplied.
      */
     public function __construct(array $data)
     {
@@ -108,6 +109,9 @@ abstract class SpecBaseObject implements SpecObjectInterface
         }
     }
 
+    /**
+     * @throws TypeErrorException
+     */
     private function instantiate($type, $data)
     {
         try {
