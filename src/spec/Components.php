@@ -37,15 +37,15 @@ class Components extends SpecBaseObject
     protected function attributes(): array
     {
         return [
-            'schemas' => [Schema::class],// TODO implement support for reference
-            'responses' => [Response::class],
-            'parameters' => [Parameter::class],
-            'examples' => [Example::class],
-            'requestBodies' => [RequestBody::class],
-            'headers' => [Header::class],
-            'securitySchemes' => [SecurityScheme::class],
-            'links' => [Link::class],
-            'callbacks' => [Callback::class],
+            'schemas' => [Type::STRING, Schema::class],// TODO implement support for reference
+            'responses' => [Type::STRING, Response::class],
+            'parameters' => [Type::STRING, Parameter::class],
+            'examples' => [Type::STRING, Example::class],
+            'requestBodies' => [Type::STRING, RequestBody::class],
+            'headers' => [Type::STRING, Header::class],
+            'securitySchemes' => [Type::STRING, SecurityScheme::class],
+            'links' => [Type::STRING, Link::class],
+            'callbacks' => [Type::STRING, Callback::class],
         ];
     }
 
@@ -56,9 +56,11 @@ class Components extends SpecBaseObject
     {
         // All the fixed fields declared above are objects that MUST use keys that match the regular expression: ^[a-zA-Z0-9\.\-_]+$.
         foreach (array_keys($this->attributes()) as $attribute) {
-            foreach ($this->$attribute as $k => $v) {
-                if (!preg_match('~^[a-zA-Z0-9\.\-_]+$~', $k)) {
-                    $this->addError("Invalid key '$k' used in Components Object for attribute '$attribute', does not match ^[a-zA-Z0-9\.\-_]+\$.");
+            if (is_array($this->$attribute)) {
+                foreach ($this->$attribute as $k => $v) {
+                    if (!preg_match('~^[a-zA-Z0-9\.\-_]+$~', $k)) {
+                        $this->addError("Invalid key '$k' used in Components Object for attribute '$attribute', does not match ^[a-zA-Z0-9\.\-_]+\$.");
+                    }
                 }
             }
         }
