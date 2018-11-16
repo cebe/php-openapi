@@ -7,6 +7,7 @@
 
 namespace cebe\openapi\spec;
 
+use cebe\openapi\exceptions\TypeErrorException;
 use cebe\openapi\SpecBaseObject;
 
 /**
@@ -46,6 +47,7 @@ use cebe\openapi\SpecBaseObject;
  * @property-read Schema|null $not
  * @property-read Schema|null $items
  * @property-read Schema[] $properties
+ * @property-read Schema|bool $additionalProperties
  * @property-read string $description
  * @property-read string $format
  * @property-read mixed $default
@@ -75,7 +77,7 @@ class Schema extends SpecBaseObject
             'not' => Schema::class,
             'items' => Schema::class,
             'properties' => [Type::STRING, Schema::class],
-            //'additionalProperties' => 'boolean' | ['string', Schema::class], // TODO can be bool?
+            //'additionalProperties' => 'boolean' | ['string', Schema::class], handled in constructor
             'description' => Type::STRING,
             'format' => Type::STRING,
             'default' => Type::ANY,
@@ -89,6 +91,29 @@ class Schema extends SpecBaseObject
             'example' => Type::ANY,
             'deprecated' => Type::BOOLEAN,
         ];
+    }
+
+    /**
+     * Create an object from spec data.
+     * @param array $data spec data read from YAML or JSON
+     * @throws TypeErrorException in case invalid data is supplied.
+     */
+    public function __construct(array $data)
+    {
+        if (isset($data['additionalProperties'])) {
+            if (is_array($data['additionalProperties'])) {
+                try {
+                    $data['additionalProperties'] = new Schema($data['additionalProperties']);
+                } catch (\TypeError $e) {
+                    throw new TypeErrorException(
+                        "Unable to instantiate Schema Object with data '" . print_r($data['additionalProperties'], true) . "'",
+                        $e->getCode(),
+                        $e
+                    );
+                }
+            }
+        }
+        parent::__construct($data);
     }
 
     /**

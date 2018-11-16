@@ -71,7 +71,7 @@ This library is currently work in progress, the following list tracks completene
   - [x] Encoding Object
   - [x] Responses Object
   - [x] Response Object
-  - [ ] Callback Object
+  - [x] Callback Object
   - [x] Example Object
   - [x] Link Object
     - [ ] [Runtime Expressions](https://github.com/OAI/OpenAPI-Specification/blob/3.0.2/versions/3.0.2.md#runtime-expressions)
@@ -80,7 +80,6 @@ This library is currently work in progress, the following list tracks completene
   - [ ] Reference Object
   - [x] Schema Object
     - [x] load/read
-       - [ ] `additionalProperties` field
     - [ ] validation
   - [x] Discriminator Object
   - [x] XML Object
