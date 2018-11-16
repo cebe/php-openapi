@@ -45,7 +45,7 @@ class Link extends SpecBaseObject
     protected function performValidation()
     {
         if (!empty($this->operationId) && !empty($this->operationRef)) {
-            $this->addError('operationId and operationRef are mutually exclusive.');
+            $this->addError('Link: operationId and operationRef are mutually exclusive.');
         }
     }
 }

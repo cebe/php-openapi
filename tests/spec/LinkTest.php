@@ -3,6 +3,9 @@
 use cebe\openapi\Reader;
 use cebe\openapi\spec\Link;
 
+/**
+ * @covers \cebe\openapi\spec\Link
+ */
 class LinkTest extends \PHPUnit\Framework\TestCase
 {
     public function testRead()
@@ -41,7 +44,9 @@ JSON
                 , Link::class);
 
         $result = $link->validate();
-        $this->assertEquals(['operationId and operationRef are mutually exclusive.'], $link->getErrors());
+        $this->assertEquals([
+            'Link: operationId and operationRef are mutually exclusive.'
+        ], $link->getErrors());
         $this->assertFalse($result);
     }
 }
