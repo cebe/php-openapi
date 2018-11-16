@@ -4,7 +4,7 @@ use cebe\openapi\spec\OpenApi;
 use Symfony\Component\Yaml\Yaml;
 
 /**
- * @covers cebe\openapi\spec\OpenApi
+ * @covers \cebe\openapi\spec\OpenApi
  */
 class OpenApiTest extends \PHPUnit\Framework\TestCase
 {
