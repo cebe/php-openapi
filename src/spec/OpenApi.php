@@ -7,6 +7,7 @@
 
 namespace cebe\openapi\spec;
 
+use cebe\openapi\exceptions\TypeErrorException;
 use cebe\openapi\SpecBaseObject;
 
 /**
@@ -41,6 +42,22 @@ class OpenApi extends SpecBaseObject
             'tags' => [Tag::class],
             'externalDocs' => ExternalDocumentation::class,
         ];
+    }
+
+    /**
+     * Create an object from spec data.
+     * @param array $data spec data read from YAML or JSON
+     * @throws TypeErrorException in case invalid data is supplied.
+     */
+    public function __construct(array $data)
+    {
+        if (empty($data['servers'])) {
+            // Spec: If the servers property is not provided, or is an empty array, the default value would be a Server Object with a url value of /.
+            $data['servers'] = [
+                ['url' => '/'],
+            ];
+        }
+        parent::__construct($data);
     }
 
     /**

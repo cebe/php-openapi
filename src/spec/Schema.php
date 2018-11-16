@@ -112,6 +112,9 @@ class Schema extends SpecBaseObject
                     );
                 }
             }
+        } else {
+            // additionalProperties defaults to true.
+            $data['additionalProperties'] = true;
         }
         parent::__construct($data);
     }

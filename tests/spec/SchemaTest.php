@@ -28,6 +28,17 @@ JSON
 
         $this->assertEquals(Type::STRING, $schema->type);
         $this->assertEquals('email', $schema->format);
+
+        // additionalProperties defaults to true.
+        $this->assertTrue($schema->additionalProperties);
+        // nullable Default value is false.
+        $this->assertFalse($schema->nullable);
+        // readOnly Default value is false.
+        $this->assertFalse($schema->readOnly);
+        // writeOnly Default value is false.
+        $this->assertFalse($schema->writeOnly);
+        // deprecated Default value is false.
+        $this->assertFalse($schema->deprecated);
     }
 
     public function testReadObject()
@@ -64,6 +75,17 @@ JSON
         $this->assertEquals(['name'], $schema->required);
         $this->assertEquals(Type::INTEGER, $schema->properties['age']->type);
         $this->assertEquals(0, $schema->properties['age']->minimum);
+
+        // additionalProperties defaults to true.
+        $this->assertTrue($schema->additionalProperties);
+        // nullable Default value is false.
+        $this->assertFalse($schema->nullable);
+        // readOnly Default value is false.
+        $this->assertFalse($schema->readOnly);
+        // writeOnly Default value is false.
+        $this->assertFalse($schema->writeOnly);
+        // deprecated Default value is false.
+        $this->assertFalse($schema->deprecated);
     }
 
     public function testDiscriminator()

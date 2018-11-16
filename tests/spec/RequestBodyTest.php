@@ -36,6 +36,9 @@ JSON
         $this->assertArrayHasKey("application/json", $requestBody->content);
         $this->assertInstanceOf(MediaType::class, $requestBody->content["application/json"]);
 
+        // required Defaults to false.
+        $this->assertFalse($requestBody->required);
+
         /** @var $response RequestBody */
         $requestBody = Reader::readFromJson(<<<'JSON'
 {
@@ -76,6 +79,8 @@ content:
             description: The number of allowed requests in the current period
             schema:
               type: integer
+      other:
+        style: form
 YAML
             , RequestBody::class);
 
@@ -86,16 +91,25 @@ YAML
         $this->assertArrayHasKey("multipart/mixed", $requestBody->content);
         $this->assertInstanceOf(MediaType::class, $mediaType = $requestBody->content["multipart/mixed"]);
 
-        $this->assertCount(2, $mediaType->encoding);
+        $this->assertCount(3, $mediaType->encoding);
         $this->assertArrayHasKey("historyMetadata", $mediaType->encoding);
         $this->assertArrayHasKey("profileImage", $mediaType->encoding);
+        $this->assertArrayHasKey("other", $mediaType->encoding);
         $this->assertInstanceOf(Encoding::class, $mediaType->encoding["profileImage"]);
         $this->assertInstanceOf(Encoding::class, $mediaType->encoding["historyMetadata"]);
+        $this->assertInstanceOf(Encoding::class, $mediaType->encoding["other"]);
 
         $profileImage = $mediaType->encoding["profileImage"];
         $this->assertEquals('image/png, image/jpeg', $profileImage->contentType);
         $this->assertInstanceOf(\cebe\openapi\spec\Header::class, $profileImage->headers['X-Rate-Limit-Limit']);
         $this->assertEquals('The number of allowed requests in the current period', $profileImage->headers['X-Rate-Limit-Limit']->description);
 
+        // When style is form, the default value is true. For all other styles, the default value is false.
+        $this->assertFalse($profileImage->explode);
+        $this->assertTrue($mediaType->encoding["other"]->explode);
+
+        // allowReserved default value is false
+        $this->assertFalse($profileImage->allowReserved);
+        $this->assertFalse($mediaType->encoding["other"]->allowReserved);
     }
 }

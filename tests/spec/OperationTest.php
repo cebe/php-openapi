@@ -87,5 +87,8 @@ YAML
         $this->assertInstanceOf(ExternalDocumentation::class, $operation->externalDocs);
         $this->assertEquals('Find more info here', $operation->externalDocs->description);
         $this->assertEquals('https://example.com', $operation->externalDocs->url);
+
+        // deprecated Default value is false.
+        $this->assertFalse($operation->deprecated);
     }
 }

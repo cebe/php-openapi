@@ -7,10 +7,13 @@
 
 namespace cebe\openapi\spec;
 
+use cebe\openapi\exceptions\TypeErrorException;
 use cebe\openapi\SpecBaseObject;
 
 /**
  * A single encoding definition applied to a single schema property.
+ *
+ * @link https://github.com/OAI/OpenAPI-Specification/blob/3.0.2/versions/3.0.2.md#encodingObject
  *
  * @property-read string $contentType
  * @property-read Header[]|Reference[] $headers
@@ -27,12 +30,30 @@ class Encoding extends SpecBaseObject
     protected function attributes(): array
     {
         return [
+            // TODO implement default values for contentType
+            // https://github.com/OAI/OpenAPI-Specification/blob/3.0.2/versions/3.0.2.md#encodingObject
             'contentType' => Type::STRING,
             'headers' => [Type::STRING, Header::class],
+            // TODO implement default values for style
+            // https://github.com/OAI/OpenAPI-Specification/blob/3.0.2/versions/3.0.2.md#encodingObject
             'style' => Type::STRING,
             'explode' => Type::BOOLEAN,
             'allowReserved' => Type::BOOLEAN,
         ];
+    }
+
+    /**
+     * Create an object from spec data.
+     * @param array $data spec data read from YAML or JSON
+     * @throws TypeErrorException in case invalid data is supplied.
+     */
+    public function __construct(array $data)
+    {
+        if (!isset($data['explode'])) {
+            // Spec: When style is form, the default value is true.
+            $data['explode'] = ($data['style'] === 'form');
+        }
+        parent::__construct($data);
     }
 
     /**

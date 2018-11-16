@@ -64,9 +64,88 @@ YAML
 
         $this->assertEquals('coordinates', $parameter->name);
         $this->assertEquals('query', $parameter->in);
+        // required default value is false.
         $this->assertFalse($parameter->required);
+        // deprecated default value is false.
+        $this->assertFalse($parameter->deprecated);
+        // allowEmptyValue default value is false.
+        $this->assertFalse($parameter->allowEmptyValue);
 
         $this->assertInstanceOf(\cebe\openapi\spec\MediaType::class, $parameter->content['application/json']);
         $this->assertInstanceOf(\cebe\openapi\spec\Schema::class, $parameter->content['application/json']->schema);
+    }
+
+    public function testDefaultValuesQuery()
+    {
+        /** @var $parameter Parameter */
+        $parameter = Reader::readFromYaml(<<<'YAML'
+name: token
+in: query
+YAML
+            , Parameter::class);
+
+        $result = $parameter->validate();
+        $this->assertEquals([], $parameter->getErrors());
+        $this->assertTrue($result);
+
+        // default value for style parameter in query param
+        $this->assertEquals('form', $parameter->style);
+        $this->assertTrue($parameter->explode);
+        $this->assertFalse($parameter->allowReserved);
+    }
+
+    public function testDefaultValuesPath()
+    {
+        /** @var $parameter Parameter */
+        $parameter = Reader::readFromYaml(<<<'YAML'
+name: token
+in: path
+required: true
+YAML
+            , Parameter::class);
+
+        $result = $parameter->validate();
+        $this->assertEquals([], $parameter->getErrors());
+        $this->assertTrue($result);
+
+        // default value for style parameter in query param
+        $this->assertEquals('simple', $parameter->style);
+        $this->assertFalse($parameter->explode);
+    }
+
+    public function testDefaultValuesHeader()
+    {
+        /** @var $parameter Parameter */
+        $parameter = Reader::readFromYaml(<<<'YAML'
+name: token
+in: header
+YAML
+            , Parameter::class);
+
+        $result = $parameter->validate();
+        $this->assertEquals([], $parameter->getErrors());
+        $this->assertTrue($result);
+
+        // default value for style parameter in query param
+        $this->assertEquals('simple', $parameter->style);
+        $this->assertFalse($parameter->explode);
+    }
+
+    public function testDefaultValuesCookie()
+    {
+        /** @var $parameter Parameter */
+        $parameter = Reader::readFromYaml(<<<'YAML'
+name: token
+in: cookie
+YAML
+            , Parameter::class);
+
+        $result = $parameter->validate();
+        $this->assertEquals([], $parameter->getErrors());
+        $this->assertTrue($result);
+
+        // default value for style parameter in query param
+        $this->assertEquals('form', $parameter->style);
+        $this->assertTrue($parameter->explode);
     }
 }

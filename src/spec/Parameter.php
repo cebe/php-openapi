@@ -7,6 +7,7 @@
 
 namespace cebe\openapi\spec;
 
+use cebe\openapi\exceptions\TypeErrorException;
 use cebe\openapi\SpecBaseObject;
 
 /**
@@ -54,6 +55,37 @@ class Parameter extends SpecBaseObject
 
             'content' => [Type::STRING, MediaType::class],
         ];
+    }
+
+    /**
+     * Create an object from spec data.
+     * @param array $data spec data read from YAML or JSON
+     * @throws TypeErrorException in case invalid data is supplied.
+     */
+    public function __construct(array $data)
+    {
+        if (!isset($data['style']) && isset($data['in'])) {
+            // Spec: Default values (based on value of in):
+            // for query - form;
+            // for path - simple;
+            // for header - simple;
+            // for cookie - form.
+            switch ($data['in']) {
+                case 'query':
+                case 'cookie':
+                    $data['style'] = 'form';
+                    break;
+                case 'path':
+                case 'header':
+                    $data['style'] = 'simple';
+                    break;
+            }
+        }
+        if (!isset($data['explode']) && isset($data['style'])) {
+            // Spec: When style is form, the default value is true. For all other styles, the default value is false.
+            $data['explode'] = ($data['style'] === 'form');
+        }
+        parent::__construct($data);
     }
 
     /**
