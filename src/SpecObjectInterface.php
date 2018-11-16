@@ -30,4 +30,9 @@ interface SpecObjectInterface
      * @see validate()
      */
     public function getErrors(): array;
+
+    /**
+     * Resolves all Reference Objects in this object and replaces them with their resolution.
+     */
+    public function resolveReferences(ReferenceContext $context);
 }

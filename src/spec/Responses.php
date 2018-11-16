@@ -10,6 +10,8 @@ namespace cebe\openapi\spec;
 use ArrayAccess;
 use ArrayIterator;
 use cebe\openapi\exceptions\ReadonlyPropertyException;
+use cebe\openapi\exceptions\UnresolvableReferenceException;
+use cebe\openapi\ReferenceContext;
 use cebe\openapi\SpecObjectInterface;
 use Countable;
 use IteratorAggregate;
@@ -22,6 +24,9 @@ use Traversable;
  */
 class Responses implements SpecObjectInterface, ArrayAccess, Countable, IteratorAggregate
 {
+    /**
+     * @var Response[]|Reference[]
+     */
     private $_responses = [];
     private $_errors = [];
 
@@ -170,5 +175,20 @@ class Responses implements SpecObjectInterface, ArrayAccess, Countable, Iterator
     public function getIterator()
     {
         return new ArrayIterator($this->_responses);
+    }
+
+    /**
+     * Resolves all Reference Objects in this object and replaces them with their resolution.
+     * @throws UnresolvableReferenceException
+     */
+    public function resolveReferences(ReferenceContext $context)
+    {
+        foreach($this->_responses as $k => $response) {
+            if ($response instanceof Reference) {
+                $this->_responses[$k] = $response->resolve($context);
+            } else {
+                $response->resolveReferences($context);
+            }
+        }
     }
 }

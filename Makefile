@@ -22,7 +22,7 @@ coverage: .php-openapi-covA .php-openapi-covB
 .php-openapi-covA:
 	grep -rhPo '@covers .+' tests |cut -c 28- |sort > $@
 .php-openapi-covB:
-	grep -rhPo 'class \w+' src/spec/ | awk '{print $$2}' |grep -v '^Type$$' | sort > $@
+	grep -rhPo '^class \w+' src/spec/ | awk '{print $$2}' |grep -v '^Type$$' | sort > $@
 
 .PHONY: all check-style fix-style install test coverage
 

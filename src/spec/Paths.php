@@ -10,6 +10,9 @@ namespace cebe\openapi\spec;
 use ArrayAccess;
 use ArrayIterator;
 use cebe\openapi\exceptions\ReadonlyPropertyException;
+use cebe\openapi\exceptions\TypeErrorException;
+use cebe\openapi\exceptions\UnresolvableReferenceException;
+use cebe\openapi\ReferenceContext;
 use cebe\openapi\SpecObjectInterface;
 use Countable;
 use IteratorAggregate;
@@ -37,11 +40,11 @@ class Paths implements SpecObjectInterface, ArrayAccess, Countable, IteratorAggr
     /**
      * Create an object from spec data.
      * @param array $data spec data read from YAML or JSON
+     * @throws TypeErrorException in case invalid data is supplied.
      */
     public function __construct(array $data)
     {
         foreach ($data as $path => $object) {
-            // TODO support reference
             if ($object === null) {
                 $this->_paths[$path] = null;
             } else {
@@ -180,5 +183,16 @@ class Paths implements SpecObjectInterface, ArrayAccess, Countable, IteratorAggr
     public function getIterator()
     {
         return new ArrayIterator($this->_paths);
+    }
+
+    /**
+     * Resolves all Reference Objects in this object and replaces them with their resolution.
+     * @throws UnresolvableReferenceException
+     */
+    public function resolveReferences(ReferenceContext $context)
+    {
+        foreach ($this->_paths as $key => $path) {
+            $path->resolveReferences($context);
+        }
     }
 }
