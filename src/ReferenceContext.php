@@ -6,6 +6,7 @@
  */
 
 namespace cebe\openapi;
+
 use cebe\openapi\exceptions\UnresolvableReferenceException;
 
 /**

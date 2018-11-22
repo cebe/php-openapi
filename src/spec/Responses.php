@@ -183,7 +183,7 @@ class Responses implements SpecObjectInterface, ArrayAccess, Countable, Iterator
      */
     public function resolveReferences(ReferenceContext $context)
     {
-        foreach($this->_responses as $k => $response) {
+        foreach ($this->_responses as $k => $response) {
             if ($response instanceof Reference) {
                 $this->_responses[$k] = $response->resolve($context);
             } else {
