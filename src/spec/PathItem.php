@@ -50,7 +50,7 @@ class PathItem extends SpecBaseObject
             'patch' => Operation::class,
             'trace' => Operation::class,
             'servers' => [Server::class],
-            'parameters' => [Parameter::class], // @TODO Reference::class
+            'parameters' => [Parameter::class],
         ];
     }
 

@@ -37,7 +37,7 @@ class Components extends SpecBaseObject
     protected function attributes(): array
     {
         return [
-            'schemas' => [Type::STRING, Schema::class],// TODO implement support for reference
+            'schemas' => [Type::STRING, Schema::class],
             'responses' => [Type::STRING, Response::class],
             'parameters' => [Type::STRING, Parameter::class],
             'examples' => [Type::STRING, Example::class],

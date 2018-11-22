@@ -43,7 +43,7 @@ YAML
         $this->assertEquals([], $mediaType->getErrors());
         $this->assertTrue($result);
 
-        //$this->assertEquals('schema', $mediaType->name);// TODO support for reference
+        $this->assertInstanceOf(Reference::class, $mediaType->schema);
         $this->assertInternalType('array', $mediaType->examples);
         $this->assertCount(3, $mediaType->examples);
         $this->assertArrayHasKey('cat', $mediaType->examples);
