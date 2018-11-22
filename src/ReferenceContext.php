@@ -23,11 +23,30 @@ class ReferenceContext
      */
     private $_uri;
 
-
+    /**
+     * ReferenceContext constructor.
+     * @param SpecObjectInterface $base the base object of the spec.
+     * @param string $uri the URI to the base object.
+     * @throws UnresolvableReferenceException in case an invalid or non-absolute URI is provided.
+     */
     public function __construct(SpecObjectInterface $base, string $uri)
     {
         $this->_baseSpec = $base;
-        $this->_uri = $uri;
+        $this->_uri = $this->normalizeUri($uri);
+    }
+
+    /**
+     * @throws UnresolvableReferenceException in case an invalid or non-absolute URI is provided.
+     */
+    private function normalizeUri($uri)
+    {
+        if (strpos($uri, '://') !== false) {
+            return $uri;
+        }
+        if (strncmp($uri, '/', 1) === 0) {
+            return "file://$uri";
+        }
+        throw new UnresolvableReferenceException('Can not resolve references for a specification given as a relative path.');
     }
 
     /**
@@ -55,11 +74,43 @@ class ReferenceContext
     public function resolveRelativeUri(string $uri): string
     {
         $parts = parse_url($uri);
-        if (!isset($parts['scheme'], $parts['host'])) {
-            // TODO resolve relative URL
-            throw new UnresolvableReferenceException('Relative URLs are currently not supported in Reference.');
+        if (isset($parts['scheme'])) {
+            // absolute URL
+            return $uri;
         }
 
-        return $uri;
+        $baseUri = $this->getUri();
+        if (strncmp($baseUri, 'file://', 7) === 0) {
+
+            if (isset($parts['path'][0]) && $parts['path'][0] === '/') {
+                // absolute path
+                return 'file://' . $parts['path'];
+            }
+            if (isset($parts['path'])) {
+                // relative path
+                return dirname($baseUri) . '/' . $parts['path'];
+            }
+
+            throw new UnresolvableReferenceException("Invalid URI: '$uri'");
+        }
+
+        $baseParts = parse_url($baseUri);
+        $absoluteUri = implode('', [
+            $baseParts['scheme'],
+            '://',
+            isset($baseParts['username']) ? $baseParts['username'] . (
+                isset($baseParts['password']) ? ':' . $baseParts['password'] : ''
+            ) . '@' : '',
+            $baseParts['host'] ?? '',
+            isset($baseParts['port']) ? ':' . $baseParts['port'] : '',
+        ]);
+        if (isset($parts['path'][0]) && $parts['path'][0] === '/') {
+            $absoluteUri .= $parts['path'];
+        } else if (isset($parts['path'])) {
+            $absoluteUri .= rtrim(dirname($baseParts['path'] ?? ''), '/') . '/' . $parts['path'];
+        }
+        return $absoluteUri
+            . (isset($parts['query']) ? '?' . $parts['query'] : '')
+            . (isset($parts['fragment']) ? '#' . $parts['fragment'] : '');
     }
 }

@@ -65,7 +65,7 @@ class Reader
     {
         $spec = static::readFromJson(file_get_contents($fileName), $baseType);
         if ($resolveReferences) {
-            $spec->resolveReferences(new ReferenceContext($spec, static::fileName2Uri($fileName)));
+            $spec->resolveReferences(new ReferenceContext($spec, $fileName));
         }
         return $spec;
     }
@@ -89,19 +89,8 @@ class Reader
     {
         $spec = static::readFromYaml(file_get_contents($fileName), $baseType);
         if ($resolveReferences) {
-            $spec->resolveReferences(new ReferenceContext($spec, static::fileName2Uri($fileName)));
+            $spec->resolveReferences(new ReferenceContext($spec, $fileName));
         }
         return $spec;
-    }
-
-    private static function fileName2Uri($fileName)
-    {
-        if (strpos($fileName, '://') !== false) {
-            return $fileName;
-        }
-        if (strncmp($fileName, '/', 1) === 0) {
-            return "file://$fileName";
-        }
-        throw new UnresolvableReferenceException('Can not resolve references for a specification given as a relative path.');
     }
 }

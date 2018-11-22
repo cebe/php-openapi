@@ -145,7 +145,7 @@ YAML
 
     public function testResolveFileHttp()
     {
-        $file = 'https://raw.githubusercontent.com/cebe/php-openapi/master/tests/spec/data/reference/base.yaml';
+        $file = 'https://raw.githubusercontent.com/cebe/php-openapi/290389bbd337cf4d70ecedfd3a3d886715e19552/tests/spec/data/reference/base.yaml';
         /** @var $openapi OpenApi */
         $openapi = Reader::readFromYaml(str_replace('##ABSOLUTEPATH##', 'https://' . dirname($file), file_get_contents($file)));
 
