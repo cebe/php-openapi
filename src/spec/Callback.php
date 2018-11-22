@@ -8,6 +8,8 @@
 namespace cebe\openapi\spec;
 
 use cebe\openapi\exceptions\TypeErrorException;
+use cebe\openapi\exceptions\UnresolvableReferenceException;
+use cebe\openapi\ReferenceContext;
 use cebe\openapi\SpecObjectInterface;
 
 /**
@@ -74,5 +76,16 @@ class Callback implements SpecObjectInterface
     {
         $pathItemErrors = $this->_pathItem === null ? [] : $this->_pathItem->getErrors();
         return array_merge($this->_errors, $pathItemErrors);
+    }
+
+    /**
+     * Resolves all Reference Objects in this object and replaces them with their resolution.
+     * @throws UnresolvableReferenceException
+     */
+    public function resolveReferences(ReferenceContext $context)
+    {
+        if ($this->_pathItem !== null) {
+            $this->_pathItem->resolveReferences($context);
+        }
     }
 }

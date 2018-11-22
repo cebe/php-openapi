@@ -41,10 +41,10 @@ class Operation extends SpecBaseObject
             'description' => Type::STRING,
             'externalDocs' => ExternalDocumentation::class,
             'operationId' => Type::STRING,
-            'parameters' => [Parameter::class],// TODO reference
+            'parameters' => [Parameter::class],
             'requestBody' => RequestBody::class,
             'responses' => Responses::class,
-            'callbacks' => [Type::STRING, Callback::class],// TODO reference
+            'callbacks' => [Type::STRING, Callback::class],
             'deprecated' => Type::BOOLEAN,
             'security' => [SecurityRequirement::class],
             'servers' => [Server::class],

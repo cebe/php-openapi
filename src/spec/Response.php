@@ -27,7 +27,7 @@ class Response extends SpecBaseObject
     protected function attributes(): array
     {
         return [
-            'description' => Type::STRING,// TODO implement support for reference
+            'description' => Type::STRING,
             'headers' => [Type::STRING, Header::class],
             'content' => [Type::STRING, MediaType::class],
             'links' => [Type::STRING, Link::class],

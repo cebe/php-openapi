@@ -3,6 +3,7 @@
 use cebe\openapi\Reader;
 use cebe\openapi\spec\MediaType;
 use cebe\openapi\spec\Example;
+use cebe\openapi\spec\Reference;
 
 /**
  * @covers \cebe\openapi\spec\MediaType
@@ -42,7 +43,7 @@ YAML
         $this->assertEquals([], $mediaType->getErrors());
         $this->assertTrue($result);
 
-        //$this->assertEquals('schema', $mediaType->name);// TODO support for reference
+        $this->assertInstanceOf(Reference::class, $mediaType->schema);
         $this->assertInternalType('array', $mediaType->examples);
         $this->assertCount(3, $mediaType->examples);
         $this->assertArrayHasKey('cat', $mediaType->examples);
@@ -50,7 +51,7 @@ YAML
         $this->assertArrayHasKey('frog', $mediaType->examples);
         $this->assertInstanceOf(Example::class, $mediaType->examples['cat']);
         $this->assertInstanceOf(Example::class, $mediaType->examples['dog']);
-        $this->assertInstanceOf(Example::class, $mediaType->examples['frog']);
+        $this->assertInstanceOf(Reference::class, $mediaType->examples['frog']);
 
         $this->assertEquals('An example of a cat', $mediaType->examples['cat']->summary);
         $expectedCat = [ // TODO we might actually expect this to be an object of stdClass

@@ -71,7 +71,7 @@ class Schema extends SpecBaseObject
     {
         return [
             'type' => Type::STRING,
-            'allOf' => [Schema::class], // TODO allow reference
+            'allOf' => [Schema::class],
             'oneOf' => [Schema::class],
             'anyOf' => [Schema::class],
             'not' => Schema::class,

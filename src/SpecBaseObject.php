@@ -10,6 +10,7 @@ namespace cebe\openapi;
 use cebe\openapi\exceptions\ReadonlyPropertyException;
 use cebe\openapi\exceptions\TypeErrorException;
 use cebe\openapi\exceptions\UnknownPropertyException;
+use cebe\openapi\spec\Reference;
 use cebe\openapi\spec\Type;
 
 /**
@@ -73,7 +74,6 @@ abstract class SpecBaseObject implements SpecObjectInterface
                             } elseif ($type[0] === Type::ANY || $type[0] === Type::BOOLEAN || $type[0] === Type::INTEGER) { // TODO simplify handling of scalar types
                                 $this->_properties[$property][] = $item;
                             } else {
-                                // TODO implement reference objects
                                 $this->_properties[$property][] = $this->instantiate($type[0], $item);
                             }
                         }
@@ -93,7 +93,6 @@ abstract class SpecBaseObject implements SpecObjectInterface
                             } elseif ($type[1] === Type::ANY || $type[1] === Type::BOOLEAN || $type[1] === Type::INTEGER) { // TODO simplify handling of scalar types
                                 $this->_properties[$property][$key] = $item;
                             } else {
-                                // TODO implement reference objects
                                 $this->_properties[$property][$key] = $this->instantiate($type[1], $item);
                             }
                         }
@@ -114,6 +113,9 @@ abstract class SpecBaseObject implements SpecObjectInterface
      */
     private function instantiate($type, $data)
     {
+        if (isset($data['$ref'])) {
+            return new Reference($data, $type);
+        }
         try {
             return new $type($data);
         } catch (\TypeError $e) {
@@ -238,5 +240,28 @@ abstract class SpecBaseObject implements SpecObjectInterface
     public function __unset($name)
     {
         throw new ReadonlyPropertyException('Unsetting read-only property: ' . \get_class($this) . '::' . $name);
+    }
+
+    /**
+     * Resolves all Reference Objects in this object and replaces them with their resolution.
+     * @throws exceptions\UnresolvableReferenceException in case resolving a reference fails.
+     */
+    public function resolveReferences(ReferenceContext $context)
+    {
+        foreach ($this->_properties as $property => $value) {
+            if ($value instanceof Reference) {
+                $this->_properties[$property] = $value->resolve($context);
+            } elseif ($value instanceof SpecObjectInterface) {
+                $value->resolveReferences($context);
+            } elseif (is_array($value)) {
+                foreach ($value as $k => $item) {
+                    if ($item instanceof Reference) {
+                        $this->_properties[$property][$k] = $item->resolve($context);
+                    } elseif ($item instanceof SpecObjectInterface) {
+                        $item->resolveReferences($context);
+                    }
+                }
+            }
+        }
     }
 }

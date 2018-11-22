@@ -27,9 +27,9 @@ class MediaType extends SpecBaseObject
     protected function attributes(): array
     {
         return [
-            'schema' => Schema::class, // TODO support Reference
+            'schema' => Schema::class,
             'example' => Type::ANY,
-            'examples' => [Type::STRING, Example::class], // TODO support Reference
+            'examples' => [Type::STRING, Example::class],
             'encoding' => [Type::STRING, Encoding::class],
         ];
     }
