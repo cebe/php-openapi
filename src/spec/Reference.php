@@ -9,9 +9,9 @@ namespace cebe\openapi\spec;
 
 use cebe\openapi\exceptions\TypeErrorException;
 use cebe\openapi\exceptions\UnresolvableReferenceException;
-use cebe\openapi\Reader;
 use cebe\openapi\ReferenceContext;
 use cebe\openapi\SpecObjectInterface;
+use Symfony\Component\Yaml\Yaml;
 
 /**
  * Reference Object
@@ -93,19 +93,35 @@ class Reference implements SpecObjectInterface
      */
     public function resolve(ReferenceContext $context)
     {
-        $currentReference = $context->getBaseSpec();
         if (($pos = strpos($this->_ref, '#')) === 0) {
             // resolve in current document
             $jsonPointer = substr($this->_ref, 1);
-        } else {
-            $file =  ($pos === false) ? $this->_ref : substr($this->_ref, 0, $pos);
-            $jsonPointer = substr($this->_ref, $pos + 1);
-            $currentReference = $this->fetchReferencedFile($file, $context);
-            // TODO could be a good idea to cache loaded files in current context to avoid loading the same files over and over again
-            $currentReference->resolveReferences(new ReferenceContext($currentReference, $file));
+            // TODO type error if resolved object does not match $this->_to ?
+            return $this->resolveJsonPointer($jsonPointer, $context->getBaseSpec());
         }
 
-        // resolve JSON Pointer
+        $file = ($pos === false) ? $this->_ref : substr($this->_ref, 0, $pos);
+        $file = $context->resolveRelativeUri($file);
+        $jsonPointer = substr($this->_ref, $pos + 1);
+
+        // TODO could be a good idea to cache loaded files in current context to avoid loading the same files over and over again
+        $fileContent = $this->fetchReferencedFile($file);
+        $referencedData = $this->resolveJsonPointer($jsonPointer, $fileContent);
+
+        /** @var $referencedObject SpecObjectInterface */
+        $referencedObject = new $this->_to($referencedData);
+        if ($jsonPointer === '') {
+            $referencedObject->resolveReferences(new ReferenceContext($referencedObject, $file));
+        } else {
+            // TODO resolving references recursively does not work as we do not know the base type of the file at this point
+//            $referencedObject->resolveReferences(new ReferenceContext($referencedObject, $file));
+        }
+
+        return $referencedObject;
+    }
+
+    private function resolveJsonPointer($jsonPointer, $currentReference)
+    {
         if ($jsonPointer === '') {
             // empty pointer references the whole document
             return $currentReference;
@@ -144,16 +160,15 @@ class Reference implements SpecObjectInterface
     /**
      * @throws UnresolvableReferenceException
      */
-    private function fetchReferencedFile($uri, ReferenceContext $context): SpecObjectInterface
+    private function fetchReferencedFile($uri)
     {
-        $uri = $context->resolveRelativeUri($uri);
         try {
             $content = file_get_contents($uri);
             // TODO lazy content detection, should probably be improved
             if (strpos(ltrim($content), '{') === 0) {
-                return Reader::readFromJson($content, $this->_to);
+                return json_decode($content, true);
             } else {
-                return Reader::readFromYaml($content, $this->_to);
+                return Yaml::parse($content);
             }
         } catch (\Throwable $e) {
             throw new UnresolvableReferenceException(

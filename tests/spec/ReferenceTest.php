@@ -135,7 +135,7 @@ YAML
         $this->assertInstanceOf(Reference::class, $petItems = $openapi->components->schemas['Pet']);
         $this->assertInstanceOf(Reference::class, $petItems = $openapi->components->schemas['Dog']);
 
-        $openapi->resolveReferences(new \cebe\openapi\ReferenceContext($openapi, 'file://' . $file));
+        $openapi->resolveReferences(new \cebe\openapi\ReferenceContext($openapi, $file));
 
         $this->assertInstanceOf(Schema::class, $petItems = $openapi->components->schemas['Pet']);
         $this->assertInstanceOf(Schema::class, $petItems = $openapi->components->schemas['Dog']);
@@ -147,7 +147,7 @@ YAML
     {
         $file = 'https://raw.githubusercontent.com/cebe/php-openapi/290389bbd337cf4d70ecedfd3a3d886715e19552/tests/spec/data/reference/base.yaml';
         /** @var $openapi OpenApi */
-        $openapi = Reader::readFromYaml(str_replace('##ABSOLUTEPATH##', 'https://' . dirname($file), file_get_contents($file)));
+        $openapi = Reader::readFromYaml(str_replace('##ABSOLUTEPATH##', dirname($file), file_get_contents($file)));
 
         $result = $openapi->validate();
         $this->assertEquals([], $openapi->getErrors());
