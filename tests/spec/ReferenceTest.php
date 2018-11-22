@@ -122,4 +122,46 @@ YAML
         $this->assertSame($openapi->components->examples['frog-example'], $refExample);
     }
 
+    public function testResolveFile()
+    {
+        $file = __DIR__ . '/data/reference/base.yaml';
+        /** @var $openapi OpenApi */
+        $openapi = Reader::readFromYaml(str_replace('##ABSOLUTEPATH##', 'file://' . dirname($file), file_get_contents($file)));
+
+        $result = $openapi->validate();
+        $this->assertEquals([], $openapi->getErrors());
+        $this->assertTrue($result);
+
+        $this->assertInstanceOf(Reference::class, $petItems = $openapi->components->schemas['Pet']);
+        $this->assertInstanceOf(Reference::class, $petItems = $openapi->components->schemas['Dog']);
+
+        $openapi->resolveReferences(new \cebe\openapi\ReferenceContext($openapi, 'file://' . $file));
+
+        $this->assertInstanceOf(Schema::class, $petItems = $openapi->components->schemas['Pet']);
+        $this->assertInstanceOf(Schema::class, $petItems = $openapi->components->schemas['Dog']);
+        $this->assertArrayHasKey('id', $openapi->components->schemas['Pet']->properties);
+        $this->assertArrayHasKey('name', $openapi->components->schemas['Dog']->properties);
+    }
+
+    public function testResolveFileHttp()
+    {
+        $file = 'https://raw.githubusercontent.com/cebe/php-openapi/master/tests/spec/data/reference/base.yaml';
+        /** @var $openapi OpenApi */
+        $openapi = Reader::readFromYaml(str_replace('##ABSOLUTEPATH##', 'https://' . dirname($file), file_get_contents($file)));
+
+        $result = $openapi->validate();
+        $this->assertEquals([], $openapi->getErrors());
+        $this->assertTrue($result);
+
+        $this->assertInstanceOf(Reference::class, $petItems = $openapi->components->schemas['Pet']);
+        $this->assertInstanceOf(Reference::class, $petItems = $openapi->components->schemas['Dog']);
+
+        $openapi->resolveReferences(new \cebe\openapi\ReferenceContext($openapi, $file));
+
+        $this->assertInstanceOf(Schema::class, $petItems = $openapi->components->schemas['Pet']);
+        $this->assertInstanceOf(Schema::class, $petItems = $openapi->components->schemas['Dog']);
+        $this->assertArrayHasKey('id', $openapi->components->schemas['Pet']->properties);
+        $this->assertArrayHasKey('name', $openapi->components->schemas['Dog']->properties);
+    }
+
 }

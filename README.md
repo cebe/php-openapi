@@ -17,6 +17,8 @@ READ [OpenAPI](https://www.openapis.org/) 3.0.x YAML and JSON files and make the
 
 ## Usage
 
+### Reading Specification information
+
 Read OpenAPI spec from JSON:
 
 ```php
@@ -45,6 +47,41 @@ foreach($openapi->paths as $path => $definition) {
 
 Object properties are exactly like in the [OpenAPI specification](https://github.com/OAI/OpenAPI-Specification/blob/3.0.2/versions/3.0.2.md#openapi-specification).
 You may also access additional properties added by specification extensions.
+
+### Reading Specification Files and Resolving References
+
+In the above we have passed the raw JSON or YAML data to the Reader. In order to be able to resolve
+references to external files that may exist in the specification files, we must provide the full context.
+
+```php
+use cebe\openapi\Reader;
+// an absolute URL or file path is needed to allow resolving internal references
+$openapi = Reader::readFromJsonFile('https://www.example.com/api/openapi.json');
+$openapi = Reader::readFromYamlFile('https://www.example.com/api/openapi.yaml');
+```
+
+If data has been loaded in a different way you can manually resolve references like this by giving a context:
+
+```php
+$openapi->resolveReferences(
+    new \cebe\openapi\ReferenceContext($openapi, 'https://www.example.com/api/openapi.yaml')
+);
+```
+
+### Validation
+
+The library provides simple validation operations, that check basic OpenAPI spec requirements.
+
+```
+// return `true` in case no errors have been found, `false` in case of errors.
+$specValid = $openapi->validate();
+// after validation getErrors() can be used to retrieve the list of errors found.
+$errors = $openapi->getErrors();
+```
+
+> **Note:** Validation is done on a very basic level and is not complete. So a failing validation will show some errors,
+> but the list of errors given may not be complete. Also a passing validation does not necessarily indicate a completely
+> valid spec.
 
 
 ## Completeness

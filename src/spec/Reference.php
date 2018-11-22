@@ -11,7 +11,6 @@ use cebe\openapi\exceptions\TypeErrorException;
 use cebe\openapi\exceptions\UnresolvableReferenceException;
 use cebe\openapi\Reader;
 use cebe\openapi\ReferenceContext;
-use cebe\openapi\SpecBaseObject;
 use cebe\openapi\SpecObjectInterface;
 
 /**

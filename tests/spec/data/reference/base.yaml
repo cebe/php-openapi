@@ -1,0 +1,16 @@
+openapi: 3.0.0
+info:
+  title: Link Example
+  version: 1.0.0
+components:
+  schemas:
+    Pet:
+      $ref: definitions.yaml#/Pet
+    Dog:
+      $ref: ##ABSOLUTEPATH##/definitions.yaml#/Dog
+paths:
+  '/pet':
+    get:
+      responses:
+        200:
+          description: return a pet
