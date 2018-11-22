@@ -9,7 +9,7 @@ READ [OpenAPI](https://www.openapis.org/) 3.0.x YAML and JSON files and make the
 
 ## Install
 
-    composer require cebe/php-openapi
+    composer require cebe/php-openapi:~0.9@beta
 
 ## Requirements
 
