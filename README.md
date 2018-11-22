@@ -68,6 +68,8 @@ $openapi->resolveReferences(
 );
 ```
 
+> **Note:** Resolving references currently does not deal with references in referenced files, you have to call it multiple times to resolve these.
+
 ### Validation
 
 The library provides simple validation operations, that check basic OpenAPI spec requirements.
