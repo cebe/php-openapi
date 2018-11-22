@@ -81,7 +81,6 @@ class ReferenceContext
 
         $baseUri = $this->getUri();
         if (strncmp($baseUri, 'file://', 7) === 0) {
-
             if (isset($parts['path'][0]) && $parts['path'][0] === '/') {
                 // absolute path
                 return 'file://' . $parts['path'];
@@ -106,7 +105,7 @@ class ReferenceContext
         ]);
         if (isset($parts['path'][0]) && $parts['path'][0] === '/') {
             $absoluteUri .= $parts['path'];
-        } else if (isset($parts['path'])) {
+        } elseif (isset($parts['path'])) {
             $absoluteUri .= rtrim(dirname($baseParts['path'] ?? ''), '/') . '/' . $parts['path'];
         }
         return $absoluteUri
