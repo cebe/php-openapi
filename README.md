@@ -126,3 +126,11 @@ This library is currently work in progress, the following list tracks completene
   - [x] OAuth Flows Object
   - [x] OAuth Flow Object
   - [x] Security Requirement Object
+
+# Support
+
+Professional support, consulting as well as software development services are available:
+
+https://www.cebe.cc/en/contact
+
+Development of this library is sponsored by [cebe.cloud "Your Professional Deployment Platform"](https://cebe.cloud).
