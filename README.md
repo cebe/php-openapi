@@ -15,6 +15,14 @@ READ [OpenAPI](https://www.openapis.org/) 3.0.x YAML and JSON files and make the
 
 - PHP 7.1 or higher
 
+## Used by
+
+This library provides a low level API for reading OpenAPI files. It is used by higher level tools to
+do awesome work:
+
+- https://github.com/cebe/yii2-openapi
+- ... ([add yours](https://github.com/cebe/php-openapi/edit/master/README.md#L24))
+
 ## Usage
 
 ### Reading Specification information
