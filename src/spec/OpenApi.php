@@ -18,7 +18,7 @@ use cebe\openapi\SpecBaseObject;
  * @property-read string $openapi
  * @property-read Info $info
  * @property-read Server[] $servers
- * @property-read Paths $paths
+ * @property-read Paths|PathItem[] $paths
  * @property-read Components|null $components
  * @property-read SecurityRequirement[] $security
  * @property-read Tag[] $tags

@@ -3,6 +3,7 @@
 use cebe\openapi\Reader;
 use cebe\openapi\spec\OpenApi;
 use cebe\openapi\spec\Reference;
+use cebe\openapi\spec\Response;
 use cebe\openapi\spec\Schema;
 use cebe\openapi\spec\Example;
 
@@ -29,6 +30,9 @@ components:
   examples:
     frog-example:
       description: a frog
+  responses:
+    Pet:
+      description: returns a pet
 paths:
   '/pet':
     get:
@@ -42,6 +46,11 @@ paths:
               examples:
                 frog:
                   $ref: "#/components/examples/frog-example"
+  '/pet/1':
+    get:
+      responses:
+        200:
+          $ref: "#/components/responses/Pet"
 YAML
             , OpenApi::class);
 
@@ -49,18 +58,21 @@ YAML
         $this->assertEquals([], $openapi->getErrors());
         $this->assertTrue($result);
 
-        /** @var $response \cebe\openapi\spec\Response */
-        $response = $openapi->paths->getPath('/pet')->get->responses['200'];
-        $this->assertInstanceOf(Reference::class, $response->content['application/json']->schema);
-        $this->assertInstanceOf(Reference::class, $response->content['application/json']->examples['frog']);
+        /** @var $petResponse Response */
+        $petResponse = $openapi->paths->getPath('/pet')->get->responses['200'];
+        $this->assertInstanceOf(Reference::class, $petResponse->content['application/json']->schema);
+        $this->assertInstanceOf(Reference::class, $petResponse->content['application/json']->examples['frog']);
+        $this->assertInstanceOf(Reference::class, $openapi->paths->getPath('/pet/1')->get->responses['200']);
 
         $openapi->resolveReferences(new \cebe\openapi\ReferenceContext($openapi, 'file:///tmp/openapi.yaml'));
 
-        $this->assertInstanceOf(Schema::class, $refSchema = $response->content['application/json']->schema);
-        $this->assertInstanceOf(Example::class, $refExample = $response->content['application/json']->examples['frog']);
+        $this->assertInstanceOf(Schema::class, $refSchema = $petResponse->content['application/json']->schema);
+        $this->assertInstanceOf(Example::class, $refExample = $petResponse->content['application/json']->examples['frog']);
+        $this->assertInstanceOf(Response::class, $refResponse = $openapi->paths->getPath('/pet/1')->get->responses['200']);
 
         $this->assertSame($openapi->components->schemas['Pet'], $refSchema);
         $this->assertSame($openapi->components->examples['frog-example'], $refExample);
+        $this->assertSame($openapi->components->responses['Pet'], $refResponse);
     }
 
     public function testResolveCyclicReferenceInDocument()
@@ -105,7 +117,7 @@ YAML
         $this->assertEquals([], $openapi->getErrors());
         $this->assertTrue($result);
 
-        /** @var $response \cebe\openapi\spec\Response */
+        /** @var $response Response */
         $response = $openapi->paths->getPath('/pet')->get->responses['200'];
         $this->assertInstanceOf(Reference::class, $response->content['application/json']->schema);
         $this->assertInstanceOf(Reference::class, $response->content['application/json']->examples['frog']);
