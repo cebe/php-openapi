@@ -34,5 +34,10 @@ interface SpecObjectInterface
     /**
      * Resolves all Reference Objects in this object and replaces them with their resolution.
      */
-    public function resolveReferences(ReferenceContext $context);
+    public function resolveReferences(ReferenceContext $context = null);
+
+    /**
+     * Set context for all Reference Objects in this object.
+     */
+    public function setReferenceContext(ReferenceContext $context);
 }

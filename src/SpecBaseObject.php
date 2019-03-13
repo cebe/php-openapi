@@ -246,7 +246,7 @@ abstract class SpecBaseObject implements SpecObjectInterface
      * Resolves all Reference Objects in this object and replaces them with their resolution.
      * @throws exceptions\UnresolvableReferenceException in case resolving a reference fails.
      */
-    public function resolveReferences(ReferenceContext $context)
+    public function resolveReferences(ReferenceContext $context = null)
     {
         foreach ($this->_properties as $property => $value) {
             if ($value instanceof Reference) {
@@ -259,6 +259,28 @@ abstract class SpecBaseObject implements SpecObjectInterface
                         $this->_properties[$property][$k] = $item->resolve($context);
                     } elseif ($item instanceof SpecObjectInterface) {
                         $item->resolveReferences($context);
+                    }
+                }
+            }
+        }
+    }
+
+    /**
+     * Set context for all Reference Objects in this object.
+     */
+    public function setReferenceContext(ReferenceContext $context)
+    {
+        foreach ($this->_properties as $property => $value) {
+            if ($value instanceof Reference) {
+                $value->setContext($context);
+            } elseif ($value instanceof SpecObjectInterface) {
+                $value->setReferenceContext($context);
+            } elseif (is_array($value)) {
+                foreach ($value as $k => $item) {
+                    if ($item instanceof Reference) {
+                        $item->setContext($context);
+                    } elseif ($item instanceof SpecObjectInterface) {
+                        $item->setReferenceContext($context);
                     }
                 }
             }

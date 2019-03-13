@@ -185,13 +185,27 @@ class Responses implements SpecObjectInterface, ArrayAccess, Countable, Iterator
      * Resolves all Reference Objects in this object and replaces them with their resolution.
      * @throws UnresolvableReferenceException
      */
-    public function resolveReferences(ReferenceContext $context)
+    public function resolveReferences(ReferenceContext $context = null)
     {
         foreach ($this->_responses as $k => $response) {
             if ($response instanceof Reference) {
                 $this->_responses[$k] = $response->resolve($context);
             } else {
                 $response->resolveReferences($context);
+            }
+        }
+    }
+
+    /**
+     * Set context for all Reference Objects in this object.
+     */
+    public function setReferenceContext(ReferenceContext $context)
+    {
+        foreach ($this->_responses as $k => $response) {
+            if ($response instanceof Reference) {
+                $response->setContext($context);
+            } else {
+                $response->setReferenceContext($context);
             }
         }
     }

@@ -25,6 +25,7 @@ class Reference implements SpecObjectInterface
 {
     private $_to;
     private $_ref;
+    private $_context;
 
     private $_errors = [];
 
@@ -88,11 +89,36 @@ class Reference implements SpecObjectInterface
 
     /**
      * @param ReferenceContext $context
+     */
+    public function setContext(ReferenceContext $context)
+    {
+        $this->_context = $context;
+    }
+
+    /**
+     * @return ReferenceContext
+     */
+    public function getContext() : ?ReferenceContext
+    {
+        return $this->_context;
+    }
+
+    /**
+     * Resolve this reference.
+     * @param ReferenceContext $context the reference context to use for resolution.
+     * If not specified, `getContext()` will be called to determine the context, if
+     * that does not return a context, the UnresolvableReferenceException will be thrown.
      * @return SpecObjectInterface the resolved spec type.
      * @throws UnresolvableReferenceException in case of errors.
      */
-    public function resolve(ReferenceContext $context)
+    public function resolve(ReferenceContext $context = null)
     {
+        if ($context === null) {
+            $context = $this->getContext();
+            if ($context === null) {
+                throw new UnresolvableReferenceException('No context given for resolving reference.');
+            }
+        }
         if (($pos = strpos($this->_ref, '#')) === 0) {
             // resolve in current document
             $jsonPointer = substr($this->_ref, 1);
@@ -111,7 +137,7 @@ class Reference implements SpecObjectInterface
         /** @var $referencedObject SpecObjectInterface */
         $referencedObject = new $this->_to($referencedData);
         if ($jsonPointer === '') {
-            $referencedObject->resolveReferences(new ReferenceContext($referencedObject, $file));
+            $referencedObject->setReferenceContext(new ReferenceContext($referencedObject, $file));
         } else {
             // TODO resolving references recursively does not work as we do not know the base type of the file at this point
 //            $referencedObject->resolveReferences(new ReferenceContext($referencedObject, $file));
@@ -183,8 +209,17 @@ class Reference implements SpecObjectInterface
      * Resolves all Reference Objects in this object and replaces them with their resolution.
      * @throws UnresolvableReferenceException
      */
-    public function resolveReferences(ReferenceContext $context)
+    public function resolveReferences(ReferenceContext $context = null)
     {
         throw new UnresolvableReferenceException('Cyclic reference detected, resolveReferences() called on a Reference Object.');
+    }
+
+    /**
+     * Set context for all Reference Objects in this object.
+     * @throws UnresolvableReferenceException
+     */
+    public function setReferenceContext(ReferenceContext $context)
+    {
+        throw new UnresolvableReferenceException('Cyclic reference detected, setReferenceContext() called on a Reference Object.');
     }
 }

@@ -64,8 +64,9 @@ class Reader
     public static function readFromJsonFile(string $fileName, string $baseType = OpenApi::class, $resolveReferences = true): SpecObjectInterface
     {
         $spec = static::readFromJson(file_get_contents($fileName), $baseType);
+        $spec->setReferenceContext(new ReferenceContext($spec, $fileName));
         if ($resolveReferences) {
-            $spec->resolveReferences(new ReferenceContext($spec, $fileName));
+            $spec->resolveReferences();
         }
         return $spec;
     }
@@ -88,8 +89,9 @@ class Reader
     public static function readFromYamlFile(string $fileName, string $baseType = OpenApi::class, $resolveReferences = true): SpecObjectInterface
     {
         $spec = static::readFromYaml(file_get_contents($fileName), $baseType);
+        $spec->setReferenceContext(new ReferenceContext($spec, $fileName));
         if ($resolveReferences) {
-            $spec->resolveReferences(new ReferenceContext($spec, $fileName));
+            $spec->resolveReferences();
         }
         return $spec;
     }
