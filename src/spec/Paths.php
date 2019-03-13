@@ -192,6 +192,9 @@ class Paths implements SpecObjectInterface, ArrayAccess, Countable, IteratorAggr
     public function resolveReferences(ReferenceContext $context)
     {
         foreach ($this->_paths as $key => $path) {
+            if ($path === null) {
+                continue;
+            }
             $path->resolveReferences($context);
         }
     }

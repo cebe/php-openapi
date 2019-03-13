@@ -9,3 +9,5 @@ Dog:
   properties:
     name:
       type: string
+    food:
+      $ref: 'Food.yaml'

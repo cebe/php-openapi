@@ -102,7 +102,7 @@ class Reference implements SpecObjectInterface
 
         $file = ($pos === false) ? $this->_ref : substr($this->_ref, 0, $pos);
         $file = $context->resolveRelativeUri($file);
-        $jsonPointer = substr($this->_ref, $pos + 1);
+        $jsonPointer = ($pos === false) ? '' : substr($this->_ref, $pos + 1);
 
         // TODO could be a good idea to cache loaded files in current context to avoid loading the same files over and over again
         $fileContent = $this->fetchReferencedFile($file);
