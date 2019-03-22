@@ -20,7 +20,8 @@ READ [OpenAPI](https://www.openapis.org/) 3.0.x YAML and JSON files and make the
 This library provides a low level API for reading OpenAPI files. It is used by higher level tools to
 do awesome work:
 
-- https://github.com/cebe/yii2-openapi
+- https://github.com/cebe/yii2-openapi Code Generator for REST API from OpenAPI spec
+- https://github.com/cebe/yii2-app-api Yii framework application template for developing API-first applications
 - ... ([add yours](https://github.com/cebe/php-openapi/edit/master/README.md#L24))
 
 ## Usage
