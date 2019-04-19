@@ -30,6 +30,14 @@ abstract class SpecBaseObject implements SpecObjectInterface
     abstract protected function attributes(): array;
 
     /**
+     * @return array array of attributes default values.
+     */
+    protected function attributeDefaults(): array
+    {
+        return [];
+    }
+
+    /**
      * Perform validation on this object, check data against OpenAPI Specification rules.
      *
      * Call `addError()` in case of validation errors.
@@ -128,6 +136,35 @@ abstract class SpecBaseObject implements SpecObjectInterface
     }
 
     /**
+     * @return mixed returns the serializable data of this object for converting it
+     * to JSON or YAML.
+     */
+    public function getSerializableData()
+    {
+        $data = $this->_properties;
+        foreach ($data as $k => $v) {
+            if ($v instanceof SpecObjectInterface) {
+                $data[$k] = $v->getSerializableData();
+            } elseif (is_array($v)) {
+                $toObject = false;
+                $j = 0;
+                foreach ($v as $i => $d) {
+                    if ($j++ !== $i) {
+                        $toObject = true;
+                    }
+                    if ($d instanceof SpecObjectInterface) {
+                        $data[$k][$i] = $d->getSerializableData();
+                    }
+                }
+                if ($toObject) {
+                    $data[$k] = (object) $data[$k];
+                }
+            }
+        }
+        return (object) $data;
+    }
+
+    /**
      * Validate object data according to OpenAPI spec.
      * @return bool whether the loaded data is valid according to OpenAPI spec
      * @see getErrors()
@@ -212,6 +249,9 @@ abstract class SpecBaseObject implements SpecObjectInterface
         if (isset($this->_properties[$name])) {
             return $this->_properties[$name];
         }
+        if (isset(static::attributeDefaults()[$name])) {
+            return static::attributeDefaults()[$name];
+        }
         if (isset(static::attributes()[$name])) {
             if (is_array(static::attributes()[$name])) {
                 return [];
@@ -225,12 +265,12 @@ abstract class SpecBaseObject implements SpecObjectInterface
 
     public function __set($name, $value)
     {
-        throw new ReadonlyPropertyException('Setting read-only property: ' . \get_class($this) . '::' . $name);
+        $this->_properties[$name] = $value;
     }
 
     public function __isset($name)
     {
-        if (isset($this->_properties[$name]) || isset(static::attributes()[$name])) {
+        if (isset($this->_properties[$name]) || isset(static::attributeDefaults()[$name]) || isset(static::attributes()[$name])) {
             return $this->__get($name) !== null;
         }
 
@@ -239,7 +279,7 @@ abstract class SpecBaseObject implements SpecObjectInterface
 
     public function __unset($name)
     {
-        throw new ReadonlyPropertyException('Unsetting read-only property: ' . \get_class($this) . '::' . $name);
+        unset($this->_properties[$name]);
     }
 
     /**

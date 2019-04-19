@@ -54,6 +54,19 @@ class Paths implements SpecObjectInterface, ArrayAccess, Countable, IteratorAggr
     }
 
     /**
+     * @return mixed returns the serializable data of this object for converting it
+     * to JSON or YAML.
+     */
+    public function getSerializableData()
+    {
+        $data = [];
+        foreach ($this->_paths as $path => $pathItem) {
+            $data[$path] = ($pathItem === null) ? null : $pathItem->getSerializableData();
+        }
+        return (object) $data;
+    }
+
+    /**
      * @param string $name path name
      * @return bool
      */
@@ -69,6 +82,23 @@ class Paths implements SpecObjectInterface, ArrayAccess, Countable, IteratorAggr
     public function getPath(string $name): ?PathItem
     {
         return $this->_paths[$name] ?? null;
+    }
+
+    /**
+     * @param string $name path name
+     * @param PathItem $pathItem the path item to add
+     */
+    public function addPath(string $name, PathItem $pathItem): void
+    {
+        $this->_paths[$name] = $pathItem;
+    }
+
+    /**
+     * @param string $name path name
+     */
+    public function removePath(string $name): void
+    {
+        unset($this->_paths[$name]);
     }
 
     /**
@@ -150,7 +180,7 @@ class Paths implements SpecObjectInterface, ArrayAccess, Countable, IteratorAggr
      */
     public function offsetSet($offset, $value)
     {
-        throw new ReadonlyPropertyException('Setting read-only property: ' . \get_class($this) . '::' . $offset);
+        $this->addPath($offset, $value);
     }
 
     /**
@@ -161,7 +191,7 @@ class Paths implements SpecObjectInterface, ArrayAccess, Countable, IteratorAggr
      */
     public function offsetUnset($offset)
     {
-        throw new ReadonlyPropertyException('Unsetting read-only property: ' . \get_class($this) . '::' . $offset);
+        $this->removePath($offset);
     }
 
     /**

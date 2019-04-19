@@ -7,6 +7,7 @@
 
 namespace cebe\openapi\spec;
 
+use cebe\openapi\exceptions\TypeErrorException;
 use cebe\openapi\SpecBaseObject;
 
 /**
@@ -32,6 +33,27 @@ class MediaType extends SpecBaseObject
             'examples' => [Type::STRING, Example::class],
             'encoding' => [Type::STRING, Encoding::class],
         ];
+    }
+
+    /**
+     * Create an object from spec data.
+     * @param array $data spec data read from YAML or JSON
+     * @throws TypeErrorException in case invalid data is supplied.
+     */
+    public function __construct(array $data)
+    {
+        // instantiate Encoding by passing the schema for extracting default values
+        $encoding = $data['encoding'] ?? null;
+        unset($data['encoding']);
+
+        parent::__construct($data);
+
+        if (!empty($encoding)) {
+            foreach($encoding as $property => $encodingData) {
+                $encoding[$property] = new Encoding($encodingData, $this->schema->properties[$property] ?? null);
+            }
+            $this->encoding = $encoding;
+        }
     }
 
     /**

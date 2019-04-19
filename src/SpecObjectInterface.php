@@ -19,6 +19,12 @@ interface SpecObjectInterface
     public function __construct(array $data);
 
     /**
+     * @return mixed returns the serializable data of this object for converting it
+     * to JSON or YAML.
+     */
+    public function getSerializableData();
+
+    /**
      * Validate object data according to OpenAPI spec.
      * @return bool whether the loaded data is valid according to OpenAPI spec
      * @see getErrors()

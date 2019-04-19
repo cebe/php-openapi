@@ -15,6 +15,14 @@ install:
 test:
 	vendor/bin/phpunit
 
+# copy openapi3 json schema
+schemas/openapi-v3.0.json: vendor/oai/openapi-specification/schemas/v3.0/schema.json
+	cp $< $@
+
+schemas/openapi-v3.0.yaml: vendor/oai/openapi-specification/schemas/v3.0/schema.yaml
+	cp $< $@
+
+
 # find spec classes that are not mentioned in tests with @covers yet
 coverage: .php-openapi-covA .php-openapi-covB
 	diff $^

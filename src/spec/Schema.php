@@ -94,6 +94,16 @@ class Schema extends SpecBaseObject
     }
 
     /**
+     * @return array array of attributes default values.
+     */
+    protected function attributeDefaults(): array
+    {
+        return [
+            'additionalProperties' => true,
+        ];
+    }
+
+    /**
      * Create an object from spec data.
      * @param array $data spec data read from YAML or JSON
      * @throws TypeErrorException in case invalid data is supplied.
@@ -112,9 +122,6 @@ class Schema extends SpecBaseObject
                     );
                 }
             }
-        } else {
-            // additionalProperties defaults to true.
-            $data['additionalProperties'] = true;
         }
         parent::__construct($data);
     }

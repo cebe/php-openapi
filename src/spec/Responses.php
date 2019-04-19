@@ -54,6 +54,19 @@ class Responses implements SpecObjectInterface, ArrayAccess, Countable, Iterator
     }
 
     /**
+     * @return mixed returns the serializable data of this object for converting it
+     * to JSON or YAML.
+     */
+    public function getSerializableData()
+    {
+        $data = [];
+        foreach ($this->_responses as $statusCode => $response) {
+            $data[$statusCode] = ($response === null) ? null : $response->getSerializableData();
+        }
+        return (object) $data;
+    }
+
+    /**
      * @param string $statusCode HTTP status code
      * @return bool
      */
@@ -69,6 +82,23 @@ class Responses implements SpecObjectInterface, ArrayAccess, Countable, Iterator
     public function getResponse($statusCode)
     {
         return $this->_responses[$statusCode] ?? null;
+    }
+
+    /**
+     * @param string $statusCode HTTP status code
+     * @param Response|Reference $response
+     */
+    public function addResponse($statusCode, $response): void
+    {
+        $this->_responses[$statusCode] = $response;
+    }
+
+    /**
+     * @param string $statusCode HTTP status code
+     */
+    public function removeResponse($statusCode)
+    {
+        unset($this->_responses[$statusCode]);
     }
 
     /**
@@ -146,7 +176,7 @@ class Responses implements SpecObjectInterface, ArrayAccess, Countable, Iterator
      */
     public function offsetSet($offset, $value)
     {
-        throw new ReadonlyPropertyException('Setting read-only property: ' . \get_class($this) . '::' . $offset);
+        $this->addResponse($offset, $value);
     }
 
     /**
@@ -157,7 +187,7 @@ class Responses implements SpecObjectInterface, ArrayAccess, Countable, Iterator
      */
     public function offsetUnset($offset)
     {
-        throw new ReadonlyPropertyException('Unsetting read-only property: ' . \get_class($this) . '::' . $offset);
+        $this->removeResponse($offset);
     }
 
     /**

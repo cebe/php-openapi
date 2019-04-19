@@ -42,6 +42,15 @@ class Callback implements SpecObjectInterface
     }
 
     /**
+     * @return mixed returns the serializable data of this object for converting it
+     * to JSON or YAML.
+     */
+    public function getSerializableData()
+    {
+        return (object) [$this->_url => ($this->_pathItem === null) ? null : $this->_pathItem->getSerializableData()];
+    }
+
+    /**
      * @return string
      */
     public function getUrl()
@@ -50,11 +59,27 @@ class Callback implements SpecObjectInterface
     }
 
     /**
+     * @param string $url
+     */
+    public function setUrl(string $url): void
+    {
+        $this->_url = $url;
+    }
+
+    /**
      * @return PathItem
      */
-    public function getRequest()
+    public function getRequest(): ?PathItem
     {
         return $this->_pathItem;
+    }
+
+    /**
+     * @param PathItem $request
+     */
+    public function setRequest(?PathItem $request): void
+    {
+        $this->_pathItem = $request;
     }
 
     /**
