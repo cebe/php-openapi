@@ -1,6 +1,6 @@
 # php-openapi
 
-READ [OpenAPI](https://www.openapis.org/) 3.0.x YAML and JSON files and make the content accessible in PHP objects.
+Read and write [OpenAPI](https://www.openapis.org/) 3.0.x YAML and JSON files and make the content accessible in PHP objects.
 
 It also provides a CLI tool for validating and converting OpenAPI 3.0.x YAML and JSON files.
 
@@ -19,7 +19,7 @@ It also provides a CLI tool for validating and converting OpenAPI 3.0.x YAML and
 
 ## Used by
 
-This library provides a low level API for reading OpenAPI files. It is used by higher level tools to
+This library provides a low level API for reading and writing OpenAPI files. It is used by higher level tools to
 do awesome work:
 
 - https://github.com/cebe/yii2-openapi Code Generator for REST API from OpenAPI spec, includes fake data generator.
@@ -104,6 +104,44 @@ foreach($openapi->paths as $path => $definition) {
 
 Object properties are exactly like in the [OpenAPI specification](https://github.com/OAI/OpenAPI-Specification/blob/3.0.2/versions/3.0.2.md#openapi-specification).
 You may also access additional properties added by specification extensions.
+
+### Writing Specification files
+
+```php
+// create base description
+$openapi = new \cebe\openapi\spec\OpenApi([
+    'openapi' => '3.0.2',
+    'info' => [
+        'title' => 'Test API',
+        'version' => '1.0.0',
+    ],
+    'paths' => [],
+]);
+// manipulate description as needed
+$openapi->paths['/test'] = new \cebe\openapi\spec\PathItem([
+    'description' => 'something'
+]);
+// ...
+
+$json = \cebe\openapi\Writer::writeToJson($openapi);
+```
+
+results in the following JSON data:
+
+```json
+{
+    "openapi": "3.0.0",
+    "info": {
+        "title": "Test API",
+        "version": "1.0.0"
+    },
+    "paths": {
+        "/test": {
+            "description": "something"
+        }
+    }
+}
+```
 
 ### Reading Specification Files and Resolving References
 

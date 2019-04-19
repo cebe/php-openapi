@@ -85,6 +85,23 @@ class Paths implements SpecObjectInterface, ArrayAccess, Countable, IteratorAggr
     }
 
     /**
+     * @param string $name path name
+     * @param PathItem $pathItem the path item to add
+     */
+    public function addPath(string $name, PathItem $pathItem): void
+    {
+        $this->_paths[$name] = $pathItem;
+    }
+
+    /**
+     * @param string $name path name
+     */
+    public function removePath(string $name): void
+    {
+        unset($this->_paths[$name]);
+    }
+
+    /**
      * @return PathItem[]
      */
     public function getPaths(): array
@@ -163,7 +180,7 @@ class Paths implements SpecObjectInterface, ArrayAccess, Countable, IteratorAggr
      */
     public function offsetSet($offset, $value)
     {
-        throw new ReadonlyPropertyException('Setting read-only property: ' . \get_class($this) . '::' . $offset);
+        $this->addPath($offset, $value);
     }
 
     /**
@@ -174,7 +191,7 @@ class Paths implements SpecObjectInterface, ArrayAccess, Countable, IteratorAggr
      */
     public function offsetUnset($offset)
     {
-        throw new ReadonlyPropertyException('Unsetting read-only property: ' . \get_class($this) . '::' . $offset);
+        $this->removePath($offset);
     }
 
     /**

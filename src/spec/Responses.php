@@ -85,6 +85,23 @@ class Responses implements SpecObjectInterface, ArrayAccess, Countable, Iterator
     }
 
     /**
+     * @param string $statusCode HTTP status code
+     * @param Response|Reference $response
+     */
+    public function addResponse($statusCode, $response): void
+    {
+        $this->_responses[$statusCode] = $response;
+    }
+
+    /**
+     * @param string $statusCode HTTP status code
+     */
+    public function removeResponse($statusCode)
+    {
+        unset($this->_responses[$statusCode]);
+    }
+
+    /**
      * @return Response[]|Reference[]
      */
     public function getResponses(): array
@@ -159,7 +176,7 @@ class Responses implements SpecObjectInterface, ArrayAccess, Countable, Iterator
      */
     public function offsetSet($offset, $value)
     {
-        throw new ReadonlyPropertyException('Setting read-only property: ' . \get_class($this) . '::' . $offset);
+        $this->addResponse($offset, $value);
     }
 
     /**
@@ -170,7 +187,7 @@ class Responses implements SpecObjectInterface, ArrayAccess, Countable, Iterator
      */
     public function offsetUnset($offset)
     {
-        throw new ReadonlyPropertyException('Unsetting read-only property: ' . \get_class($this) . '::' . $offset);
+        $this->removeResponse($offset);
     }
 
     /**

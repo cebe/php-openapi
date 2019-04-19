@@ -265,7 +265,7 @@ abstract class SpecBaseObject implements SpecObjectInterface
 
     public function __set($name, $value)
     {
-        throw new ReadonlyPropertyException('Setting read-only property: ' . \get_class($this) . '::' . $name);
+        $this->_properties[$name] = $value;
     }
 
     public function __isset($name)
@@ -279,7 +279,7 @@ abstract class SpecBaseObject implements SpecObjectInterface
 
     public function __unset($name)
     {
-        throw new ReadonlyPropertyException('Unsetting read-only property: ' . \get_class($this) . '::' . $name);
+        unset($this->_properties[$name]);
     }
 
     /**

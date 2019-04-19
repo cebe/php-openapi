@@ -35,6 +35,35 @@ JSON
         );
     }
 
+    public function testWriteJsonMofify()
+    {
+        $openapi = $this->createOpenAPI();
+
+        $openapi->paths['/test'] = new \cebe\openapi\spec\PathItem([
+            'description' => 'something'
+        ]);
+
+        $json = \cebe\openapi\Writer::writeToJson($openapi);
+
+        $this->assertEquals(preg_replace('~\R~', "\n", <<<JSON
+{
+    "openapi": "3.0.0",
+    "info": {
+        "title": "Test API",
+        "version": "1.0.0"
+    },
+    "paths": {
+        "\/test": {
+            "description": "something"
+        }
+    }
+}
+JSON
+),
+            $json
+        );
+    }
+
     public function testWriteYaml()
     {
         $openapi = $this->createOpenAPI();
