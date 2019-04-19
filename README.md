@@ -11,7 +11,7 @@ It also provides a CLI tool for validating and converting OpenAPI 3.0.x YAML and
 
 ## Install
 
-    composer require cebe/php-openapi:~0.9@beta
+    composer require cebe/php-openapi
 
 ## Requirements
 
