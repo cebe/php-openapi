@@ -57,6 +57,16 @@ class Parameter extends SpecBaseObject
         ];
     }
 
+    private $_attributeDefaults = [];
+
+    /**
+     * @return array array of attributes default values.
+     */
+    protected function attributeDefaults(): array
+    {
+        return $this->_attributeDefaults;
+    }
+
     /**
      * Create an object from spec data.
      * @param array $data spec data read from YAML or JSON
@@ -64,7 +74,7 @@ class Parameter extends SpecBaseObject
      */
     public function __construct(array $data)
     {
-        if (!isset($data['style']) && isset($data['in'])) {
+        if (isset($data['in'])) {
             // Spec: Default values (based on value of in):
             // for query - form;
             // for path - simple;
@@ -73,17 +83,19 @@ class Parameter extends SpecBaseObject
             switch ($data['in']) {
                 case 'query':
                 case 'cookie':
-                    $data['style'] = 'form';
+                    $this->_attributeDefaults['style'] = 'form';
+                    $this->_attributeDefaults['explode'] = true;
                     break;
                 case 'path':
                 case 'header':
-                    $data['style'] = 'simple';
+                    $this->_attributeDefaults['style'] = 'simple';
+                    $this->_attributeDefaults['explode'] = false;
                     break;
             }
         }
-        if (!isset($data['explode']) && isset($data['style'])) {
+        if (isset($data['style'])) {
             // Spec: When style is form, the default value is true. For all other styles, the default value is false.
-            $data['explode'] = ($data['style'] === 'form');
+            $this->_attributeDefaults['explode'] = ($data['style'] === 'form');
         }
         parent::__construct($data);
     }

@@ -30,6 +30,14 @@ abstract class SpecBaseObject implements SpecObjectInterface
     abstract protected function attributes(): array;
 
     /**
+     * @return array array of attributes default values.
+     */
+    protected function attributeDefaults(): array
+    {
+        return [];
+    }
+
+    /**
      * Perform validation on this object, check data against OpenAPI Specification rules.
      *
      * Call `addError()` in case of validation errors.
@@ -241,6 +249,9 @@ abstract class SpecBaseObject implements SpecObjectInterface
         if (isset($this->_properties[$name])) {
             return $this->_properties[$name];
         }
+        if (isset(static::attributeDefaults()[$name])) {
+            return static::attributeDefaults()[$name];
+        }
         if (isset(static::attributes()[$name])) {
             if (is_array(static::attributes()[$name])) {
                 return [];
@@ -259,7 +270,7 @@ abstract class SpecBaseObject implements SpecObjectInterface
 
     public function __isset($name)
     {
-        if (isset($this->_properties[$name]) || isset(static::attributes()[$name])) {
+        if (isset($this->_properties[$name]) || isset(static::attributeDefaults()[$name]) || isset(static::attributes()[$name])) {
             return $this->__get($name) !== null;
         }
 

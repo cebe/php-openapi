@@ -45,19 +45,28 @@ class OpenApi extends SpecBaseObject
     }
 
     /**
-     * Create an object from spec data.
-     * @param array $data spec data read from YAML or JSON
-     * @throws TypeErrorException in case invalid data is supplied.
+     * @return array array of attributes default values.
      */
-    public function __construct(array $data)
+    protected function attributeDefaults(): array
     {
-        if (empty($data['servers'])) {
-            // Spec: If the servers property is not provided, or is an empty array, the default value would be a Server Object with a url value of /.
-            $data['servers'] = [
-                ['url' => '/'],
-            ];
+        return [
+            // Spec: If the servers property is not provided, or is an empty array,
+            // the default value would be a Server Object with a url value of /.
+            'servers' => [
+                new Server(['url' => '/'])
+            ],
+        ];
+    }
+
+    public function __get($name)
+    {
+        $ret = parent::__get($name);
+        // Spec: If the servers property is not provided, or is an empty array,
+        // the default value would be a Server Object with a url value of /.
+        if ($name === 'servers' && $ret === []) {
+            return $this->attributeDefaults()['servers'];
         }
-        parent::__construct($data);
+        return $ret;
     }
 
     /**

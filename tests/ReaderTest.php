@@ -1,10 +1,5 @@
 <?php
 
-/**
- *
- *
- * @author Carsten Brandt <mail@cebe.cc>
- */
 class ReaderTest extends \PHPUnit\Framework\TestCase
 {
     public function testReadJson()
