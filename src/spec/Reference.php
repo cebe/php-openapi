@@ -61,6 +61,15 @@ class Reference implements SpecObjectInterface
     }
 
     /**
+     * @return mixed returns the serializable data of this object for converting it
+     * to JSON or YAML.
+     */
+    public function getSerializableData()
+    {
+        return (object) ['$ref' => $this->_ref];
+    }
+
+    /**
      * Validate object data according to OpenAPI spec.
      * @return bool whether the loaded data is valid according to OpenAPI spec
      * @see getErrors()

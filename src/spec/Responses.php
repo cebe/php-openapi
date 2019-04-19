@@ -54,6 +54,19 @@ class Responses implements SpecObjectInterface, ArrayAccess, Countable, Iterator
     }
 
     /**
+     * @return mixed returns the serializable data of this object for converting it
+     * to JSON or YAML.
+     */
+    public function getSerializableData()
+    {
+        $data = [];
+        foreach ($this->_responses as $statusCode => $response) {
+            $data[$statusCode] = ($response === null) ? null : $response->getSerializableData();
+        }
+        return (object) $data;
+    }
+
+    /**
      * @param string $statusCode HTTP status code
      * @return bool
      */

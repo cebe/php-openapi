@@ -54,6 +54,19 @@ class Paths implements SpecObjectInterface, ArrayAccess, Countable, IteratorAggr
     }
 
     /**
+     * @return mixed returns the serializable data of this object for converting it
+     * to JSON or YAML.
+     */
+    public function getSerializableData()
+    {
+        $data = [];
+        foreach ($this->_paths as $path => $pathItem) {
+            $data[$path] = ($pathItem === null) ? null : $pathItem->getSerializableData();
+        }
+        return (object) $data;
+    }
+
+    /**
      * @param string $name path name
      * @return bool
      */

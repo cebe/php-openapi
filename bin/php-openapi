@@ -1,0 +1,287 @@
+#!/usr/bin/env php
+<?php
+
+/**
+ * PHP OpenAPI validation tool
+ *
+ * @copyright Copyright (c) 2018 Carsten Brandt <mail@cebe.cc> and contributors
+ * @license https://github.com/cebe/php-openapi/blob/master/LICENSE
+ */
+
+$composerAutoload = [
+    __DIR__ . '/../vendor/autoload.php', // standalone with "composer install" run
+    __DIR__ . '/../../../autoload.php',  // script is installed as a composer binary
+];
+foreach ($composerAutoload as $autoload) {
+    if (file_exists($autoload)) {
+        require($autoload);
+        break;
+    }
+}
+
+// Send all errors to stderr
+ini_set('display_errors', 'stderr');
+// open streams if not in CLI sapi
+defined('STDOUT') or define('STDOUT', fopen('php://stdout', 'w'));
+defined('STDERR') or define('STDERR', fopen('php://stderr', 'w'));
+
+$command = null;
+$inputFile = null;
+$inputFormat = null;
+$outputFile = null;
+$outputFormat = null;
+foreach($argv as $k => $arg) {
+    if ($k == 0) {
+        continue;
+    }
+    if ($arg[0] == '-' || $arg === 'help') {
+        $arg = explode('=', $arg);
+        switch($arg[0]) {
+            case '--read-yaml':
+                if ($inputFormat === null) {
+                    $inputFormat = 'yaml';
+                } else {
+                    error("Conflicting arguments: only one of --read-json or --read-yaml is allowed!", "usage");
+                }
+            break;
+            case '--read-json':
+                if ($inputFormat === null) {
+                    $inputFormat = 'json';
+                } else {
+                    error("Conflicting arguments: only one of --read-json or --read-yaml is allowed!", "usage");
+                }
+            break;
+            case '--write-yaml':
+                if ($outputFormat === null) {
+                    $outputFormat = 'yaml';
+                } else {
+                    error("Conflicting arguments: only one of --write-json or --write-yaml is allowed!", "usage");
+                }
+            break;
+            case '--write-json':
+                if ($outputFormat === null) {
+                    $outputFormat = 'json';
+                } else {
+                    error("Conflicting arguments: only one of --write-json or --write-yaml is allowed!", "usage");
+                }
+            break;
+            case '-h':
+            case '--help':
+            case 'help':
+                print_formatted(
+                    "\BPHP OpenAPI 3 tool\C\n"
+                    . "\B------------------\C\n"
+                    . "by Carsten Brandt <mail@cebe.cc>\n\n",
+                    STDERR
+                );
+                usage();
+            break;
+            default:
+                error("Unknown argument " . $arg[0], "usage");
+        }
+    } else {
+        if ($command === null) {
+            $command = $arg;
+        } elseif ($inputFile === null) {
+            $inputFile = $arg;
+        } elseif ($outputFile === null) {
+            if ($command !== 'convert') {
+                error("Too many arguments: " . $arg, "usage");
+            }
+            $outputFile = $arg;
+        } else {
+            error("Too many arguments: " . $arg, "usage");
+        }
+    }
+}
+switch ($command) {
+    case 'validate':
+
+        $openApi = read_input($inputFile, $inputFormat);
+
+        // Validate
+
+        $openApi->validate();
+        $errors = $openApi->getErrors();
+
+        $validator = new JsonSchema\Validator;
+        $validator->validate($openApi->getSerializableData(), (object)['$ref' => 'file://' . dirname(__DIR__) . '/schemas/openapi-v3.0.json']);
+
+        if ($validator->isValid() && empty($errors)) {
+            print_formatted("The supplied API Description \B\Gvalidates\C against the OpenAPI v3.0 schema.\n", STDERR);
+            exit(0);
+        }
+
+        if (!empty($errors)) {
+            print_formatted("\BErrors found while reading the API Description:\C\n", STDERR);
+            foreach ($errors as $error) {
+                fwrite(STDERR, "- $error\n");
+            }
+        }
+        if (!$validator->isValid()) {
+            print_formatted("\BOpenAPI v3.0 schema violations:\C\n", STDERR);
+            foreach ($validator->getErrors() as $error) {
+                print_formatted(sprintf("- [\Y%s\C] %s\n", $error['property'], $error['message']), STDERR);
+            }
+        }
+        exit(2);
+
+        break;
+    case 'convert':
+
+        $openApi = read_input($inputFile, $inputFormat);
+
+        if ($outputFile === null) {
+            if ($outputFormat === null) {
+                error("No output fromat specified, please specify --write-json or --write-yaml.", "usage");
+            } elseif ($outputFormat === 'json') {
+                fwrite(STDOUT, \cebe\openapi\Writer::writeToJson($openApi));
+            } else {
+                fwrite(STDOUT, \cebe\openapi\Writer::writeToYaml($openApi));
+            }
+            fclose(STDOUT);
+            exit(0);
+        }
+
+        if ($outputFormat === null) {
+            if (strtolower(substr($outputFile, -5, 5)) === '.json') {
+                $outputFormat = 'json';
+            } elseif (strtolower(substr($outputFile, -5, 5)) === '.yaml') {
+                $outputFormat = 'yaml';
+            } elseif (strtolower(substr($outputFile, -4, 4)) === '.yml') {
+                $outputFormat = 'yaml';
+            } else {
+                error("Failed to detect output format from file name, please specify --write-json or --write-yaml.", "usage");
+            }
+        }
+        if ($outputFormat === 'json') {
+            \cebe\openapi\Writer::writeToJsonFile($openApi, $outputFile);
+        } else {
+            \cebe\openapi\Writer::writeToYamlFile($openApi, $outputFile);
+        }
+        exit(0);
+
+        break;
+    case null:
+        error("No command specified.", "usage");
+        break;
+    default:
+        error("Unknown command " . $command, "usage");
+}
+
+
+
+// functions
+
+function read_input($inputFile, $inputFormat)
+{
+    try {
+        if ($inputFile === null) {
+            $fileContent = file_get_contents("php://stdin");
+            if ($inputFormat === null) {
+                $inputFormat = (ltrim($fileContent) === '{' && rtrim($fileContent) === '}') ? 'json' : 'yaml';
+            }
+            if ($inputFormat === 'json') {
+                $openApi = \cebe\openapi\Reader::readFromJson($fileContent);
+            } else {
+                $openApi = \cebe\openapi\Reader::readFromYaml($fileContent);
+            }
+        } else {
+            if (!file_exists($inputFile)) {
+                error("File does not exist: " . $inputFile);
+            }
+            if ($inputFormat === null) {
+                if (strtolower(substr($inputFile, -5, 5)) === '.json') {
+                    $inputFormat = 'json';
+                } elseif (strtolower(substr($inputFile, -5, 5)) === '.yaml') {
+                    $inputFormat = 'yaml';
+                } elseif (strtolower(substr($inputFile, -4, 4)) === '.yml') {
+                    $inputFormat = 'yaml';
+                } else {
+                    error("Failed to detect input format from file name, please specify --read-json or --read-yaml.", "usage");
+                }
+            }
+            if ($inputFormat === 'json') {
+                $openApi = \cebe\openapi\Reader::readFromJsonFile(realpath($inputFile));
+            } else {
+                $openApi = \cebe\openapi\Reader::readFromYamlFile(realpath($inputFile));
+            }
+        }
+    } catch (Symfony\Component\Yaml\Exception\ParseException $e) {
+        error($e->getMessage());
+        exit(1);
+    }
+    return $openApi;
+}
+
+/**
+ * Display usage information
+ */
+function usage() {
+    global $argv;
+    $cmd = basename($argv[0]);
+    print_formatted(<<<EOF
+Usage:
+  $cmd \B<command>\C [\Y<options>\C] [\Ginput.yml\C|\Ginput.json\C] [\Goutput.yml\C|\Goutput.json\C]
+
+  The following commands are available:
+
+    \Bvalidate\C   Validate the API description in the specified \Ginput file\C against the OpenAPI v3.0 schema.
+               Note: the validation is performed in two steps. The results is composed of
+                (1) structural errors found while reading the API description file, and
+                (2) violations of the OpenAPI v3.0 schema.
+
+               If no input file is specified input will be read from STDIN.
+               The tool will try to auto-detect the content type of the input, but may fail
+               to do so, you may specify \Y--read-yaml\C or \Y--read-json\C to force the file type.
+
+               Exits with code 2 on validation errors, 1 on other errors and 0 on success.
+
+    \Bconvert\C    Convert a JSON or YAML input file to JSON or YAML output file.
+               References are being resolved so the output will be a single specification file.
+
+               If no input file is specified input will be read from STDIN.
+               If no output file is specified output will be written to STDOUT.
+               The tool will try to auto-detect the content type of the input and output file, but may fail
+               to do so, you may specify \Y--read-yaml\C or \Y--read-json\C to force the input file type.
+               and \Y--write-yaml\C or \Y--write-json\C to force the output file type.
+
+    \Bhelp\C       Shows this usage information.
+
+  Options:
+
+    \Y--read-json\C   force reading input as JSON. Auto-detect if not specified.
+    \Y--read-yaml\C   force reading input as YAML. Auto-detect if not specified.
+    \Y--write-json\C  force writing output as JSON. Auto-detect if not specified.
+    \Y--write-yaml\C  force writing output as YAML. Auto-detect if not specified.
+
+
+EOF
+    , STDERR
+);
+    exit(1);
+}
+
+/**
+ * Send custom error message to stderr
+ * @param $message string
+ * @param $callback mixed called before script exit
+ * @return void
+ */
+function error($message, $callback = null) {
+    print_formatted("\B\RError\C: " . $message . "\n", STDERR);
+    if (is_callable($callback)) {
+        call_user_func($callback);
+    }
+    exit(1);
+}
+
+function print_formatted($string, $stream) {
+    fwrite($stream, strtr($string, [
+            '\\Y' => "\033[33m", // yellow
+            '\\G' => "\033[32m", // green
+            '\\R' => "\033[31m", // green
+            '\\B' => "\033[1m", // bold
+            '\\C' => "\033[0m", // clear
+    ]));
+}

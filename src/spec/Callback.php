@@ -42,6 +42,15 @@ class Callback implements SpecObjectInterface
     }
 
     /**
+     * @return mixed returns the serializable data of this object for converting it
+     * to JSON or YAML.
+     */
+    public function getSerializableData()
+    {
+        return (object) [$this->_url => ($this->_pathItem === null) ? null : $this->_pathItem->getSerializableData()];
+    }
+
+    /**
      * @return string
      */
     public function getUrl()

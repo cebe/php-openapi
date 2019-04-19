@@ -1,0 +1,58 @@
+<?php
+
+/**
+ * @copyright Copyright (c) 2018 Carsten Brandt <mail@cebe.cc> and contributors
+ * @license https://github.com/cebe/php-openapi/blob/master/LICENSE
+ */
+
+namespace cebe\openapi;
+
+use cebe\openapi\spec\OpenApi;
+use Symfony\Component\Yaml\Yaml;
+
+/**
+ * Utility class to simplify writing JSON or YAML OpenAPI specs.
+ *
+ */
+class Writer
+{
+    /**
+     * Convert OpenAPI spec object to JSON data.
+     * @param SpecObjectInterface|OpenApi the OpenApi object instance.
+     * @return string JSON string.
+     */
+    public static function writeToJson(SpecObjectInterface $object): string
+    {
+        return json_encode($object->getSerializableData(), JSON_PRETTY_PRINT);
+    }
+
+    /**
+     * Convert OpenAPI spec object to YAML data.
+     * @param SpecObjectInterface|OpenApi the OpenApi object instance.
+     * @return string YAML string.
+     */
+    public static function writeToYaml(SpecObjectInterface $object): string
+    {
+        return Yaml::dump($object->getSerializableData(), 256, 2, Yaml::DUMP_OBJECT_AS_MAP);
+    }
+
+    /**
+     * Write OpenAPI spec object to JSON file.
+     * @param SpecObjectInterface|OpenApi the OpenApi object instance.
+     * @param string $fileName file name to write to.
+     */
+    public static function writeToJsonFile(SpecObjectInterface $object, string $fileName): void
+    {
+        file_put_contents($fileName, static::writeToJson($object));
+    }
+
+    /**
+     * Write OpenAPI spec object to YAML file.
+     * @param SpecObjectInterface|OpenApi the OpenApi object instance.
+     * @param string $fileName file name to write to.
+     */
+    public static function writeToYamlFile(SpecObjectInterface $object, string $fileName): void
+    {
+        file_put_contents($fileName, static::writeToYaml($object));
+    }
+}

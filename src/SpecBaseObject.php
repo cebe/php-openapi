@@ -128,6 +128,35 @@ abstract class SpecBaseObject implements SpecObjectInterface
     }
 
     /**
+     * @return mixed returns the serializable data of this object for converting it
+     * to JSON or YAML.
+     */
+    public function getSerializableData()
+    {
+        $data = $this->_properties;
+        foreach ($data as $k => $v) {
+            if ($v instanceof SpecObjectInterface) {
+                $data[$k] = $v->getSerializableData();
+            } elseif (is_array($v)) {
+                $toObject = false;
+                $j = 0;
+                foreach ($v as $i => $d) {
+                    if ($j++ !== $i) {
+                        $toObject = true;
+                    }
+                    if ($d instanceof SpecObjectInterface) {
+                        $data[$k][$i] = $d->getSerializableData();
+                    }
+                }
+                if ($toObject) {
+                    $data[$k] = (object) $data[$k];
+                }
+            }
+        }
+        return (object) $data;
+    }
+
+    /**
      * Validate object data according to OpenAPI spec.
      * @return bool whether the loaded data is valid according to OpenAPI spec
      * @see getErrors()
