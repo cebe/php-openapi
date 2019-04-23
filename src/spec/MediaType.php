@@ -49,7 +49,7 @@ class MediaType extends SpecBaseObject
         parent::__construct($data);
 
         if (!empty($encoding)) {
-            foreach($encoding as $property => $encodingData) {
+            foreach ($encoding as $property => $encodingData) {
                 $encoding[$property] = new Encoding($encodingData, $this->schema->properties[$property] ?? null);
             }
             $this->encoding = $encoding;
