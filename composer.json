@@ -27,9 +27,11 @@
 		"cebe/indent": "*",
 		"friendsofphp/php-cs-fixer": "~2.13.1",
 		"phpunit/phpunit": "^6.5",
+
 		"oai/openapi-specification": "3.0.2",
 		"mermade/openapi3-examples": "1.0.0",
-		"apis-guru/openapi-directory": "1.0.0"
+		"apis-guru/openapi-directory": "1.0.0",
+		"nexmo/api-specification": "1.0.0"
 	},
 	"autoload": {
 		"psr-4": {
@@ -83,6 +85,18 @@
 					"url": "https://github.com/APIs-guru/openapi-directory",
 					"type": "git",
 					"reference": "openapi3.0.0"
+				}
+			}
+		},
+		{
+			"type": "package",
+			"package": {
+				"name": "nexmo/api-specification",
+				"version": "1.0.0",
+				"source": {
+					"url": "https://github.com/Nexmo/api-specification",
+					"type": "git",
+					"reference": "master"
 				}
 			}
 		}
