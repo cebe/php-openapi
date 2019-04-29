@@ -85,6 +85,7 @@ class OpenApiTest extends \PHPUnit\Framework\TestCase
 
     public function specProvider()
     {
+        // examples from https://github.com/OAI/OpenAPI-Specification/tree/master/examples/v3.0
         $oaiExamples = [
             // TODO symfony/yaml can not read this file!?
 //            __DIR__ . '/../../vendor/oai/openapi-specification/examples/v3.0/api-with-examples.yaml',
@@ -95,8 +96,7 @@ class OpenApiTest extends \PHPUnit\Framework\TestCase
             __DIR__ . '/../../vendor/oai/openapi-specification/examples/v3.0/uspto.yaml',
         ];
 
-        /** @var $it RecursiveDirectoryIterator|RecursiveIteratorIterator */
-        $it = new RecursiveIteratorIterator(new RecursiveDirectoryIterator(__DIR__ . '/../../vendor/mermade/openapi3-examples'));
+        // examples from https://github.com/Mermade/openapi3-examples
         $mermadeExamples = [
             __DIR__ . '/../../vendor/mermade/openapi3-examples/pass/externalPathItemRef.yaml',
             __DIR__ . '/../../vendor/mermade/openapi3-examples/pass/deprecated.yaml',
@@ -135,28 +135,21 @@ class OpenApiTest extends \PHPUnit\Framework\TestCase
             __DIR__ . '/../../vendor/mermade/openapi3-examples/malicious/rapid7-php.json',
             __DIR__ . '/../../vendor/mermade/openapi3-examples/malicious/rapid7-ruby.json',
 //            __DIR__ . '/../../vendor/mermade/openapi3-examples/malicious/yamlbomb.yaml',
-
-
         ];
 
+        // examples from https://github.com/APIs-guru/openapi-directory/tree/openapi3.0.0/APIs
+        $apisGuruExamples = [];
+        /** @var $it RecursiveDirectoryIterator|RecursiveIteratorIterator */
+        $it = new RecursiveIteratorIterator(new RecursiveDirectoryIterator(__DIR__ . '/../../vendor/apis-guru/openapi-directory/APIs'));
+        $it->rewind();
+        while($it->valid()) {
+            if ($it->getBasename() === 'openapi.yaml') {
+                $apisGuruExamples[] = $it->key();
+            }
+            $it->next();
+        }
 
-        // TODO test some of the failing ones
-
-//        $it->rewind();
-//        while($it->valid()) {
-//            echo $it->getSubPathName() . "\n";
-//            if (!$it->isDot()
-//                && strpos($it->getSubPathName(), '.git/') !== 0
-//                && substr($it->getSubPathName(), 0, 5) === 'pass/'
-//                && in_array(strtolower($it->getExtension()), ['json', 'yaml', 'yml'], true)
-//                && !preg_match('~^\s*swagger: \'?2\.~', file_get_contents($it->key()))
-//            ) {
-//
-//                $mermadeExamples[] = $it->key();
-//            }
-//            $it->next();
-//        }
-        $all = array_merge($oaiExamples, $mermadeExamples);
+        $all = array_merge($oaiExamples, $mermadeExamples, $apisGuruExamples);
         foreach($all as $path) {
             yield [substr($path, strlen(__DIR__ . '/../../vendor/')), basename($path)];
         }
