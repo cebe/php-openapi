@@ -22,8 +22,9 @@ It also provides a CLI tool for validating and converting OpenAPI 3.0.x YAML and
 This library provides a low level API for reading and writing OpenAPI files. It is used by higher level tools to
 do awesome work:
 
-- https://github.com/cebe/yii2-openapi Code Generator for REST API from OpenAPI spec, includes fake data generator.
-- https://github.com/cebe/yii2-app-api Yii framework application template for developing API-first applications
+- [cebe/yii2-openapi](https://github.com/cebe/yii2-openapi) Code Generator for REST API from OpenAPI spec, includes fake data generator.
+- [cebe/yii2-app-api](https://github.com/cebe/yii2-app-api) Yii framework application template for developing API-first applications
+- [lezhnev74/openapi-psr7-validator](https://github.com/lezhnev74/openapi-psr7-validator) validates PSR-7 messages (HTTP request/response) against OpenAPI specifications 
 - ... ([add yours](https://github.com/cebe/php-openapi/edit/master/README.md#L24))
 
 ## Usage
