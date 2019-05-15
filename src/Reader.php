@@ -25,6 +25,7 @@ class Reader
      * The default is [[OpenApi]] which is the base type of a OpenAPI specification file.
      * You may choose a different type if you instantiate objects from sub sections of a specification.
      * @return SpecObjectInterface|OpenApi the OpenApi object instance.
+     * The type of the returned object depends on the `$baseType` argument.
      * @throws TypeErrorException in case invalid spec data is supplied.
      */
     public static function readFromJson(string $json, string $baseType = OpenApi::class): SpecObjectInterface
@@ -39,6 +40,7 @@ class Reader
      * The default is [[OpenApi]] which is the base type of a OpenAPI specification file.
      * You may choose a different type if you instantiate objects from sub sections of a specification.
      * @return SpecObjectInterface|OpenApi the OpenApi object instance.
+     * The type of the returned object depends on the `$baseType` argument.
      * @throws TypeErrorException in case invalid spec data is supplied.
      */
     public static function readFromYaml(string $yaml, string $baseType = OpenApi::class): SpecObjectInterface
@@ -58,6 +60,7 @@ class Reader
      * If `true`, all [[Reference]] objects will be replaced with their referenced spec objects by calling
      * [[SpecObjectInterface::resolveReferences()]].
      * @return SpecObjectInterface|OpenApi the OpenApi object instance.
+     * The type of the returned object depends on the `$baseType` argument.
      * @throws TypeErrorException in case invalid spec data is supplied.
      * @throws UnresolvableReferenceException in case references could not be resolved.
      */
@@ -83,6 +86,7 @@ class Reader
      * If `true`, all [[Reference]] objects will be replaced with their referenced spec objects by calling
      * [[SpecObjectInterface::resolveReferences()]].
      * @return SpecObjectInterface|OpenApi the OpenApi object instance.
+     * The type of the returned object depends on the `$baseType` argument.
      * @throws TypeErrorException in case invalid spec data is supplied.
      * @throws UnresolvableReferenceException in case references could not be resolved.
      */
