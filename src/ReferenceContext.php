@@ -46,6 +46,9 @@ class ReferenceContext
         if (strncmp($uri, '/', 1) === 0) {
             return "file://$uri";
         }
+        if (stripos(PHP_OS, 'WIN') === 0 && strncmp(substr($uri, 1), ':\\', 2) === 0) {
+            return "file://$uri";
+        }
         throw new UnresolvableReferenceException('Can not resolve references for a specification given as a relative path.');
     }
 
