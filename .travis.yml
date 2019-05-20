@@ -12,11 +12,10 @@ matrix:
     - os: windows
       language: sh
       before_install:
-        - choco install php
+        - choco install php --version 7.3.5 
         - choco install composer 
         - choco install make
-        - export PATH="/c/Program Files (x86)/ComposerSetup:/c/tools/php72:$PATH"
-        - cat C:\ProgramData\chocolatey\logs\chocolatey.log
+        - export PATH="/c/Program Files (x86)/ComposerSetup:/c/tools/php73:$PATH"
         - echo "$PATH"
       install: composer install --prefer-dist --no-interaction
 
