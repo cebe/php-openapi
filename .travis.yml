@@ -9,11 +9,12 @@ matrix:
     - php: nightly
     # windows tests
     - os: windows
-      php: '7.1'
-    - os: windows
-      php: '7.2'
-    - os: windows
-      php: '7.3'
+      language: sh
+      before_install:
+        - choco install php
+        - choco install make
+        - export PATH=/c/tools/php72:$PATH
+
   # allow php nightly to fail until https://travis-ci.community/t/php-nightly-now-requires-oniguruma/2237 is fixed
   allow_failures:
     - php: nightly
