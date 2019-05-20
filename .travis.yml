@@ -2,11 +2,18 @@ language: php
 
 matrix:
   include:
+    # linux tests
     - php: '7.1'
     - php: '7.2'
     - php: '7.3'
     - php: nightly
+    # windows tests
     - os: windows
+      php: '7.1'
+    - os: windows
+      php: '7.2'
+    - os: windows
+      php: '7.3'
   # allow php nightly to fail until https://travis-ci.community/t/php-nightly-now-requires-oniguruma/2237 is fixed
   allow_failures:
     - php: nightly
