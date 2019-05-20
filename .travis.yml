@@ -19,9 +19,9 @@ matrix:
         - choco install make
         - ls /c/tools/php73
         #- ls /c/tools/composer
-        - wget https://raw.githubusercontent.com/composer/getcomposer.org/76a7060ccb93902cd7576b67264ad91c8a2700e2/web/installer -O - -q | php --
+        - wget https://raw.githubusercontent.com/composer/getcomposer.org/76a7060ccb93902cd7576b67264ad91c8a2700e2/web/installer -O - -q | php -dextension=php_openssl.dll --
         - ls
-      install: composer.phar install --prefer-dist --no-interaction
+      install: php -dextension=php_openssl.dll composer.phar install --prefer-dist --no-interaction
 
   # allow php nightly to fail until https://travis-ci.community/t/php-nightly-now-requires-oniguruma/2237 is fixed
   allow_failures:
