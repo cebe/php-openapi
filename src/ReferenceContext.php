@@ -88,6 +88,11 @@ class ReferenceContext
                 // absolute path
                 return 'file://' . $parts['path'];
             }
+            // convert absolute path on windows to a file:// URI. This is probably incomplete but should work with the majority of paths.
+            if (stripos(PHP_OS, 'WIN') === 0 && strncmp(substr($uri, 1), ':\\', 2) === 0) {
+                return "file:///" . strtr($uri, [' ' => '%20', '\\' => '/']);
+            }
+
             if (isset($parts['path'])) {
                 // relative path
                 return dirname($baseUri) . '/' . $parts['path'];

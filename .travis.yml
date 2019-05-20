@@ -1,12 +1,31 @@
 language: php
 
-php:
-  - '7.1'
-  - '7.2'
-  - '7.3'
-  - nightly
-
 matrix:
+  include:
+    # linux tests
+    - php: '7.1'
+    - php: '7.2'
+    - php: '7.3'
+    - php: nightly
+    # windows tests
+    # https://travis-ci.community/t/where-to-contribute-php-support-for-windows/304
+    - os: windows
+      language: sh
+      before_install:
+        - export PATH="/c/tools/composer:/c/tools/php73:$PATH"
+        - echo "$PATH"
+        - choco install php --version 7.3.5
+        - php -i
+        - cat /c/tools/php73/php.ini
+        #- choco install make
+        - ls /c/tools/php73
+        - ls /c/tools/php73/ext
+        #- ls /c/tools/composer
+        - wget https://raw.githubusercontent.com/composer/getcomposer.org/76a7060ccb93902cd7576b67264ad91c8a2700e2/web/installer -O - -q | php -dextension=/c/tools/php73/ext/php_openssl.dll --
+        - ls
+      install: php -dextension=/c/tools/php73/ext/php_openssl.dll -dextension=/c/tools/php73/ext/php_mbstring.dll composer.phar install --prefer-dist --no-interaction
+      script: php -dextension=/c/tools/php73/ext/php_openssl.dll -dextension=/c/tools/php73/ext/php_mbstring.dll vendor/phpunit/phpunit/phpunit
+
   # allow php nightly to fail until https://travis-ci.community/t/php-nightly-now-requires-oniguruma/2237 is fixed
   allow_failures:
     - php: nightly
