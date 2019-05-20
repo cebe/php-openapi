@@ -137,8 +137,13 @@ YAML
     public function testResolveFile()
     {
         $file = __DIR__ . '/data/reference/base.yaml';
+        if (stripos(PHP_OS, 'WIN') === 0) {
+            $yaml = str_replace('##ABSOLUTEPATH##', 'file:///' . strtr(dirname($file), [' ' => '%20', '\\' => '/']), file_get_contents($file));
+        } else {
+            $yaml = str_replace('##ABSOLUTEPATH##', 'file://' . dirname($file), file_get_contents($file));
+        }
         /** @var $openapi OpenApi */
-        $openapi = Reader::readFromYaml(str_replace('##ABSOLUTEPATH##', 'file://' . dirname($file), file_get_contents($file)));
+        $openapi = Reader::readFromYaml($yaml);
 
         $result = $openapi->validate();
         $this->assertEquals([], $openapi->getErrors());
