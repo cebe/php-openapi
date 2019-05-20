@@ -15,7 +15,8 @@ matrix:
         - choco install php
         - choco install composer 
         - choco install make
-        - export PATH=/c/tools/php72:$PATH
+        - export PATH="/c/Program Files (x86)/ComposerSetup:/c/tools/php72:$PATH"
+        - cat C:\ProgramData\chocolatey\logs\chocolatey.log
         - echo "$PATH"
       install: composer install --prefer-dist --no-interaction
 
