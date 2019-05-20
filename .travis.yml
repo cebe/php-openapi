@@ -1,12 +1,12 @@
 language: php
 
-php:
-  - '7.1'
-  - '7.2'
-  - '7.3'
-  - nightly
-
 matrix:
+  include:
+    - php: '7.1'
+    - php: '7.2'
+    - php: '7.3'
+    - php: nightly
+    - os: windows
   # allow php nightly to fail until https://travis-ci.community/t/php-nightly-now-requires-oniguruma/2237 is fixed
   allow_failures:
     - php: nightly
