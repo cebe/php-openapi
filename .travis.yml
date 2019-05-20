@@ -3,10 +3,10 @@ language: php
 matrix:
   include:
     # linux tests
-    - php: '7.1'
-    - php: '7.2'
-    - php: '7.3'
-    - php: nightly
+#    - php: '7.1'
+#    - php: '7.2'
+#    - php: '7.3'
+#    - php: nightly
     # windows tests
     # https://travis-ci.community/t/where-to-contribute-php-support-for-windows/304
     - os: windows
@@ -16,6 +16,8 @@ matrix:
         - choco install composer 
         - choco install make
         - export PATH=/c/tools/php72:$PATH
+        - echo "$PATH"
+      install: composer install --prefer-dist --no-interaction
 
   # allow php nightly to fail until https://travis-ci.community/t/php-nightly-now-requires-oniguruma/2237 is fixed
   allow_failures:
