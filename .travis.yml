@@ -15,15 +15,14 @@ matrix:
         - export PATH="/c/tools/composer:/c/tools/php73:$PATH"
         - echo "$PATH"
         - choco install php --version 7.3.5 
+        - php -i
         #- choco install composer --notsilent --ia '"/DEV=C:\tools\composer /PHP=C:\tools\php73 /NOTSILENT /SUPPRESSMSGBOXES /NORESTART"'
         - choco install make
         - ls /c/tools/php73
-        - ls /c/php
-        - ls /c/php/ext
         #- ls /c/tools/composer
-        - wget https://raw.githubusercontent.com/composer/getcomposer.org/76a7060ccb93902cd7576b67264ad91c8a2700e2/web/installer -O - -q | php -dextension=php_openssl.dll --
+        - wget https://raw.githubusercontent.com/composer/getcomposer.org/76a7060ccb93902cd7576b67264ad91c8a2700e2/web/installer -O - -q | php --
         - ls
-      install: php -dextension=php_openssl.dll composer.phar install --prefer-dist --no-interaction
+      install: php composer.phar install --prefer-dist --no-interaction
 
   # allow php nightly to fail until https://travis-ci.community/t/php-nightly-now-requires-oniguruma/2237 is fixed
   allow_failures:
