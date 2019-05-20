@@ -8,10 +8,12 @@ matrix:
     - php: '7.3'
     - php: nightly
     # windows tests
+    # https://travis-ci.community/t/where-to-contribute-php-support-for-windows/304
     - os: windows
       language: sh
       before_install:
         - choco install php
+        - choco install composer 
         - choco install make
         - export PATH=/c/tools/php72:$PATH
 
