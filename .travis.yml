@@ -25,6 +25,7 @@ matrix:
         - wget https://raw.githubusercontent.com/composer/getcomposer.org/76a7060ccb93902cd7576b67264ad91c8a2700e2/web/installer -O - -q | php -dextension=/c/tools/php73/ext/php_openssl.dll --
         - ls
       install: php -dextension=/c/tools/php73/ext/php_openssl.dll -dextension=/c/tools/php73/ext/php_mbstring.dll composer.phar install --prefer-dist --no-interaction
+      script: php -dextension=/c/tools/php73/ext/php_openssl.dll -dextension=/c/tools/php73/ext/php_mbstring.dll vendor/bin/phpunit
 
   # allow php nightly to fail until https://travis-ci.community/t/php-nightly-now-requires-oniguruma/2237 is fixed
   allow_failures:
