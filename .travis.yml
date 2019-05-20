@@ -13,11 +13,12 @@ matrix:
       language: sh
       before_install:
         - choco install php --version 7.3.5 
-        - choco install composer 
+        - choco install composer --notsilent --ia '"/DEV=C:\tools\php73 /PHP=C:\tools\php73"'
         - choco install make
-        - export PATH="/c/Program Files (x86)/ComposerSetup:/c/tools/php73:$PATH"
+        - export PATH="/c/tools/php73:$PATH"
         - echo "$PATH"
-      install: composer install --prefer-dist --no-interaction
+        - ls /c/tools/php73
+      #install: composer install --prefer-dist --no-interaction
 
   # allow php nightly to fail until https://travis-ci.community/t/php-nightly-now-requires-oniguruma/2237 is fixed
   allow_failures:
