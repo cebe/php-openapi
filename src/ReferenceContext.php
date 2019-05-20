@@ -47,7 +47,7 @@ class ReferenceContext
             return "file://$uri";
         }
         if (stripos(PHP_OS, 'WIN') === 0 && strncmp(substr($uri, 1), ':\\', 2) === 0) {
-            return "file://$uri";
+            return "file:///" . strtr($uri, [' ' => '%20', '\\' => '/']);
         }
         throw new UnresolvableReferenceException('Can not resolve references for a specification given as a relative path.');
     }
@@ -95,7 +95,7 @@ class ReferenceContext
 
             if (isset($parts['path'])) {
                 // relative path
-                return dirname($baseUri) . '/' . $parts['path'];
+                return $this->dirname($baseUri) . '/' . $parts['path'];
             }
 
             throw new UnresolvableReferenceException("Invalid URI: '$uri'");
@@ -114,10 +114,29 @@ class ReferenceContext
         if (isset($parts['path'][0]) && $parts['path'][0] === '/') {
             $absoluteUri .= $parts['path'];
         } elseif (isset($parts['path'])) {
-            $absoluteUri .= rtrim(dirname($baseParts['path'] ?? ''), '/') . '/' . $parts['path'];
+            $absoluteUri .= rtrim($this->dirname($baseParts['path'] ?? ''), '/') . '/' . $parts['path'];
         }
         return $absoluteUri
             . (isset($parts['query']) ? '?' . $parts['query'] : '')
             . (isset($parts['fragment']) ? '#' . $parts['fragment'] : '');
+    }
+
+    /**
+     * Returns parent directory's path.
+     * This method is similar to `dirname()` except that it will treat
+     * both \ and / as directory separators, independent of the operating system.
+     *
+     * @param string $path A path string.
+     * @return string the parent directory's path.
+     * @see http://www.php.net/manual/en/function.dirname.php
+     * @see https://github.com/yiisoft/yii2/blob/e1f6761dfd9eba1ff1260cd37b04936aaa4959b5/framework/helpers/BaseStringHelper.php#L75-L92
+     */
+    private function dirname($path)
+    {
+        $pos = mb_strrpos(str_replace('\\', '/', $path), '/');
+        if ($pos !== false) {
+            return mb_substr($path, 0, $pos);
+        }
+        return '';
     }
 }
