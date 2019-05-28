@@ -39,7 +39,7 @@ class Paths implements SpecObjectInterface, ArrayAccess, Countable, IteratorAggr
 
     /**
      * Create an object from spec data.
-     * @param array $data spec data read from YAML or JSON
+     * @param PathItem[]|array[] $data spec data read from YAML or JSON
      * @throws TypeErrorException in case invalid data is supplied.
      */
     public function __construct(array $data)
@@ -47,8 +47,16 @@ class Paths implements SpecObjectInterface, ArrayAccess, Countable, IteratorAggr
         foreach ($data as $path => $object) {
             if ($object === null) {
                 $this->_paths[$path] = null;
-            } else {
+            } elseif (is_array($object)) {
                 $this->_paths[$path] = new PathItem($object);
+            } elseif ($object instanceof PathItem) {
+                $this->_paths[$path] = $object;
+            } else {
+                $givenType = gettype($object);
+                if ($givenType === 'object') {
+                    $givenType = get_class($object);
+                }
+                throw new \TypeError(sprintf('Path MUST be either array or PathItem object, "%s" given', $givenType));
             }
         }
     }

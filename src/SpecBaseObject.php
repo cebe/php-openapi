@@ -121,9 +121,14 @@ abstract class SpecBaseObject implements SpecObjectInterface
      */
     private function instantiate($type, $data)
     {
-        if (isset($data['$ref'])) {
+        if ($data instanceof $type) {
+            return $data;
+        }
+
+        if (is_array($data) && isset($data['$ref'])) {
             return new Reference($data, $type);
         }
+
         try {
             return new $type($data);
         } catch (\TypeError $e) {

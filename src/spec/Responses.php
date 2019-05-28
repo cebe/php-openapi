@@ -42,7 +42,9 @@ class Responses implements SpecObjectInterface, ArrayAccess, Countable, Iterator
             // From Spec: This field MUST be enclosed in quotation marks (for example, "200") for compatibility between JSON and YAML.
             $statusCode = (string) $statusCode;
             if (preg_match('~^(?:default|[1-5](?:[0-9][0-9]|XX))$~', $statusCode)) {
-                if (isset($response['$ref'])) {
+                if ($response instanceof Response || $response instanceof Reference) {
+                    $this->_responses[$statusCode] = $response;
+                } elseif (isset($response['$ref'])) {
                     $this->_responses[$statusCode] = new Reference($response, Response::class);
                 } else {
                     $this->_responses[$statusCode] = new Response($response);
