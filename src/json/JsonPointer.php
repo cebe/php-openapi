@@ -1,5 +1,10 @@
 <?php
 
+/**
+ * @copyright Copyright (c) 2018 Carsten Brandt <mail@cebe.cc> and contributors
+ * @license https://github.com/cebe/php-openapi/blob/master/LICENSE
+ */
+
 namespace cebe\openapi\json;
 
 /**
@@ -101,7 +106,6 @@ final class JsonPointer
         $currentPath = '';
 
         foreach ($this->getPath() as $part) {
-
             if (is_array($currentReference)) {
 //                if (!preg_match('~^([1-9]*[0-9]|-)$~', $part)) {
 //                    throw new NonexistentJsonPointerReferenceException(

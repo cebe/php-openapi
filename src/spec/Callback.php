@@ -105,7 +105,7 @@ class Callback implements SpecObjectInterface, DocumentContextInterface
     public function getErrors(): array
     {
         if (($pos = $this->getDocumentPosition()) !== null) {
-            $errors = array_map(function($e) use ($pos) {
+            $errors = array_map(function ($e) use ($pos) {
                 return "[{$pos}] $e";
             }, $this->_errors);
         } else {

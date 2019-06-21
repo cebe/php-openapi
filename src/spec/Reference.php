@@ -99,7 +99,7 @@ class Reference implements SpecObjectInterface, DocumentContextInterface
     public function getErrors(): array
     {
         if (($pos = $this->getDocumentPosition()) !== null) {
-            return array_map(function($e) use ($pos) {
+            return array_map(function ($e) use ($pos) {
                 return "[{$pos}] $e";
             }, $this->_errors);
         } else {

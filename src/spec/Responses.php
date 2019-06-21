@@ -141,7 +141,7 @@ class Responses implements SpecObjectInterface, DocumentContextInterface, ArrayA
     {
         if (($pos = $this->getDocumentPosition()) !== null) {
             $errors = [
-                array_map(function($e) use ($pos) {
+                array_map(function ($e) use ($pos) {
                     return "[{$pos}] $e";
                 }, $this->_errors)
             ];
