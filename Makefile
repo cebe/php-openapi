@@ -1,3 +1,6 @@
+TESTCASE=
+PHPARGS=
+#PHPARGS=-dzend_extension=xdebug.so -dxdebug.remote_enable=1
 
 all:
 
@@ -11,9 +14,16 @@ fix-style:
 
 install:
 	composer install --prefer-dist --no-interaction
+	yarn install
 
 test:
-	vendor/bin/phpunit
+	php $(PHPARGS) vendor/bin/phpunit $(TESTCASE)
+
+lint:
+	php $(PHPARGS) bin/php-openapi validate tests/spec/data/reference/playlist.json
+	php $(PHPARGS) bin/php-openapi validate tests/spec/data/recursion.json
+	node_modules/.bin/speccy lint tests/spec/data/reference/playlist.json
+	node_modules/.bin/speccy lint tests/spec/data/recursion.json
 
 # copy openapi3 json schema
 schemas/openapi-v3.0.json: vendor/oai/openapi-specification/schemas/v3.0/schema.json
@@ -32,5 +42,5 @@ coverage: .php-openapi-covA .php-openapi-covB
 .php-openapi-covB:
 	grep -rhPo '^class \w+' src/spec/ | awk '{print $$2}' |grep -v '^Type$$' | sort > $@
 
-.PHONY: all check-style fix-style install test coverage
+.PHONY: all check-style fix-style install test lint coverage
 

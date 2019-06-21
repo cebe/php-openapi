@@ -8,6 +8,8 @@
  * @license https://github.com/cebe/php-openapi/blob/master/LICENSE
  */
 
+use cebe\openapi\ReferenceContext;
+
 $composerAutoload = [
     __DIR__ . '/../vendor/autoload.php', // standalone with "composer install" run
     __DIR__ . '/../../../autoload.php',  // script is installed as a composer binary
@@ -97,15 +99,21 @@ foreach($argv as $k => $arg) {
 switch ($command) {
     case 'validate':
 
+        $errors = [];
+
         $openApi = read_input($inputFile, $inputFormat);
+        $referenceContext = new ReferenceContext($openApi, $inputFile ? realpath($inputFile) : '');
+        $referenceContext->throwException = false;
+        $openApi->resolveReferences($referenceContext);
 
         // Validate
 
         $openApi->validate();
-        $errors = $openApi->getErrors();
+        $errors = array_merge($errors, $openApi->getErrors());
 
         $validator = new JsonSchema\Validator;
-        $validator->validate($openApi->getSerializableData(), (object)['$ref' => 'file://' . dirname(__DIR__) . '/schemas/openapi-v3.0.json']);
+        $openApiData = $openApi->getSerializableData();
+        $validator->validate($openApiData, (object)['$ref' => 'file://' . dirname(__DIR__) . '/schemas/openapi-v3.0.json']);
 
         if ($validator->isValid() && empty($errors)) {
             print_formatted("The supplied API Description \B\Gvalidates\C against the OpenAPI v3.0 schema.\n", STDERR);
@@ -115,13 +123,20 @@ switch ($command) {
         if (!empty($errors)) {
             print_formatted("\BErrors found while reading the API Description:\C\n", STDERR);
             foreach ($errors as $error) {
-                fwrite(STDERR, "- $error\n");
+                if (($openPos = strpos($error, '[')) !== false && ($closePos = strpos($error, ']')) !== false && $openPos < $closePos) {
+                    $error = escape_formatted(substr($error, 0, $openPos + 1)) . '\Y'
+                           . escape_formatted(substr($error, $openPos + 1, $closePos - $openPos - 1)) . '\C'
+                           . escape_formatted(substr($error, $closePos));
+                } else {
+                    $error = escape_formatted($error);
+                }
+                print_formatted("- " . $error . "\n", STDERR);
             }
         }
         if (!$validator->isValid()) {
             print_formatted("\BOpenAPI v3.0 schema violations:\C\n", STDERR);
             foreach ($validator->getErrors() as $error) {
-                print_formatted(sprintf("- [\Y%s\C] %s\n", $error['property'], $error['message']), STDERR);
+                print_formatted(sprintf("- [\Y%s\C] %s\n", escape_formatted($error['property']), escape_formatted($error['message'])), STDERR);
             }
         }
         exit(2);
@@ -130,6 +145,11 @@ switch ($command) {
     case 'convert':
 
         $openApi = read_input($inputFile, $inputFormat);
+        try {
+            $openApi->resolveReferences();
+        } catch (\cebe\openapi\exceptions\UnresolvableReferenceException $e) {
+            error("[\e[33m{$e->context}\e[0m] " . $e->getMessage());
+        }
 
         if ($outputFile === null) {
             if ($outputFormat === null) {
@@ -202,11 +222,12 @@ function read_input($inputFile, $inputFormat)
                 }
             }
             if ($inputFormat === 'json') {
-                $openApi = \cebe\openapi\Reader::readFromJsonFile(realpath($inputFile));
+                $openApi = \cebe\openapi\Reader::readFromJsonFile(realpath($inputFile), \cebe\openapi\spec\OpenApi::class, false);
             } else {
-                $openApi = \cebe\openapi\Reader::readFromYamlFile(realpath($inputFile));
+                $openApi = \cebe\openapi\Reader::readFromYamlFile(realpath($inputFile), \cebe\openapi\spec\OpenApi::class, false);
             }
         }
+        $openApi->setDocumentContext($openApi, new \cebe\openapi\json\JsonPointer(''));
     } catch (Symfony\Component\Yaml\Exception\ParseException $e) {
         error($e->getMessage());
         exit(1);
@@ -269,7 +290,7 @@ EOF
  * @return void
  */
 function error($message, $callback = null) {
-    print_formatted("\B\RError\C: " . $message . "\n", STDERR);
+    print_formatted("\B\RError\C: " . escape_formatted($message) . "\n", STDERR);
     if (is_callable($callback)) {
         call_user_func($callback);
     }
@@ -283,5 +304,10 @@ function print_formatted($string, $stream) {
             '\\R' => "\033[31m", // green
             '\\B' => "\033[1m", // bold
             '\\C' => "\033[0m", // clear
+            '\\\\' => '\\',
     ]));
+}
+
+function escape_formatted($string) {
+    return strtr($string, ['\\' => '\\\\']);
 }

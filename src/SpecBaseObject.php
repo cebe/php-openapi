@@ -7,9 +7,10 @@
 
 namespace cebe\openapi;
 
-use cebe\openapi\exceptions\ReadonlyPropertyException;
 use cebe\openapi\exceptions\TypeErrorException;
 use cebe\openapi\exceptions\UnknownPropertyException;
+use cebe\openapi\json\JsonPointer;
+use cebe\openapi\json\JsonReference;
 use cebe\openapi\spec\Reference;
 use cebe\openapi\spec\Type;
 
@@ -19,10 +20,15 @@ use cebe\openapi\spec\Type;
  * Implements property management and validation basics.
  *
  */
-abstract class SpecBaseObject implements SpecObjectInterface
+abstract class SpecBaseObject implements SpecObjectInterface, DocumentContextInterface
 {
     private $_properties = [];
     private $_errors = [];
+    private $_recursing = false;
+
+    private $_baseDocument;
+    private $_jsonPointer;
+
 
     /**
      * @return array array of attributes available in this object.
@@ -141,6 +147,12 @@ abstract class SpecBaseObject implements SpecObjectInterface
      */
     public function getSerializableData()
     {
+        if ($this->_recursing) {
+            // return a reference
+            return (object) ['$ref' => JsonReference::createFromUri('', $this->getDocumentPosition())->getReference()];
+        }
+        $this->_recursing = true;
+
         $data = $this->_properties;
         foreach ($data as $k => $v) {
             if ($v instanceof SpecObjectInterface) {
@@ -161,6 +173,9 @@ abstract class SpecBaseObject implements SpecObjectInterface
                 }
             }
         }
+
+        $this->_recursing = false;
+
         return (object) $data;
     }
 
@@ -171,19 +186,36 @@ abstract class SpecBaseObject implements SpecObjectInterface
      */
     public function validate(): bool
     {
+        // avoid recursion to get stuck in a loop
+        if ($this->_recursing) {
+            return true;
+        }
+        $this->_recursing = true;
+        $valid = true;
         foreach ($this->_properties as $v) {
             if ($v instanceof SpecObjectInterface) {
-                $v->validate();
+                if (!$v->validate()) {
+                    $valid = false;
+                }
             } elseif (is_array($v)) {
                 foreach ($v as $item) {
                     if ($item instanceof SpecObjectInterface) {
-                        $item->validate();
+                        if (!$item->validate()) {
+                            $valid = false;
+                        }
                     }
                 }
             }
         }
+        $this->_recursing = false;
+
         $this->performValidation();
-        return \count($this->getErrors()) === 0;
+
+        if (!empty($this->_errors)) {
+            $valid = false;
+        }
+
+        return $valid;
     }
 
     /**
@@ -192,7 +224,21 @@ abstract class SpecBaseObject implements SpecObjectInterface
      */
     public function getErrors(): array
     {
-        $errors = [$this->_errors];
+        // avoid recursion to get stuck in a loop
+        if ($this->_recursing) {
+            return [];
+        }
+        $this->_recursing = true;
+
+        if (($pos = $this->getDocumentPosition()) !== null) {
+            $errors = [
+                array_map(function ($e) use ($pos) {
+                    return "[{$pos->getPointer()}] $e";
+                }, $this->_errors)
+            ];
+        } else {
+            $errors = [$this->_errors];
+        }
         foreach ($this->_properties as $v) {
             if ($v instanceof SpecObjectInterface) {
                 $errors[] = $v->getErrors();
@@ -204,6 +250,9 @@ abstract class SpecBaseObject implements SpecObjectInterface
                 }
             }
         }
+
+        $this->_recursing = false;
+
         return array_merge(...$errors);
     }
 
@@ -325,5 +374,49 @@ abstract class SpecBaseObject implements SpecObjectInterface
                 }
             }
         }
+    }
+
+    /**
+     * Provide context information to the object.
+     *
+     * Context information contains a reference to the base object where it is contained in
+     * as well as a JSON pointer to its position.
+     * @param SpecObjectInterface $baseDocument
+     * @param JsonPointer $jsonPointer
+     */
+    public function setDocumentContext(SpecObjectInterface $baseDocument, JsonPointer $jsonPointer)
+    {
+        $this->_baseDocument = $baseDocument;
+        $this->_jsonPointer = $jsonPointer;
+
+        foreach ($this->_properties as $property => $value) {
+            if ($value instanceof DocumentContextInterface) {
+                $value->setDocumentContext($baseDocument, $jsonPointer->append($property));
+            } elseif (is_array($value)) {
+                foreach ($value as $k => $item) {
+                    if ($item instanceof DocumentContextInterface) {
+                        $item->setDocumentContext($baseDocument, $jsonPointer->append($property)->append($k));
+                    }
+                }
+            }
+        }
+    }
+
+    /**
+     * @return SpecObjectInterface|null returns the base document where this object is located in.
+     * Returns `null` if no context information was provided by [[setDocumentContext]].
+     */
+    public function getBaseDocument(): ?SpecObjectInterface
+    {
+        return $this->_baseDocument;
+    }
+
+    /**
+     * @return JsonPointer|null returns a JSON pointer describing the position of this object in the base document.
+     * Returns `null` if no context information was provided by [[setDocumentContext]].
+     */
+    public function getDocumentPosition(): ?JsonPointer
+    {
+        return $this->_jsonPointer;
     }
 }
