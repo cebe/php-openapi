@@ -112,7 +112,8 @@ switch ($command) {
         $errors = array_merge($errors, $openApi->getErrors());
 
         $validator = new JsonSchema\Validator;
-        $validator->validate($openApi->getSerializableData(), (object)['$ref' => 'file://' . dirname(__DIR__) . '/schemas/openapi-v3.0.json']);
+        $openApiData = $openApi->getSerializableData();
+        $validator->validate($openApiData, (object)['$ref' => 'file://' . dirname(__DIR__) . '/schemas/openapi-v3.0.json']);
 
         if ($validator->isValid() && empty($errors)) {
             print_formatted("The supplied API Description \B\Gvalidates\C against the OpenAPI v3.0 schema.\n", STDERR);
