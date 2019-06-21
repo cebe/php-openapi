@@ -9,6 +9,9 @@ namespace cebe\openapi\spec;
 
 use cebe\openapi\exceptions\TypeErrorException;
 use cebe\openapi\exceptions\UnresolvableReferenceException;
+use cebe\openapi\json\InvalidJsonPointerSyntaxException;
+use cebe\openapi\json\JsonReference;
+use cebe\openapi\json\NonexistentJsonPointerReferenceException;
 use cebe\openapi\ReferenceContext;
 use cebe\openapi\SpecObjectInterface;
 use Symfony\Component\Yaml\Yaml;
@@ -25,6 +28,7 @@ class Reference implements SpecObjectInterface
 {
     private $_to;
     private $_ref;
+    private $_jsonReference;
     private $_context;
 
     private $_errors = [];
@@ -39,25 +43,29 @@ class Reference implements SpecObjectInterface
     {
         if (!isset($data['$ref'])) {
             throw new TypeErrorException(
-                "Unable to instantiate Reference Object with data '" . print_r($data, true) . "'"
+                "Unable to instantiate Reference Object with data '" . print_r($data, true) . "'."
             );
         }
         if ($to !== null && !is_subclass_of($to, SpecObjectInterface::class, true)) {
             throw new TypeErrorException(
-                "Unable to instantiate Reference Object, Referenced Class type must implement SpecObjectInterface"
+                "Unable to instantiate Reference Object, Referenced Class type must implement SpecObjectInterface."
+            );
+        }
+        if (!is_string($data['$ref'])) {
+            throw new TypeErrorException(
+                'Unable to instantiate Reference Object, value of $ref must be a string.'
             );
         }
         $this->_to = $to;
+        $this->_ref = $data['$ref'];
+        try {
+            $this->_jsonReference = JsonReference::createFromReference($data['$ref']);
+        } catch (InvalidJsonPointerSyntaxException $e) {
+            $this->_errors[] = 'Reference: value of $ref is not a valid JSON pointer: ' . $e->getMessage();
+        }
         if (count($data) !== 1) {
             $this->_errors[] = 'Reference: additional properties are given. Only $ref should be set in a Reference Object.';
         }
-        if (!is_string($data['$ref'])) {
-            $this->_errors[] = 'Reference: value of $ref must be a string.';
-        }
-        if (!empty($this->_errors)) {
-            return;
-        }
-        $this->_ref = $data['$ref'];
     }
 
     /**
@@ -97,6 +105,14 @@ class Reference implements SpecObjectInterface
     }
 
     /**
+     * @return JsonReference the JSON Reference.
+     */
+    public function getJsonReference(): JsonReference
+    {
+        return $this->_jsonReference;
+    }
+
+    /**
      * @param ReferenceContext $context
      */
     public function setContext(ReferenceContext $context)
@@ -128,68 +144,30 @@ class Reference implements SpecObjectInterface
                 throw new UnresolvableReferenceException('No context given for resolving reference.');
             }
         }
-        if (($pos = strpos($this->_ref, '#')) === 0) {
-            // resolve in current document
-            $jsonPointer = substr($this->_ref, 1);
-            // TODO type error if resolved object does not match $this->_to ?
-            return $this->resolveJsonPointer($jsonPointer, $context->getBaseSpec());
-        }
-
-        $file = ($pos === false) ? $this->_ref : substr($this->_ref, 0, $pos);
-        $file = $context->resolveRelativeUri($file);
-        $jsonPointer = ($pos === false) ? '' : substr($this->_ref, $pos + 1);
-
-        // TODO could be a good idea to cache loaded files in current context to avoid loading the same files over and over again
-        $fileContent = $this->fetchReferencedFile($file);
-        $referencedData = $this->resolveJsonPointer($jsonPointer, $fileContent);
-
-        /** @var $referencedObject SpecObjectInterface */
-        $referencedObject = new $this->_to($referencedData);
-        if ($jsonPointer === '') {
-            $referencedObject->setReferenceContext(new ReferenceContext($referencedObject, $file));
-        } else {
-            // TODO resolving references recursively does not work as we do not know the base type of the file at this point
-//            $referencedObject->resolveReferences(new ReferenceContext($referencedObject, $file));
-        }
-
-        return $referencedObject;
-    }
-
-    private function resolveJsonPointer($jsonPointer, $currentReference)
-    {
-        if ($jsonPointer === '') {
-            // empty pointer references the whole document
-            return $currentReference;
-        }
-        $pointerParts = explode('/', ltrim($jsonPointer, '/'));
-        foreach ($pointerParts as $part) {
-            $part = strtr($part, [
-                '~1' => '/',
-                '~0' => '~',
-            ]);
-
-            if (is_array($currentReference) || $currentReference instanceof \ArrayAccess) {
-                if (!isset($currentReference[$part])) {
-                    throw new UnresolvableReferenceException(
-                        "Failed to resolve Reference '$this->_ref' to $this->_to Object: path $jsonPointer does not exist in referenced object."
-                    );
-                }
-                $currentReference = $currentReference[$part];
-            } elseif (is_object($currentReference)) {
-                if (!isset($currentReference->$part)) {
-                    throw new UnresolvableReferenceException(
-                        "Failed to resolve Reference '$this->_ref' to $this->_to Object: path $jsonPointer does not exist in referenced object."
-                    );
-                }
-                $currentReference = $currentReference->$part;
-            } else {
-                throw new UnresolvableReferenceException(
-                    "Failed to resolve Reference '$this->_ref' to $this->_to Object: path $jsonPointer does not exist in referenced object."
-                );
+        $jsonReference = $this->_jsonReference;
+        try {
+            if ($jsonReference->getDocumentUri() === '') {
+                // TODO type error if resolved object does not match $this->_to ?
+                return $jsonReference->getJsonPointer()->evaluate($context->getBaseSpec());
             }
-        }
+            $file = $context->resolveRelativeUri($jsonReference->getDocumentUri());
+            // TODO could be a good idea to cache loaded files in current context to avoid loading the same files over and over again
+            $referencedDocument = $this->fetchReferencedFile($file);
+            $referencedData = $jsonReference->getJsonPointer()->evaluate($referencedDocument);
 
-        return $currentReference;
+            /** @var $referencedObject SpecObjectInterface */
+            $referencedObject = new $this->_to($referencedData);
+            if ($jsonReference->getJsonPointer()->getPointer() === '') {
+                $referencedObject->setReferenceContext(new ReferenceContext($referencedObject, $file));
+            } else {
+                // TODO resolving references recursively does not work as we do not know the base type of the file at this point
+//                $referencedObject->resolveReferences(new ReferenceContext($referencedObject, $file));
+            }
+
+            return $referencedObject;
+        } catch (NonexistentJsonPointerReferenceException $e) {
+            throw new UnresolvableReferenceException("Failed to resolve Reference '$this->_ref' to $this->_to Object: " . $e->getMessage(), 0, $e);
+        }
     }
 
     /**
