@@ -14,10 +14,10 @@ use cebe\openapi\SpecBaseObject;
  *
  * @link https://github.com/OAI/OpenAPI-Specification/blob/3.0.2/versions/3.0.2.md#oauthFlowObject
  *
- * @property-read string $authorizationUrl
- * @property-read string $tokenUrl
- * @property-read string $refreshUrl
- * @property-read string[] $scopes
+ * @property string $authorizationUrl
+ * @property string $tokenUrl
+ * @property string $refreshUrl
+ * @property string[] $scopes
  */
 class OAuthFlow extends SpecBaseObject
 {

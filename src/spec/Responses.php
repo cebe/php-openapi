@@ -10,7 +10,6 @@ namespace cebe\openapi\spec;
 use ArrayAccess;
 use ArrayIterator;
 use cebe\openapi\DocumentContextInterface;
-use cebe\openapi\exceptions\ReadonlyPropertyException;
 use cebe\openapi\exceptions\UnresolvableReferenceException;
 use cebe\openapi\json\JsonPointer;
 use cebe\openapi\ReferenceContext;
@@ -186,7 +185,6 @@ class Responses implements SpecObjectInterface, DocumentContextInterface, ArrayA
      * @link http://php.net/manual/en/arrayaccess.offsetset.php
      * @param mixed $offset The offset to assign the value to.
      * @param mixed $value The value to set.
-     * @throws ReadonlyPropertyException because spec objects are read-only.
      */
     public function offsetSet($offset, $value)
     {
@@ -197,7 +195,6 @@ class Responses implements SpecObjectInterface, DocumentContextInterface, ArrayA
      * Offset to unset
      * @link http://php.net/manual/en/arrayaccess.offsetunset.php
      * @param mixed $offset The offset to unset.
-     * @throws ReadonlyPropertyException because spec objects are read-only.
      */
     public function offsetUnset($offset)
     {

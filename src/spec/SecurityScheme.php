@@ -14,14 +14,14 @@ use cebe\openapi\SpecBaseObject;
  *
  * @link https://github.com/OAI/OpenAPI-Specification/blob/3.0.2/versions/3.0.2.md#securitySchemeObject
  *
- * @property-read string $type
- * @property-read string $description
- * @property-read string $name
- * @property-read string $in
- * @property-read string $scheme
- * @property-read string $bearerFormat
- * @property-read OAuthFlows|null $flows
- * @property-read string $openIdConnectUrl
+ * @property string $type
+ * @property string $description
+ * @property string $name
+ * @property string $in
+ * @property string $scheme
+ * @property string $bearerFormat
+ * @property OAuthFlows|null $flows
+ * @property string $openIdConnectUrl
  */
 class SecurityScheme extends SpecBaseObject
 {

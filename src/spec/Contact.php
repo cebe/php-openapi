@@ -14,9 +14,9 @@ use cebe\openapi\SpecBaseObject;
  *
  * @link https://github.com/OAI/OpenAPI-Specification/blob/3.0.2/versions/3.0.2.md#contactObject
  *
- * @property-read string $name
- * @property-read string $url
- * @property-read string $email
+ * @property string $name
+ * @property string $url
+ * @property string $email
  *
  */
 class Contact extends SpecBaseObject

@@ -14,10 +14,10 @@ use cebe\openapi\SpecBaseObject;
  *
  * @link https://github.com/OAI/OpenAPI-Specification/blob/3.0.2/versions/3.0.2.md#exampleObject
  *
- * @property-read string $summary
- * @property-read string $description
- * @property-read mixed $value
- * @property-read string $externalValue
+ * @property string $summary
+ * @property string $description
+ * @property mixed $value
+ * @property string $externalValue
  */
 class Example extends SpecBaseObject
 {

@@ -15,21 +15,21 @@ use cebe\openapi\SpecBaseObject;
  *
  * @link https://github.com/OAI/OpenAPI-Specification/blob/3.0.2/versions/3.0.2.md#parameterObject
  *
- * @property-read string $name
- * @property-read string $in
- * @property-read string $description
- * @property-read bool $required
- * @property-read bool $deprecated
- * @property-read bool $allowEmptyValue
+ * @property string $name
+ * @property string $in
+ * @property string $description
+ * @property bool $required
+ * @property bool $deprecated
+ * @property bool $allowEmptyValue
  *
- * @property-read string $style
- * @property-read boolean $explode
- * @property-read boolean $allowReserved
- * @property-read Schema|Reference|null $schema
- * @property-read mixed $example
- * @property-read Example[] $examples
+ * @property string $style
+ * @property boolean $explode
+ * @property boolean $allowReserved
+ * @property Schema|Reference|null $schema
+ * @property mixed $example
+ * @property Example[] $examples
  *
- * @property-read MediaType[] $content
+ * @property MediaType[] $content
  */
 class Parameter extends SpecBaseObject
 {

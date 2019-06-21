@@ -15,14 +15,14 @@ use cebe\openapi\SpecBaseObject;
  *
  * @link https://github.com/OAI/OpenAPI-Specification/blob/3.0.2/versions/3.0.2.md#openapi-object
  *
- * @property-read string $openapi
- * @property-read Info $info
- * @property-read Server[] $servers
- * @property-read Paths|PathItem[] $paths
- * @property-read Components|null $components
- * @property-read SecurityRequirement[] $security
- * @property-read Tag[] $tags
- * @property-read ExternalDocumentation|null $externalDocs
+ * @property string $openapi
+ * @property Info $info
+ * @property Server[] $servers
+ * @property Paths|PathItem[] $paths
+ * @property Components|null $components
+ * @property SecurityRequirement[] $security
+ * @property Tag[] $tags
+ * @property ExternalDocumentation|null $externalDocs
  *
  */
 class OpenApi extends SpecBaseObject

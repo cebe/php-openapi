@@ -14,8 +14,8 @@ use cebe\openapi\SpecBaseObject;
  *
  * @link https://github.com/OAI/OpenAPI-Specification/blob/3.0.2/versions/3.0.2.md#externalDocumentationObject
  *
- * @property-read string $description
- * @property-read string $url
+ * @property string $description
+ * @property string $url
  *
  */
 class ExternalDocumentation extends SpecBaseObject

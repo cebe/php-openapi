@@ -14,9 +14,9 @@ use cebe\openapi\SpecBaseObject;
  *
  * @link https://github.com/OAI/OpenAPI-Specification/blob/3.0.2/versions/3.0.2.md#requestBodyObject
  *
- * @property-read string $description
- * @property-read MediaType[] $content
- * @property-read boolean $required
+ * @property string $description
+ * @property MediaType[] $content
+ * @property boolean $required
  */
 class RequestBody extends SpecBaseObject
 {

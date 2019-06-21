@@ -14,18 +14,18 @@ use cebe\openapi\SpecBaseObject;
  *
  * @link https://github.com/OAI/OpenAPI-Specification/blob/3.0.2/versions/3.0.2.md#operationObject
  *
- * @property-read string[] $tags
- * @property-read string $summary
- * @property-read string $description
- * @property-read ExternalDocumentation|null $externalDocs
- * @property-read string $operationId
- * @property-read Parameter[]|Reference[] $parameters
- * @property-read RequestBody|Reference $requestBody
- * @property-read Responses $responses
- * @property-read Callback[]|Reference[] $callbacks
- * @property-read bool $deprecated
- * @property-read SecurityRequirement[] $security
- * @property-read Server[] $servers
+ * @property string[] $tags
+ * @property string $summary
+ * @property string $description
+ * @property ExternalDocumentation|null $externalDocs
+ * @property string $operationId
+ * @property Parameter[]|Reference[] $parameters
+ * @property RequestBody|Reference $requestBody
+ * @property Responses $responses
+ * @property Callback[]|Reference[] $callbacks
+ * @property bool $deprecated
+ * @property SecurityRequirement[] $security
+ * @property Server[] $servers
  */
 class Operation extends SpecBaseObject
 {

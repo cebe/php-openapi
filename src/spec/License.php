@@ -14,8 +14,8 @@ use cebe\openapi\SpecBaseObject;
  *
  * @link https://github.com/OAI/OpenAPI-Specification/blob/3.0.2/versions/3.0.2.md#licenseObject
  *
- * @property-read string $name
- * @property-read string $url
+ * @property string $name
+ * @property string $url
  *
  */
 class License extends SpecBaseObject

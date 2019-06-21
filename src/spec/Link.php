@@ -14,12 +14,12 @@ use cebe\openapi\SpecBaseObject;
  *
  * @link https://github.com/OAI/OpenAPI-Specification/blob/3.0.2/versions/3.0.2.md#linkObject
  *
- * @property-read string $operationRef
- * @property-read string $operationId
- * @property-read array $parameters
- * @property-read mixed $requestBody
- * @property-read string $description
- * @property-read Server $server
+ * @property string $operationRef
+ * @property string $operationId
+ * @property array $parameters
+ * @property mixed $requestBody
+ * @property string $description
+ * @property Server $server
  *
  */
 class Link extends SpecBaseObject
