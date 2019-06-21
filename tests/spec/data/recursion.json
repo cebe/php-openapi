@@ -1,0 +1,49 @@
+{
+  "openapi": "3.0.1",
+  "info": {
+    "title": "test",
+    "version": "1.0",
+    "contact": {
+      "email": "somebody@example.com"
+    }
+  },
+  "paths": {
+    "/product": {
+      "description": "default"
+    }
+  },
+  "tags": [
+    {"name": "Products"}
+  ],
+  "components": {
+    "schemas": {
+      "Product": {
+        "title": "Product",
+        "description": "A product.",
+        "type": "object",
+        "properties": {
+          "isBundle": {
+            "description": "Whether this product is a bundle of multiple products.",
+            "type": "boolean"
+          },
+          "bundleProducts": {
+            "description": "If `isBundle` is `true`, `bundleProducts` will contain an array of products.",
+            "oneOf": [
+              {
+                "title": "Market Product",
+                "type": "array",
+                "items": {
+                  "$ref": "#/components/schemas/Product"
+                }
+              },
+              {
+                "description": "If this is not a bundle of products, `bundleProducts` will be `false`.",
+                "type": "boolean"
+              }
+            ]
+          }
+        }
+      }
+    }
+  }
+}

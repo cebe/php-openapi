@@ -177,7 +177,15 @@ class Reference implements SpecObjectInterface, DocumentContextInterface
 
             return $referencedObject;
         } catch (NonexistentJsonPointerReferenceException $e) {
-            throw new UnresolvableReferenceException("Failed to resolve Reference '$this->_ref' to $this->_to Object: " . $e->getMessage(), 0, $e);
+            $message = "Failed to resolve Reference '$this->_ref' to $this->_to Object: " . $e->getMessage();
+            if ($context->throwException) {
+                $exception = new UnresolvableReferenceException($message, 0, $e);
+                $exception->context = $this->getDocumentPosition();
+                throw $exception;
+            }
+            $this->_errors[] = $message;
+            $this->_jsonReference = null;
+            return $this;
         }
     }
 
@@ -195,11 +203,13 @@ class Reference implements SpecObjectInterface, DocumentContextInterface
                 return Yaml::parse($content);
             }
         } catch (\Throwable $e) {
-            throw new UnresolvableReferenceException(
+            $exception = new UnresolvableReferenceException(
                 "Failed to resolve Reference '$this->_ref' to $this->_to Object: " . $e->getMessage(),
                 $e->getCode(),
                 $e
             );
+            $exception->context = $this->getDocumentPosition();
+            throw $exception;
         }
     }
 
