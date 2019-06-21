@@ -7,9 +7,11 @@
 
 namespace cebe\openapi\spec;
 
+use cebe\openapi\DocumentContextInterface;
 use cebe\openapi\exceptions\TypeErrorException;
 use cebe\openapi\exceptions\UnresolvableReferenceException;
 use cebe\openapi\json\InvalidJsonPointerSyntaxException;
+use cebe\openapi\json\JsonPointer;
 use cebe\openapi\json\JsonReference;
 use cebe\openapi\json\NonexistentJsonPointerReferenceException;
 use cebe\openapi\ReferenceContext;
@@ -24,12 +26,15 @@ use Symfony\Component\Yaml\Yaml;
  * @link https://tools.ietf.org/html/rfc6901
  *
  */
-class Reference implements SpecObjectInterface
+class Reference implements SpecObjectInterface, DocumentContextInterface
 {
     private $_to;
     private $_ref;
     private $_jsonReference;
     private $_context;
+
+    private $_baseDocument;
+    private $_jsonPointer;
 
     private $_errors = [];
 
@@ -93,7 +98,13 @@ class Reference implements SpecObjectInterface
      */
     public function getErrors(): array
     {
-        return $this->_errors;
+        if (($pos = $this->getDocumentPosition()) !== null) {
+            return array_map(function($e) use ($pos) {
+                return "[{$pos}] $e";
+            }, $this->_errors);
+        } else {
+            return $this->_errors;
+        }
     }
 
     /**
@@ -208,5 +219,37 @@ class Reference implements SpecObjectInterface
     public function setReferenceContext(ReferenceContext $context)
     {
         throw new UnresolvableReferenceException('Cyclic reference detected, setReferenceContext() called on a Reference Object.');
+    }
+
+    /**
+     * Provide context information to the object.
+     *
+     * Context information contains a reference to the base object where it is contained in
+     * as well as a JSON pointer to its position.
+     * @param SpecObjectInterface $baseDocument
+     * @param JsonPointer $jsonPointer
+     */
+    public function setDocumentContext(SpecObjectInterface $baseDocument, JsonPointer $jsonPointer)
+    {
+        $this->_baseDocument = $baseDocument;
+        $this->_jsonPointer = $jsonPointer;
+    }
+
+    /**
+     * @return SpecObjectInterface|null returns the base document where this object is located in.
+     * Returns `null` if no context information was provided by [[setDocumentContext]].
+     */
+    public function getBaseDocument(): ?SpecObjectInterface
+    {
+        return $this->_baseDocument;
+    }
+
+    /**
+     * @return JsonPointer|null returns a JSON pointer describing the position of this object in the base document.
+     * Returns `null` if no context information was provided by [[setDocumentContext]].
+     */
+    public function getDocumentPosition(): ?JsonPointer
+    {
+        return $this->_jsonPointer;
     }
 }

@@ -32,6 +32,11 @@ final class JsonPointer
         $this->_pointer = $pointer;
     }
 
+    public function __toString()
+    {
+        return $this->_pointer;
+    }
+
     /**
      * @return string returns the JSON Pointer.
      */
@@ -50,6 +55,34 @@ final class JsonPointer
         }
         $pointer = substr($this->_pointer, 1);
         return array_map([get_class($this), 'decode'], explode('/', $pointer));
+    }
+
+    /**
+     * Append a new part to the JSON path.
+     * @param string $subpath the path element to append.
+     * @return JsonPointer a new JSON pointer pointing to the subpath.
+     */
+    public function append(string $subpath): JsonPointer
+    {
+        return new JsonPointer($this->_pointer . '/' . static::encode($subpath));
+    }
+
+    /**
+     * Returns a JSON pointer to the parent path element of this pointer.
+     * @return JsonPointer|null a new JSON pointer pointing to the parent element
+     * or null if this pointer already points to the document root.
+     */
+    public function parent(): ?JsonPointer
+    {
+        $path = $this->getPath();
+        if (empty($path)) {
+            return null;
+        }
+        array_pop($path);
+        if (empty($path)) {
+            return new JsonPointer('');
+        }
+        return new JsonPointer('/' . implode('/', array_map([get_class($this), 'encode'], $path)));
     }
 
     /**

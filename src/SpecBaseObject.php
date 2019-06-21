@@ -7,9 +7,9 @@
 
 namespace cebe\openapi;
 
-use cebe\openapi\exceptions\ReadonlyPropertyException;
 use cebe\openapi\exceptions\TypeErrorException;
 use cebe\openapi\exceptions\UnknownPropertyException;
+use cebe\openapi\json\JsonPointer;
 use cebe\openapi\spec\Reference;
 use cebe\openapi\spec\Type;
 
@@ -19,10 +19,14 @@ use cebe\openapi\spec\Type;
  * Implements property management and validation basics.
  *
  */
-abstract class SpecBaseObject implements SpecObjectInterface
+abstract class SpecBaseObject implements SpecObjectInterface, DocumentContextInterface
 {
     private $_properties = [];
     private $_errors = [];
+
+    private $_baseDocument;
+    private $_jsonPointer;
+
 
     /**
      * @return array array of attributes available in this object.
@@ -192,7 +196,15 @@ abstract class SpecBaseObject implements SpecObjectInterface
      */
     public function getErrors(): array
     {
-        $errors = [$this->_errors];
+        if (($pos = $this->getDocumentPosition()) !== null) {
+            $errors = [
+                array_map(function($e) use ($pos) {
+                    return "[{$pos->getPointer()}] $e";
+                }, $this->_errors)
+            ];
+        } else {
+            $errors = [$this->_errors];
+        }
         foreach ($this->_properties as $v) {
             if ($v instanceof SpecObjectInterface) {
                 $errors[] = $v->getErrors();
@@ -325,5 +337,49 @@ abstract class SpecBaseObject implements SpecObjectInterface
                 }
             }
         }
+    }
+
+    /**
+     * Provide context information to the object.
+     *
+     * Context information contains a reference to the base object where it is contained in
+     * as well as a JSON pointer to its position.
+     * @param SpecObjectInterface $baseDocument
+     * @param JsonPointer $jsonPointer
+     */
+    public function setDocumentContext(SpecObjectInterface $baseDocument, JsonPointer $jsonPointer)
+    {
+        $this->_baseDocument = $baseDocument;
+        $this->_jsonPointer = $jsonPointer;
+
+        foreach ($this->_properties as $property => $value) {
+            if ($value instanceof DocumentContextInterface) {
+                $value->setDocumentContext($baseDocument, $jsonPointer->append($property));
+            } elseif (is_array($value)) {
+                foreach ($value as $k => $item) {
+                    if ($item instanceof DocumentContextInterface) {
+                        $item->setDocumentContext($baseDocument, $jsonPointer->append($property)->append($k));
+                    }
+                }
+            }
+        }
+    }
+
+    /**
+     * @return SpecObjectInterface|null returns the base document where this object is located in.
+     * Returns `null` if no context information was provided by [[setDocumentContext]].
+     */
+    public function getBaseDocument(): ?SpecObjectInterface
+    {
+        return $this->_baseDocument;
+    }
+
+    /**
+     * @return JsonPointer|null returns a JSON pointer describing the position of this object in the base document.
+     * Returns `null` if no context information was provided by [[setDocumentContext]].
+     */
+    public function getDocumentPosition(): ?JsonPointer
+    {
+        return $this->_jsonPointer;
     }
 }

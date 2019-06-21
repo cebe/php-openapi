@@ -1,5 +1,6 @@
 <?php
 
+use cebe\openapi\json\JsonPointer;
 use cebe\openapi\json\JsonReference;
 
 class JsonPointerTest extends \PHPUnit\Framework\TestCase
@@ -26,7 +27,7 @@ class JsonPointerTest extends \PHPUnit\Framework\TestCase
      */
     public function testEncode($encoded, $decoded)
     {
-        $this->assertEquals($encoded, \cebe\openapi\json\JsonPointer::encode($decoded));
+        $this->assertEquals($encoded, JsonPointer::encode($decoded));
     }
 
     /**
@@ -34,7 +35,7 @@ class JsonPointerTest extends \PHPUnit\Framework\TestCase
      */
     public function testDecode($encoded, $decoded)
     {
-        $this->assertEquals($decoded, \cebe\openapi\json\JsonPointer::decode($encoded));
+        $this->assertEquals($decoded, JsonPointer::decode($encoded));
     }
 
     /**
@@ -96,7 +97,7 @@ JSON;
      */
     public function testUriEncoding($jsonPointer, $uriJsonPointer, $expectedEvaluation)
     {
-        $pointer = new \cebe\openapi\json\JsonPointer($jsonPointer);
+        $pointer = new JsonPointer($jsonPointer);
         $this->assertSame($jsonPointer, $pointer->getPointer());
         $this->assertSame($uriJsonPointer, JsonReference::createFromUri('', $pointer)->getReference());
 
@@ -117,7 +118,7 @@ JSON;
     public function testEvaluation($jsonPointer, $uriJsonPointer, $expectedEvaluation)
     {
         $document = json_decode($this->rfcJsonDocument());
-        $pointer = new \cebe\openapi\json\JsonPointer($jsonPointer);
+        $pointer = new JsonPointer($jsonPointer);
         $this->assertEquals($expectedEvaluation, $pointer->evaluate($document));
 
         $document = json_decode($this->rfcJsonDocument());
@@ -132,21 +133,44 @@ JSON;
                 "" => 42
             ]
         ];
-        $pointer = new \cebe\openapi\json\JsonPointer('//');
+        $pointer = new JsonPointer('//');
         $this->assertSame(42, $pointer->evaluate($document));
 
         $document = [
             "1" => null,
         ];
-        $pointer = new \cebe\openapi\json\JsonPointer('/1');
+        $pointer = new JsonPointer('/1');
         $this->assertNull($pointer->evaluate($document));
 
         $document = (object) [
             "k" => null,
         ];
-        $pointer = new \cebe\openapi\json\JsonPointer('/k');
+        $pointer = new JsonPointer('/k');
         $this->assertNull($pointer->evaluate($document));
     }
 
+    public function testParent()
+    {
+        $this->assertNull((new JsonPointer(''))->parent());
+        $this->assertSame('', (new JsonPointer('/'))->parent()->getPointer());
+        $this->assertSame('/', (new JsonPointer('//'))->parent()->getPointer());
+        $this->assertSame('', (new JsonPointer('/some'))->parent()->getPointer());
+        $this->assertSame('/some', (new JsonPointer('/some/path'))->parent()->getPointer());
+        $this->assertSame('', (new JsonPointer('/a~1b'))->parent()->getPointer());
+        $this->assertSame('/a~1b', (new JsonPointer('/a~1b/path'))->parent()->getPointer());
+        $this->assertSame('/some', (new JsonPointer('/some/a~1b'))->parent()->getPointer());
+    }
 
+    public function testAppend()
+    {
+        $this->assertSame('/some', (new JsonPointer(''))->append('some')->getPointer());
+        $this->assertSame('/~1some', (new JsonPointer(''))->append('/some')->getPointer());
+        $this->assertSame('/~0some', (new JsonPointer(''))->append('~some')->getPointer());
+        $this->assertSame('/path/some', (new JsonPointer('/path'))->append('some')->getPointer());
+        $this->assertSame('/path/~1some', (new JsonPointer('/path'))->append('/some')->getPointer());
+        $this->assertSame('/path/~0some', (new JsonPointer('/path'))->append('~some')->getPointer());
+        $this->assertSame('/a~1b/some', (new JsonPointer('/a~1b'))->append('some')->getPointer());
+        $this->assertSame('/a~1b/~1some', (new JsonPointer('/a~1b'))->append('/some')->getPointer());
+        $this->assertSame('/a~1b/~0some', (new JsonPointer('/a~1b'))->append('~some')->getPointer());
+    }
 }

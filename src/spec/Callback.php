@@ -7,8 +7,10 @@
 
 namespace cebe\openapi\spec;
 
+use cebe\openapi\DocumentContextInterface;
 use cebe\openapi\exceptions\TypeErrorException;
 use cebe\openapi\exceptions\UnresolvableReferenceException;
+use cebe\openapi\json\JsonPointer;
 use cebe\openapi\ReferenceContext;
 use cebe\openapi\SpecObjectInterface;
 
@@ -18,12 +20,15 @@ use cebe\openapi\SpecObjectInterface;
  * @link https://github.com/OAI/OpenAPI-Specification/blob/3.0.2/versions/3.0.2.md#callbackObject
  *
  */
-class Callback implements SpecObjectInterface
+class Callback implements SpecObjectInterface, DocumentContextInterface
 {
     private $_url;
     private $_pathItem;
 
     private $_errors = [];
+
+    private $_baseDocument;
+    private $_jsonPointer;
 
 
     /**
@@ -99,8 +104,16 @@ class Callback implements SpecObjectInterface
      */
     public function getErrors(): array
     {
+        if (($pos = $this->getDocumentPosition()) !== null) {
+            $errors = array_map(function($e) use ($pos) {
+                return "[{$pos}] $e";
+            }, $this->_errors);
+        } else {
+            $errors = $this->_errors;
+        }
+
         $pathItemErrors = $this->_pathItem === null ? [] : $this->_pathItem->getErrors();
-        return array_merge($this->_errors, $pathItemErrors);
+        return array_merge($errors, $pathItemErrors);
     }
 
     /**
@@ -122,5 +135,41 @@ class Callback implements SpecObjectInterface
         if ($this->_pathItem !== null) {
             $this->_pathItem->setReferenceContext($context);
         }
+    }
+
+    /**
+     * Provide context information to the object.
+     *
+     * Context information contains a reference to the base object where it is contained in
+     * as well as a JSON pointer to its position.
+     * @param SpecObjectInterface $baseDocument
+     * @param JsonPointer $jsonPointer
+     */
+    public function setDocumentContext(SpecObjectInterface $baseDocument, JsonPointer $jsonPointer)
+    {
+        $this->_baseDocument = $baseDocument;
+        $this->_jsonPointer = $jsonPointer;
+
+        if ($this->_pathItem instanceof DocumentContextInterface) {
+            $this->_pathItem->setDocumentContext($baseDocument, $jsonPointer->append($this->_url));
+        }
+    }
+
+    /**
+     * @return SpecObjectInterface|null returns the base document where this object is located in.
+     * Returns `null` if no context information was provided by [[setDocumentContext]].
+     */
+    public function getBaseDocument(): ?SpecObjectInterface
+    {
+        return $this->_baseDocument;
+    }
+
+    /**
+     * @return JsonPointer|null returns a JSON pointer describing the position of this object in the base document.
+     * Returns `null` if no context information was provided by [[setDocumentContext]].
+     */
+    public function getDocumentPosition(): ?JsonPointer
+    {
+        return $this->_jsonPointer;
     }
 }
