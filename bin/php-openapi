@@ -144,7 +144,11 @@ switch ($command) {
     case 'convert':
 
         $openApi = read_input($inputFile, $inputFormat);
-        $openApi->resolveReferences();
+        try {
+            $openApi->resolveReferences();
+        } catch (\cebe\openapi\exceptions\UnresolvableReferenceException $e) {
+            error("[\e[33m{$e->context}\e[0m] " . $e->getMessage());
+        }
 
         if ($outputFile === null) {
             if ($outputFormat === null) {
