@@ -1,3 +1,6 @@
+TESTCASE=
+PHPARGS=
+#PHPARGS=-dzend_extension=xdebug.so -dxdebug.remote_enable=1
 
 all:
 
@@ -13,7 +16,7 @@ install:
 	composer install --prefer-dist --no-interaction
 
 test:
-	vendor/bin/phpunit
+	php $(PHPARGS) vendor/bin/phpunit $(TESTCASE)
 
 # copy openapi3 json schema
 schemas/openapi-v3.0.json: vendor/oai/openapi-specification/schemas/v3.0/schema.json
