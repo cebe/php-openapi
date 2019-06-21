@@ -3,6 +3,7 @@
 use cebe\openapi\Reader;
 use cebe\openapi\spec\OpenApi;
 use cebe\openapi\spec\Reference;
+use cebe\openapi\spec\RequestBody;
 use cebe\openapi\spec\Response;
 use cebe\openapi\spec\Schema;
 use cebe\openapi\spec\Example;
@@ -193,4 +194,26 @@ YAML
         $this->assertArrayHasKey('name', $openapi->components->schemas['Dog']->properties);
     }
 
+    public function testResolvePaths()
+    {
+        /** @var $openapi OpenApi */
+        $openapi = Reader::readFromJsonFile(__DIR__ . '/data/reference/playlist.json', OpenApi::class, false);
+
+        $result = $openapi->validate();
+        $this->assertEquals([], $openapi->getErrors());
+        $this->assertTrue($result);
+
+        $playlistsBody = $openapi->paths['/playlist']->post->requestBody;
+        $playlistBody = $openapi->paths['/playlist/{id}']->patch->requestBody;
+
+        $this->assertInstanceOf(RequestBody::class, $playlistsBody);
+        $this->assertInstanceOf(Reference::class, $playlistBody);
+
+        $openapi->resolveReferences();
+
+        $newPlaylistBody = $openapi->paths['/playlist/{id}']->patch->requestBody;
+        $this->assertInstanceOf(RequestBody::class, $playlistsBody);
+        $this->assertInstanceOf(RequestBody::class, $newPlaylistBody);
+        $this->assertSame($playlistsBody, $newPlaylistBody);
+    }
 }
