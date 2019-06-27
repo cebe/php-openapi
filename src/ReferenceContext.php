@@ -15,6 +15,11 @@ use cebe\openapi\exceptions\UnresolvableReferenceException;
 class ReferenceContext
 {
     /**
+     * @var bool whether to throw UnresolvableReferenceException in case a reference can not
+     * be resolved. If `false` errors are added to the Reference Objects error list instead.
+     */
+    public $throwException = true;
+    /**
      * @var SpecObjectInterface
      */
     private $_baseSpec;

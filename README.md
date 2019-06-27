@@ -5,6 +5,7 @@ Read and write [OpenAPI](https://www.openapis.org/) 3.0.x YAML and JSON files an
 It also provides a CLI tool for validating and converting OpenAPI 3.0.x YAML and JSON files.
 
 [![Latest Stable Version](https://poser.pugx.org/cebe/php-openapi/v/stable)](https://packagist.org/packages/cebe/php-openapi)
+[![Total Downloads](https://poser.pugx.org/cebe/php-openapi/downloads)](https://packagist.org/packages/cebe/php-openapi)
 [![Build Status](https://travis-ci.org/cebe/php-openapi.svg?branch=master)](https://travis-ci.org/cebe/php-openapi)
 [![License](https://poser.pugx.org/cebe/php-openapi/license)](https://packagist.org/packages/cebe/php-openapi)
 
@@ -226,6 +227,8 @@ This library is currently work in progress, the following list tracks completene
   - [x] Security Requirement Object
 
 # Support
+
+**Need help with your API project?**
 
 Professional support, consulting as well as software development services are available:
 

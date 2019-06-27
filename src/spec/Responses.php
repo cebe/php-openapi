@@ -9,8 +9,9 @@ namespace cebe\openapi\spec;
 
 use ArrayAccess;
 use ArrayIterator;
-use cebe\openapi\exceptions\ReadonlyPropertyException;
+use cebe\openapi\DocumentContextInterface;
 use cebe\openapi\exceptions\UnresolvableReferenceException;
+use cebe\openapi\json\JsonPointer;
 use cebe\openapi\ReferenceContext;
 use cebe\openapi\SpecObjectInterface;
 use Countable;
@@ -22,13 +23,16 @@ use Traversable;
  *
  * @link https://github.com/OAI/OpenAPI-Specification/blob/3.0.2/versions/3.0.2.md#responsesObject
  */
-class Responses implements SpecObjectInterface, ArrayAccess, Countable, IteratorAggregate
+class Responses implements SpecObjectInterface, DocumentContextInterface, ArrayAccess, Countable, IteratorAggregate
 {
     /**
      * @var Response[]|Reference[]
      */
     private $_responses = [];
     private $_errors = [];
+
+    private $_baseDocument;
+    private $_jsonPointer;
 
 
     /**
@@ -136,7 +140,16 @@ class Responses implements SpecObjectInterface, ArrayAccess, Countable, Iterator
      */
     public function getErrors(): array
     {
-        $errors = [$this->_errors];
+        if (($pos = $this->getDocumentPosition()) !== null) {
+            $errors = [
+                array_map(function ($e) use ($pos) {
+                    return "[{$pos}] $e";
+                }, $this->_errors)
+            ];
+        } else {
+            $errors = [$this->_errors];
+        }
+
         foreach ($this->_responses as $response) {
             if ($response === null) {
                 continue;
@@ -174,7 +187,6 @@ class Responses implements SpecObjectInterface, ArrayAccess, Countable, Iterator
      * @link http://php.net/manual/en/arrayaccess.offsetset.php
      * @param mixed $offset The offset to assign the value to.
      * @param mixed $value The value to set.
-     * @throws ReadonlyPropertyException because spec objects are read-only.
      */
     public function offsetSet($offset, $value)
     {
@@ -185,7 +197,6 @@ class Responses implements SpecObjectInterface, ArrayAccess, Countable, Iterator
      * Offset to unset
      * @link http://php.net/manual/en/arrayaccess.offsetunset.php
      * @param mixed $offset The offset to unset.
-     * @throws ReadonlyPropertyException because spec objects are read-only.
      */
     public function offsetUnset($offset)
     {
@@ -219,9 +230,9 @@ class Responses implements SpecObjectInterface, ArrayAccess, Countable, Iterator
      */
     public function resolveReferences(ReferenceContext $context = null)
     {
-        foreach ($this->_responses as $k => $response) {
+        foreach ($this->_responses as $key => $response) {
             if ($response instanceof Reference) {
-                $this->_responses[$k] = $response->resolve($context);
+                $this->_responses[$key] = $response->resolve($context);
             } else {
                 $response->resolveReferences($context);
             }
@@ -233,12 +244,50 @@ class Responses implements SpecObjectInterface, ArrayAccess, Countable, Iterator
      */
     public function setReferenceContext(ReferenceContext $context)
     {
-        foreach ($this->_responses as $k => $response) {
+        foreach ($this->_responses as $key => $response) {
             if ($response instanceof Reference) {
                 $response->setContext($context);
             } else {
                 $response->setReferenceContext($context);
             }
         }
+    }
+
+    /**
+     * Provide context information to the object.
+     *
+     * Context information contains a reference to the base object where it is contained in
+     * as well as a JSON pointer to its position.
+     * @param SpecObjectInterface $baseDocument
+     * @param JsonPointer $jsonPointer
+     */
+    public function setDocumentContext(SpecObjectInterface $baseDocument, JsonPointer $jsonPointer)
+    {
+        $this->_baseDocument = $baseDocument;
+        $this->_jsonPointer = $jsonPointer;
+
+        foreach ($this->_responses as $key => $response) {
+            if ($response instanceof DocumentContextInterface) {
+                $response->setDocumentContext($baseDocument, $jsonPointer->append($key));
+            }
+        }
+    }
+
+    /**
+     * @return SpecObjectInterface|null returns the base document where this object is located in.
+     * Returns `null` if no context information was provided by [[setDocumentContext]].
+     */
+    public function getBaseDocument(): ?SpecObjectInterface
+    {
+        return $this->_baseDocument;
+    }
+
+    /**
+     * @return JsonPointer|null returns a JSON pointer describing the position of this object in the base document.
+     * Returns `null` if no context information was provided by [[setDocumentContext]].
+     */
+    public function getDocumentPosition(): ?JsonPointer
+    {
+        return $this->_jsonPointer;
     }
 }

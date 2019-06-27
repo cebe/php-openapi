@@ -9,9 +9,10 @@ namespace cebe\openapi\spec;
 
 use ArrayAccess;
 use ArrayIterator;
-use cebe\openapi\exceptions\ReadonlyPropertyException;
+use cebe\openapi\DocumentContextInterface;
 use cebe\openapi\exceptions\TypeErrorException;
 use cebe\openapi\exceptions\UnresolvableReferenceException;
+use cebe\openapi\json\JsonPointer;
 use cebe\openapi\ReferenceContext;
 use cebe\openapi\SpecObjectInterface;
 use Countable;
@@ -27,7 +28,7 @@ use Traversable;
  * @link https://github.com/OAI/OpenAPI-Specification/blob/3.0.2/versions/3.0.2.md#pathsObject
  *
  */
-class Paths implements SpecObjectInterface, ArrayAccess, Countable, IteratorAggregate
+class Paths implements SpecObjectInterface, DocumentContextInterface, ArrayAccess, Countable, IteratorAggregate
 {
     /**
      * @var PathItem[]
@@ -35,6 +36,9 @@ class Paths implements SpecObjectInterface, ArrayAccess, Countable, IteratorAggr
     private $_paths = [];
 
     private $_errors = [];
+
+    private $_baseDocument;
+    private $_jsonPointer;
 
 
     /**
@@ -146,7 +150,16 @@ class Paths implements SpecObjectInterface, ArrayAccess, Countable, IteratorAggr
      */
     public function getErrors(): array
     {
-        $errors = [$this->_errors];
+        if (($pos = $this->getDocumentPosition()) !== null) {
+            $errors = [
+                array_map(function ($e) use ($pos) {
+                    return "[{$pos}] $e";
+                }, $this->_errors)
+            ];
+        } else {
+            $errors = [$this->_errors];
+        }
+
         foreach ($this->_paths as $path) {
             if ($path === null) {
                 continue;
@@ -184,7 +197,6 @@ class Paths implements SpecObjectInterface, ArrayAccess, Countable, IteratorAggr
      * @link http://php.net/manual/en/arrayaccess.offsetset.php
      * @param mixed $offset The offset to assign the value to.
      * @param mixed $value The value to set.
-     * @throws ReadonlyPropertyException because spec objects are read-only.
      */
     public function offsetSet($offset, $value)
     {
@@ -195,7 +207,6 @@ class Paths implements SpecObjectInterface, ArrayAccess, Countable, IteratorAggr
      * Offset to unset
      * @link http://php.net/manual/en/arrayaccess.offsetunset.php
      * @param mixed $offset The offset to unset.
-     * @throws ReadonlyPropertyException because spec objects are read-only.
      */
     public function offsetUnset($offset)
     {
@@ -248,5 +259,43 @@ class Paths implements SpecObjectInterface, ArrayAccess, Countable, IteratorAggr
             }
             $path->setReferenceContext($context);
         }
+    }
+
+    /**
+     * Provide context information to the object.
+     *
+     * Context information contains a reference to the base object where it is contained in
+     * as well as a JSON pointer to its position.
+     * @param SpecObjectInterface $baseDocument
+     * @param JsonPointer $jsonPointer
+     */
+    public function setDocumentContext(SpecObjectInterface $baseDocument, JsonPointer $jsonPointer)
+    {
+        $this->_baseDocument = $baseDocument;
+        $this->_jsonPointer = $jsonPointer;
+
+        foreach ($this->_paths as $key => $path) {
+            if ($path instanceof DocumentContextInterface) {
+                $path->setDocumentContext($baseDocument, $jsonPointer->append($key));
+            }
+        }
+    }
+
+    /**
+     * @return SpecObjectInterface|null returns the base document where this object is located in.
+     * Returns `null` if no context information was provided by [[setDocumentContext]].
+     */
+    public function getBaseDocument(): ?SpecObjectInterface
+    {
+        return $this->_baseDocument;
+    }
+
+    /**
+     * @return JsonPointer|null returns a JSON pointer describing the position of this object in the base document.
+     * Returns `null` if no context information was provided by [[setDocumentContext]].
+     */
+    public function getDocumentPosition(): ?JsonPointer
+    {
+        return $this->_jsonPointer;
     }
 }

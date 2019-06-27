@@ -187,9 +187,10 @@ class OpenApiTest extends \PHPUnit\Framework\TestCase
             $yaml = Yaml::parse(file_get_contents(__DIR__ . '/../../vendor/' . $openApiFile));
             $openapi = new OpenApi($yaml);
         }
+        $openapi->setDocumentContext($openapi, new \cebe\openapi\json\JsonPointer(''));
 
         $result = $openapi->validate();
-        $this->assertEquals([], $openapi->getErrors());
+        $this->assertEquals([], $openapi->getErrors(), print_r($openapi->getErrors(), true));
         $this->assertTrue($result);
 
         // openapi

@@ -17,18 +17,18 @@ use cebe\openapi\SpecBaseObject;
  *
  * @link https://github.com/OAI/OpenAPI-Specification/blob/3.0.2/versions/3.0.2.md#pathItemObject
  *
- * @property-read string $summary
- * @property-read string $description
- * @property-read Operation|null $get
- * @property-read Operation|null $put
- * @property-read Operation|null $post
- * @property-read Operation|null $delete
- * @property-read Operation|null $options
- * @property-read Operation|null $head
- * @property-read Operation|null $patch
- * @property-read Operation|null $trace
- * @property-read Server[] $servers
- * @property-read Parameter[]|Reference[] $parameters
+ * @property string $summary
+ * @property string $description
+ * @property Operation|null $get
+ * @property Operation|null $put
+ * @property Operation|null $post
+ * @property Operation|null $delete
+ * @property Operation|null $options
+ * @property Operation|null $head
+ * @property Operation|null $patch
+ * @property Operation|null $trace
+ * @property Server[] $servers
+ * @property Parameter[]|Reference[] $parameters
  *
  */
 class PathItem extends SpecBaseObject

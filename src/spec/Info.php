@@ -16,12 +16,12 @@ use cebe\openapi\SpecBaseObject;
  *
  * @link https://github.com/OAI/OpenAPI-Specification/blob/3.0.2/versions/3.0.2.md#infoObject
  *
- * @property-read string $title
- * @property-read string $description
- * @property-read string $termsOfService
- * @property-read Contact|null $contact
- * @property-read License|null $license
- * @property-read string $version
+ * @property string $title
+ * @property string $description
+ * @property string $termsOfService
+ * @property Contact|null $contact
+ * @property License|null $license
+ * @property string $version
  *
  */
 class Info extends SpecBaseObject

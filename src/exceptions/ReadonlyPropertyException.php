@@ -8,8 +8,7 @@
 namespace cebe\openapi\exceptions;
 
 /**
- *
- *
+ * @deprecated this class will be removed in version 2.0.
  */
 class ReadonlyPropertyException extends \Exception
 {

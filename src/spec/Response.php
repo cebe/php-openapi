@@ -14,10 +14,10 @@ use cebe\openapi\SpecBaseObject;
  *
  * @link https://github.com/OAI/OpenAPI-Specification/blob/3.0.2/versions/3.0.2.md#responseObject
  *
- * @property-read string $description
- * @property-read Header[]|Reference[] $headers
- * @property-read MediaType[]|Reference[] $content
- * @property-read Link[]|Reference[] $links
+ * @property string $description
+ * @property Header[]|Reference[] $headers
+ * @property MediaType[]|Reference[] $content
+ * @property Link[]|Reference[] $links
  */
 class Response extends SpecBaseObject
 {

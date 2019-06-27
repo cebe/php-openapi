@@ -15,11 +15,11 @@ use cebe\openapi\SpecBaseObject;
  *
  * @link https://github.com/OAI/OpenAPI-Specification/blob/3.0.2/versions/3.0.2.md#encodingObject
  *
- * @property-read string $contentType
- * @property-read Header[]|Reference[] $headers
- * @property-read string $style
- * @property-read boolean $explode
- * @property-read boolean $allowReserved
+ * @property string $contentType
+ * @property Header[]|Reference[] $headers
+ * @property string $style
+ * @property boolean $explode
+ * @property boolean $allowReserved
  */
 class Encoding extends SpecBaseObject
 {

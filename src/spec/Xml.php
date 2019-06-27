@@ -14,11 +14,11 @@ use cebe\openapi\SpecBaseObject;
  *
  * @link https://github.com/OAI/OpenAPI-Specification/blob/3.0.2/versions/3.0.2.md#xmlObject
  *
- * @property-read string $name
- * @property-read string $namespace
- * @property-read string $prefix
- * @property-read boolean $attribute
- * @property-read boolean $wrapped
+ * @property string $name
+ * @property string $namespace
+ * @property string $prefix
+ * @property boolean $attribute
+ * @property boolean $wrapped
  */
 class Xml extends SpecBaseObject
 {

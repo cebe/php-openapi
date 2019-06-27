@@ -14,8 +14,8 @@ use cebe\openapi\SpecBaseObject;
  *
  * @link https://github.com/OAI/OpenAPI-Specification/blob/3.0.2/versions/3.0.2.md#discriminatorObject
  *
- * @property-read string $propertyName
- * @property-read string[] $mapping
+ * @property string $propertyName
+ * @property string[] $mapping
  *
  */
 class Discriminator extends SpecBaseObject

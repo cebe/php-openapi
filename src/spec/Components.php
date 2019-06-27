@@ -17,15 +17,15 @@ use cebe\openapi\SpecBaseObject;
  *
  * @link https://github.com/OAI/OpenAPI-Specification/blob/3.0.2/versions/3.0.2.md#componentsObject
  *
- * @property-read Schema[]|Reference[] $schemas
- * @property-read Response[]|Reference[] $responses
- * @property-read Parameter[]|Reference[] $parameters
- * @property-read Example[]|Reference[] $examples
- * @property-read RequestBody[]|Reference[] $requestBodies
- * @property-read Header[]|Reference[] $headers
- * @property-read SecurityScheme[]|Reference[] $securitySchemes
- * @property-read Link[]|Reference[] $links
- * @property-read Callback[]|Reference[] $callbacks
+ * @property Schema[]|Reference[] $schemas
+ * @property Response[]|Reference[] $responses
+ * @property Parameter[]|Reference[] $parameters
+ * @property Example[]|Reference[] $examples
+ * @property RequestBody[]|Reference[] $requestBodies
+ * @property Header[]|Reference[] $headers
+ * @property SecurityScheme[]|Reference[] $securitySchemes
+ * @property Link[]|Reference[] $links
+ * @property Callback[]|Reference[] $callbacks
  *
  *
  */

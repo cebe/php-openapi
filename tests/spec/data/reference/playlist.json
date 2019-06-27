@@ -1,0 +1,76 @@
+{
+  "openapi": "3.0.1",
+  "info": {
+    "title": "test",
+    "version": "1.0",
+    "contact": {
+      "email": "somebody@example.com"
+    }
+  },
+  "components": {
+    "schemas": {
+      "Playlist": {
+        "type": "object",
+        "properties": {
+          "id": {
+            "type": "integer"
+          }
+        }
+      }
+    }
+  },
+  "tags": [
+    {"name": "Playlist"}
+  ],
+  "paths": {
+    "/playlist": {
+      "post": {
+        "operationId": "createPlaylist",
+        "summary": "create playlist",
+        "tags": ["Playlist"],
+        "responses": {
+          "200": {
+            "description": "OK"
+          }
+        },
+        "requestBody": {
+          "description": "The playlist.",
+          "required": true,
+          "content": {
+            "application/json": {
+              "schema": {
+                "$ref": "#/components/schemas/Playlist"
+              }
+            }
+          }
+        }
+      }
+    },
+    "/playlist/{id}": {
+      "patch": {
+        "operationId": "updatePlaylist",
+        "summary": "update playlist",
+        "tags": ["Playlist"],
+        "parameters": [
+          {
+            "name": "id",
+            "description": "the playlist id",
+            "in": "path",
+            "required": true,
+            "schema": {
+              "type": "string"
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "OK"
+          }
+        },
+        "requestBody": {
+          "$ref": "#/paths/~1playlist/post/requestBody"
+        }
+      }
+    }
+  }
+}

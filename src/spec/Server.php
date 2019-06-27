@@ -14,9 +14,9 @@ use cebe\openapi\SpecBaseObject;
  *
  * @link https://github.com/OAI/OpenAPI-Specification/blob/3.0.2/versions/3.0.2.md#serverObject
  *
- * @property-read string $url
- * @property-read string $description
- * @property-read ServerVariable[] $variables
+ * @property string $url
+ * @property string $description
+ * @property ServerVariable[] $variables
  *
  */
 class Server extends SpecBaseObject
