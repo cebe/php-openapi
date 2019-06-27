@@ -228,6 +228,8 @@ This library is currently work in progress, the following list tracks completene
 
 # Support
 
+**Need help with your API project?**
+
 Professional support, consulting as well as software development services are available:
 
 https://www.cebe.cc/en/contact
