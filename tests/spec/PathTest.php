@@ -4,6 +4,8 @@ use cebe\openapi\Reader;
 use cebe\openapi\spec\Operation;
 use cebe\openapi\spec\PathItem;
 use cebe\openapi\spec\Paths;
+use cebe\openapi\spec\Response;
+use cebe\openapi\spec\Responses;
 
 /**
  * @covers \cebe\openapi\spec\Paths
@@ -63,6 +65,48 @@ JSON
         }
     }
 
+    public function testCreateionFromObjects()
+    {
+        $paths = new Paths([
+            '/pets' => new PathItem([
+                'get' => new Operation([
+                    'responses' => new Responses([
+                        200 => new Response(['description' => 'A list of pets.']),
+                        404 => ['description' => 'The pets list is gone 🙀'],
+                    ])
+                ])
+            ])
+        ]);
+
+        $this->assertTrue($paths->hasPath('/pets'));
+        $this->assertInstanceOf(PathItem::class, $paths->getPath('/pets'));
+        $this->assertInstanceOf(PathItem::class, $paths['/pets']);
+        $this->assertInstanceOf(Operation::class, $paths->getPath('/pets')->get);
+
+        $this->assertSame('A list of pets.', $paths->getPath('/pets')->get->responses->getResponse(200)->description);
+        $this->assertSame('The pets list is gone 🙀', $paths->getPath('/pets')->get->responses->getResponse(404)->description);
+    }
+
+    public function badPathsConfigProvider()
+    {
+        yield [['/pets' => 'foo'], 'Path MUST be either array or PathItem object, "string" given'];
+        yield [['/pets' => 42], 'Path MUST be either array or PathItem object, "integer" given'];
+        yield [['/pets' => false], 'Path MUST be either array or PathItem object, "boolean" given'];
+        yield [['/pets' => new stdClass()], 'Path MUST be either array or PathItem object, "stdClass" given'];
+        // The last one can be supported in future, but now SpecBaseObjects::__construct() requires array explicitly
+    }
+
+    /**
+     * @dataProvider badPathsConfigProvider
+     */
+    public function testPathsCanNotBeCreatedFromBullshit($config, $expectedException)
+    {
+        $this->expectException(\cebe\openapi\exceptions\TypeErrorException::class);
+        $this->expectExceptionMessage($expectedException);
+
+        new Paths($config);
+    }
+
     public function testInvalidPath()
     {
         /** @var $paths Paths */
@@ -88,4 +132,5 @@ JSON
         ], $paths->getErrors());
         $this->assertFalse($result);
     }
+
 }

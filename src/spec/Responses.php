@@ -10,6 +10,7 @@ namespace cebe\openapi\spec;
 use ArrayAccess;
 use ArrayIterator;
 use cebe\openapi\DocumentContextInterface;
+use cebe\openapi\exceptions\TypeErrorException;
 use cebe\openapi\exceptions\UnresolvableReferenceException;
 use cebe\openapi\json\JsonPointer;
 use cebe\openapi\ReferenceContext;
@@ -37,8 +38,8 @@ class Responses implements SpecObjectInterface, DocumentContextInterface, ArrayA
 
     /**
      * Create an object from spec data.
-     * @param array $data spec data read from YAML or JSON
-     * @throws \cebe\openapi\exceptions\TypeErrorException in case invalid data is supplied.
+     * @param array[]|Response[]|Reference[] $data spec data read from YAML or JSON
+     * @throws TypeErrorException in case invalid data is supplied.
      */
     public function __construct(array $data)
     {
@@ -48,10 +49,16 @@ class Responses implements SpecObjectInterface, DocumentContextInterface, ArrayA
             if (preg_match('~^(?:default|[1-5](?:[0-9][0-9]|XX))$~', $statusCode)) {
                 if ($response instanceof Response || $response instanceof Reference) {
                     $this->_responses[$statusCode] = $response;
-                } elseif (isset($response['$ref'])) {
+                } elseif (is_array($response) && isset($response['$ref'])) {
                     $this->_responses[$statusCode] = new Reference($response, Response::class);
-                } else {
+                } elseif (is_array($response)) {
                     $this->_responses[$statusCode] = new Response($response);
+                } else {
+                    $givenType = gettype($response);
+                    if ($givenType === 'object') {
+                        $givenType = get_class($response);
+                    }
+                    throw new TypeErrorException(sprintf('Response MUST be either an array, a Response or a Reference object, "%s" given', $givenType));
                 }
             } else {
                 $this->_errors[] = "Responses: $statusCode is not a valid HTTP status code.";
