@@ -38,7 +38,7 @@ class Responses implements SpecObjectInterface, DocumentContextInterface, ArrayA
 
     /**
      * Create an object from spec data.
-     * @param array[]|Response[]|Reference[] $data spec data read from YAML or JSON
+     * @param Response[]|Reference[]|array[] $data spec data read from YAML or JSON
      * @throws TypeErrorException in case invalid data is supplied.
      */
     public function __construct(array $data)

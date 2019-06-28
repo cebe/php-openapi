@@ -64,4 +64,54 @@ YAML
         $this->assertEquals($expectedCat, $mediaType->examples['cat']->value);
 
     }
+
+    public function testCreateionFromObjects()
+    {
+        $mediaType = new MediaType([
+            'schema' => new \cebe\openapi\spec\Schema([
+                'type' => \cebe\openapi\spec\Type::OBJECT,
+                'properties' => [
+                    'id' => new \cebe\openapi\spec\Schema(['type' => 'string', 'format' => 'uuid']),
+                    'profileImage' => new \cebe\openapi\spec\Schema(['type' => 'string', 'format' => 'binary']),
+                ],
+            ]),
+            'encoding' => [
+                'id' => [],
+                'profileImage' => new \cebe\openapi\spec\Encoding([
+                    'contentType' => 'image/png, image/jpeg',
+                    'headers' => [
+                        'X-Rate-Limit-Limit' => new \cebe\openapi\spec\Header([
+                            'description' => 'The number of allowed requests in the current period',
+                            'schema' => new \cebe\openapi\spec\Schema(['type' => 'integer']),
+                        ]),
+                    ],
+                ]),
+            ],
+        ]);
+
+        // default value should be extracted
+        $this->assertEquals('text/plain', $mediaType->encoding['id']->contentType);
+        // object should be passed.
+        $this->assertInstanceOf(\cebe\openapi\spec\Encoding::class, $mediaType->encoding['profileImage']);
+    }
+
+    public function badEncodingProvider()
+    {
+        yield [['encoding' => ['id' => 'foo']], 'Encoding MUST be either array or Encoding object, "string" given'];
+        yield [['encoding' => ['id' => 42]], 'Encoding MUST be either array or Encoding object, "integer" given'];
+        yield [['encoding' => ['id' => false]], 'Encoding MUST be either array or Encoding object, "boolean" given'];
+        yield [['encoding' => ['id' => new stdClass()]], 'Encoding MUST be either array or Encoding object, "stdClass" given'];
+        // The last one can be supported in future, but now SpecBaseObjects::__construct() requires array explicitly
+    }
+
+    /**
+     * @dataProvider badEncodingProvider
+     */
+    public function testPathsCanNotBeCreatedFromBullshit($config, $expectedException)
+    {
+        $this->expectException(\cebe\openapi\exceptions\TypeErrorException::class);
+        $this->expectExceptionMessage($expectedException);
+
+        new MediaType($config);
+    }
 }

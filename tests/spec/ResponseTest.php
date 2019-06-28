@@ -162,4 +162,35 @@ YAML
         $this->assertFalse($result);
 
     }
+
+    public function testCreateionFromObjects()
+    {
+        $responses = new Responses([
+            200 => new Response(['description' => 'A list of pets.']),
+            404 => ['description' => 'The pets list is gone 🙀'],
+        ]);
+
+        $this->assertSame('A list of pets.', $responses->getResponse(200)->description);
+        $this->assertSame('The pets list is gone 🙀', $responses->getResponse(404)->description);
+    }
+
+    public function badResponseProvider()
+    {
+        yield [['200' => 'foo'], 'Response MUST be either an array, a Response or a Reference object, "string" given'];
+        yield [['200' => 42], 'Response MUST be either an array, a Response or a Reference object, "integer" given'];
+        yield [['200' => false], 'Response MUST be either an array, a Response or a Reference object, "boolean" given'];
+        yield [['200' => new stdClass()], 'Response MUST be either an array, a Response or a Reference object, "stdClass" given'];
+        // The last one can be supported in future, but now SpecBaseObjects::__construct() requires array explicitly
+    }
+
+    /**
+     * @dataProvider badResponseProvider
+     */
+    public function testPathsCanNotBeCreatedFromBullshit($config, $expectedException)
+    {
+        $this->expectException(\cebe\openapi\exceptions\TypeErrorException::class);
+        $this->expectExceptionMessage($expectedException);
+
+        new Responses($config);
+    }
 }

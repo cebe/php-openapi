@@ -99,7 +99,7 @@ abstract class SpecBaseObject implements SpecObjectInterface, DocumentContextInt
                         }
                         $this->_properties[$property] = [];
                         foreach ($data[$property] as $key => $item) {
-                            if ($type[1] === 'string') {
+                            if ($type[1] === Type::STRING) {
                                 if (!is_string($item)) {
                                     $this->_errors[] = "property '$property' must be map<string, string>, but entry '$key' is of type " . \gettype($item) . '.';
                                 }
