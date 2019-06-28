@@ -34,7 +34,7 @@ class ReferenceContext
      * @param string $uri the URI to the base object.
      * @throws UnresolvableReferenceException in case an invalid or non-absolute URI is provided.
      */
-    public function __construct(SpecObjectInterface $base, string $uri)
+    public function __construct(?SpecObjectInterface $base, string $uri)
     {
         $this->_baseSpec = $base;
         $this->_uri = $this->normalizeUri($uri);
@@ -60,7 +60,7 @@ class ReferenceContext
     /**
      * @return mixed
      */
-    public function getBaseSpec(): SpecObjectInterface
+    public function getBaseSpec(): ?SpecObjectInterface
     {
         return $this->_baseSpec;
     }
