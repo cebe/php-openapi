@@ -110,8 +110,11 @@ You may also access additional properties added by [specification extensions](ht
 ### Writing API Description Files
 
 ```php
+use cebe\openapi\spec\OpenApi;
+use cebe\openapi\spec\PathItem;
+
 // create base API Description
-$openapi = new \cebe\openapi\spec\OpenApi([
+$openapi = new OpenApi([
     'openapi' => '3.0.2',
     'info' => [
         'title' => 'Test API',
@@ -120,7 +123,7 @@ $openapi = new \cebe\openapi\spec\OpenApi([
     'paths' => [],
 ]);
 // manipulate description as needed
-$openapi->paths['/test'] = new \cebe\openapi\spec\PathItem([
+$openapi->paths['/test'] = new PathItem([
     'description' => 'something'
 ]);
 // ...
@@ -143,6 +146,32 @@ results in the following JSON data:
         }
     }
 }
+```
+
+### Writing API Description Files using prepared Objects
+
+Since version 1.2.0, the above example can also be written like this (passing objects instead of arrays):
+
+```php
+use cebe\openapi\spec\OpenApi;
+use cebe\openapi\spec\PathItem;
+use cebe\openapi\spec\Info;
+
+
+// create base API Description
+$openapi = new OpenApi([
+    'openapi' => '3.0.2',
+    'info' => new Info([
+        'title' => 'Test API',
+        'version' => '1.0.0',
+    ]),
+    'paths' => [
+        '/test' => new PathItem([
+            'description' => 'something'
+        ]),
+    ],
+]);
+$json = \cebe\openapi\Writer::writeToJson($openapi);
 ```
 
 ### Reading API Description Files and Resolving References
