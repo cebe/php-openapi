@@ -2,7 +2,7 @@
 
 Read and write [OpenAPI](https://www.openapis.org/) 3.0.x YAML and JSON files and make the content accessible in PHP objects.
 
-It also provides a CLI tool for validating and converting OpenAPI 3.0.x YAML and JSON files.
+It also provides a CLI tool for validating and converting OpenAPI 3.0.x Description files.
 
 [![Latest Stable Version](https://poser.pugx.org/cebe/php-openapi/v/stable)](https://packagist.org/packages/cebe/php-openapi)
 [![Total Downloads](https://poser.pugx.org/cebe/php-openapi/downloads)](https://packagist.org/packages/cebe/php-openapi)
@@ -23,14 +23,14 @@ It also provides a CLI tool for validating and converting OpenAPI 3.0.x YAML and
 This library provides a low level API for reading and writing OpenAPI files. It is used by higher level tools to
 do awesome work:
 
-- [cebe/yii2-openapi](https://github.com/cebe/yii2-openapi) Code Generator for REST API from OpenAPI spec, includes fake data generator.
-- [cebe/yii2-app-api](https://github.com/cebe/yii2-app-api) Yii framework application template for developing API-first applications
-- [lezhnev74/openapi-psr7-validator](https://github.com/lezhnev74/openapi-psr7-validator) validates PSR-7 messages (HTTP request/response) against OpenAPI specifications 
+- [cebe/yii2-openapi](https://github.com/cebe/yii2-openapi) Code Generator for REST API from OpenAPI 3 Descriptions, includes fake data generator.
+- [cebe/yii2-app-api](https://github.com/cebe/yii2-app-api) Yii framework application template for developing API-first applications.
+- [lezhnev74/openapi-psr7-validator](https://github.com/lezhnev74/openapi-psr7-validator) validates PSR-7 messages (HTTP request/response) against OpenAPI descriptions.
 - ... ([add yours](https://github.com/cebe/php-openapi/edit/master/README.md#L24))
 
 ## Usage
 
-### CLI tool
+### CLI Tool
 
     $ vendor/bin/php-openapi help
     PHP OpenAPI 3 tool
@@ -42,9 +42,9 @@ do awesome work:
 
       The following commands are available:
 
-        validate   Validate the API description in the specified input file against the OpenAPI v3.0 schema.
+        validate   Validate the API Description in the specified input file against the OpenAPI v3.0 schema.
                    Note: the validation is performed in two steps. The results is composed of
-                    (1) structural errors found while reading the API description file, and
+                    (1) structural errors found while reading the API Description file, and
                     (2) violations of the OpenAPI v3.0 schema.
 
                    If no input file is specified input will be read from STDIN.
@@ -54,7 +54,7 @@ do awesome work:
                    Exits with code 2 on validation errors, 1 on other errors and 0 on success.
 
         convert    Convert a JSON or YAML input file to JSON or YAML output file.
-                   References are being resolved so the output will be a single specification file.
+                   References are being resolved so the output will be a single API Description file.
 
                    If no input file is specified input will be read from STDIN.
                    If no output file is specified output will be written to STDOUT.
@@ -72,9 +72,9 @@ do awesome work:
         --write-yaml  force writing output as YAML. Auto-detect if not specified.
 
 
-### Reading Specification information
+### Reading API Description Files
 
-Read OpenAPI spec from JSON file:
+Read OpenAPI Description from JSON file:
 
 ```php
 use cebe\openapi\Reader;
@@ -83,18 +83,18 @@ use cebe\openapi\Reader;
 $openapi = Reader::readFromJsonFile(realpath('openapi.json'));
 ```
 
-Read OpenAPI spec from YAML:
+Read OpenAPI Description from YAML:
 
 ```php
 use cebe\openapi\Reader;
 
 // realpath is needed for resolving references with relative Paths or URLs
 $openapi = Reader::readFromYamlFile(realpath('openapi.json'));
-// you may also specify the URL to your description file
+// you may also specify the URL to your API Description file
 $openapi = Reader::readFromYamlFile('https://raw.githubusercontent.com/OAI/OpenAPI-Specification/3.0.2/examples/v3.0/petstore-expanded.yaml');
 ```
 
-Access specification data:
+Access API Description data:
 
 ```php
 echo $openapi->openapi; // openAPI version, e.g. 3.0.0
@@ -104,13 +104,13 @@ foreach($openapi->paths as $path => $definition) {
 }
 ```
 
-Object properties are exactly like in the [OpenAPI specification](https://github.com/OAI/OpenAPI-Specification/blob/3.0.2/versions/3.0.2.md#openapi-specification).
-You may also access additional properties added by specification extensions.
+Object properties are exactly like in the [OpenAPI Specification](https://github.com/OAI/OpenAPI-Specification/blob/3.0.2/versions/3.0.2.md#openapi-specification).
+You may also access additional properties added by [specification extensions](https://github.com/OAI/OpenAPI-Specification/blob/3.0.2/versions/3.0.2.md#specificationExtensions).
 
-### Writing Specification files
+### Writing API Description Files
 
 ```php
-// create base description
+// create base API Description
 $openapi = new \cebe\openapi\spec\OpenApi([
     'openapi' => '3.0.2',
     'info' => [
@@ -145,14 +145,14 @@ results in the following JSON data:
 }
 ```
 
-### Reading Specification Files and Resolving References
+### Reading API Description Files and Resolving References
 
 In the above we have passed the raw JSON or YAML data to the Reader. In order to be able to resolve
-references to external files that may exist in the specification files, we must provide the full context.
+references to structures in external files, we must provide the full context.
 
 ```php
 use cebe\openapi\Reader;
-// an absolute URL or file path is needed to allow resolving internal references
+// an absolute URL or file path is needed to allow resolving external references
 $openapi = Reader::readFromJsonFile('https://www.example.com/api/openapi.json');
 $openapi = Reader::readFromYamlFile('https://www.example.com/api/openapi.yaml');
 ```
@@ -170,7 +170,7 @@ $openapi->resolveReferences(
 ### Validation
 
 The library provides simple validation operations, that check basic OpenAPI spec requirements.
-This is the same as "structural errors found while reading the API description file" from the CLI tool.
+This is the same as "structural errors found while reading the API Description file" from the CLI tool.
 This validation does not include checking against the OpenAPI v3.0 JSON schema.
 
 ```

@@ -1,0 +1,17 @@
+# https://github.com/OAI/OpenAPI-Specification/issues/1961#issuecomment-506026142
+openapi: 3.0.2
+info:
+  title: My API
+  version: 1.0.0
+paths:
+  /foo:
+    $ref: 'path-items.yaml#/~1foo'
+  /bar:
+    $ref: 'path-items.yaml#/~1bar'
+components:
+  responses:
+    Bar:
+      description: A bar
+      content:
+        application/json:
+          schema: { type: object }

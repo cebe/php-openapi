@@ -7,7 +7,10 @@
 
 namespace cebe\openapi\spec;
 
+use cebe\openapi\ReferenceContext;
 use cebe\openapi\SpecBaseObject;
+use cebe\openapi\SpecObjectInterface;
+use cebe\openapi\json\JsonPointer;
 
 /**
  * Describes the operations available on a single path.
@@ -34,6 +37,12 @@ use cebe\openapi\SpecBaseObject;
 class PathItem extends SpecBaseObject
 {
     /**
+     * @var Reference|null
+     */
+    private $_ref;
+
+
+    /**
      * @return array array of attributes available in this object.
      */
     protected function attributes(): array
@@ -52,6 +61,37 @@ class PathItem extends SpecBaseObject
             'servers' => [Server::class],
             'parameters' => [Parameter::class],
         ];
+    }
+
+    /**
+     * Create an object from spec data.
+     * @param array $data spec data read from YAML or JSON
+     * @throws TypeErrorException in case invalid data is supplied.
+     */
+    public function __construct(array $data)
+    {
+        if (isset($data['$ref'])) {
+            // Allows for an external definition of this path item.
+            // $ref in a Path Item Object is not a Reference.
+            // https://github.com/OAI/OpenAPI-Specification/issues/1038
+            $this->_ref = new Reference(['$ref' => $data['$ref']], PathItem::class);
+            unset($data['$ref']);
+        }
+
+        parent::__construct($data);
+    }
+
+    /**
+     * @return mixed returns the serializable data of this object for converting it
+     * to JSON or YAML.
+     */
+    public function getSerializableData()
+    {
+        $data = parent::getSerializableData();
+        if ($this->_ref instanceof Reference) {
+            $data->{'$ref'} = $this->_ref->getReference();
+        }
+        return $data;
     }
 
     /**
@@ -75,5 +115,68 @@ class PathItem extends SpecBaseObject
             }
         }
         return $operations;
+    }
+
+    /**
+     * Allows for an external definition of this path item. The referenced structure MUST be in the format of a
+     * PathItem Object. The properties of the referenced structure are merged with the local Path Item Object.
+     * If the same property exists in both, the referenced structure and the local one, this is a conflict.
+     * In this case the behavior is *undefined*.
+     * @return Reference|null
+     */
+    public function getReference(): ?Reference
+    {
+        return $this->_ref;
+    }
+
+    /**
+     * Set context for all Reference Objects in this object.
+     */
+    public function setReferenceContext(ReferenceContext $context)
+    {
+        if ($this->_ref instanceof Reference) {
+            $this->_ref->setContext($context);
+        }
+        parent::setReferenceContext($context);
+    }
+
+    /**
+     * Resolves all Reference Objects in this object and replaces them with their resolution.
+     * @throws exceptions\UnresolvableReferenceException in case resolving a reference fails.
+     */
+    public function resolveReferences(ReferenceContext $context = null)
+    {
+        if ($this->_ref instanceof Reference) {
+            $pathItem = $this->_ref->resolve($context);
+            $this->_ref = null;
+            // The properties of the referenced structure are merged with the local Path Item Object.
+            foreach(self::attributes() as $attribute => $type) {
+                if (!isset($pathItem->$attribute)) {
+                    continue;
+                }
+                // If the same property exists in both, the referenced structure and the local one, this is a conflict.
+                if (isset($this->$attribute) && !empty($this->$attribute)) {
+                    $this->addError("Conflicting properties, property '$attribute' exists in local PathItem and also in the referenced one.");
+                }
+                $this->$attribute = $pathItem->$attribute;
+            }
+        }
+        parent::resolveReferences($context);
+    }
+
+    /**
+     * Provide context information to the object.
+     *
+     * Context information contains a reference to the base object where it is contained in
+     * as well as a JSON pointer to its position.
+     * @param SpecObjectInterface $baseDocument
+     * @param JsonPointer $jsonPointer
+     */
+    public function setDocumentContext(SpecObjectInterface $baseDocument, JsonPointer $jsonPointer)
+    {
+        parent::setDocumentContext($baseDocument, $jsonPointer);
+        if ($this->_ref instanceof Reference) {
+            $this->_ref->setDocumentContext($baseDocument, $jsonPointer->append('$ref'));
+        }
     }
 }

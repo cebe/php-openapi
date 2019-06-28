@@ -1,0 +1,14 @@
+/foo: # this path item is empty
+/bar:
+  get:
+    operationId: getBar
+    responses:
+      '200':
+        $ref: 'openapi.yaml#/components/responses/Bar'
+      '404':
+        $ref: '#/components/responses/404'
+
+components:
+  responses:
+    404:
+      description: non-existing resource

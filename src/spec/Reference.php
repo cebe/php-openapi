@@ -64,7 +64,7 @@ class Reference implements SpecObjectInterface, DocumentContextInterface
         $this->_to = $to;
         $this->_ref = $data['$ref'];
         try {
-            $this->_jsonReference = JsonReference::createFromReference($data['$ref']);
+            $this->_jsonReference = JsonReference::createFromReference($this->_ref);
         } catch (InvalidJsonPointerSyntaxException $e) {
             $this->_errors[] = 'Reference: value of $ref is not a valid JSON pointer: ' . $e->getMessage();
         }
@@ -158,21 +158,39 @@ class Reference implements SpecObjectInterface, DocumentContextInterface
         $jsonReference = $this->_jsonReference;
         try {
             if ($jsonReference->getDocumentUri() === '') {
-                // TODO type error if resolved object does not match $this->_to ?
-                return $jsonReference->getJsonPointer()->evaluate($context->getBaseSpec());
+                // resolve in current document
+                $baseSpec = $context->getBaseSpec();
+                if ($baseSpec !== null) {
+                    // TODO type error if resolved object does not match $this->_to ?
+                    return $jsonReference->getJsonPointer()->evaluate($baseSpec);
+                } else {
+                    // if current document was loaded via reference, it may be null,
+                    // so we load current document by URI instead.
+                    $jsonReference = JsonReference::createFromUri($context->getUri(), $jsonReference->getJsonPointer());
+                }
             }
+
+            // resolve in external document
             $file = $context->resolveRelativeUri($jsonReference->getDocumentUri());
             // TODO could be a good idea to cache loaded files in current context to avoid loading the same files over and over again
             $referencedDocument = $this->fetchReferencedFile($file);
             $referencedData = $jsonReference->getJsonPointer()->evaluate($referencedDocument);
 
+            if ($referencedData === null) {
+                return null;
+            }
             /** @var $referencedObject SpecObjectInterface */
             $referencedObject = new $this->_to($referencedData);
             if ($jsonReference->getJsonPointer()->getPointer() === '') {
                 $referencedObject->setReferenceContext(new ReferenceContext($referencedObject, $file));
+                if ($referencedObject instanceof DocumentContextInterface) {
+                    $referencedObject->setDocumentContext($referencedObject, $jsonReference->getJsonPointer());
+                }
             } else {
-                // TODO resolving references recursively does not work as we do not know the base type of the file at this point
-//                $referencedObject->resolveReferences(new ReferenceContext($referencedObject, $file));
+                // resolving references recursively does not work the same if we have not referenced
+                // the whole document. We do not know the base type of the file at this point,
+                // so base document must be null.
+                $referencedObject->setReferenceContext(new ReferenceContext(null, $file));
             }
 
             return $referencedObject;
