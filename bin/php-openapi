@@ -247,9 +247,9 @@ Usage:
 
   The following commands are available:
 
-    \Bvalidate\C   Validate the API description in the specified \Ginput file\C against the OpenAPI v3.0 schema.
+    \Bvalidate\C   Validate the API Description in the specified \Ginput file\C against the OpenAPI v3.0 schema.
                Note: the validation is performed in two steps. The results is composed of
-                (1) structural errors found while reading the API description file, and
+                (1) structural errors found while reading the API Description file, and
                 (2) violations of the OpenAPI v3.0 schema.
 
                If no input file is specified input will be read from STDIN.
@@ -259,7 +259,7 @@ Usage:
                Exits with code 2 on validation errors, 1 on other errors and 0 on success.
 
     \Bconvert\C    Convert a JSON or YAML input file to JSON or YAML output file.
-               References are being resolved so the output will be a single specification file.
+               References are being resolved so the output will be a single API Description file.
 
                If no input file is specified input will be read from STDIN.
                If no output file is specified output will be written to STDOUT.
