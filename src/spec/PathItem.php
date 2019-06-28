@@ -150,7 +150,7 @@ class PathItem extends SpecBaseObject
             $pathItem = $this->_ref->resolve($context);
             $this->_ref = null;
             // The properties of the referenced structure are merged with the local Path Item Object.
-            foreach(self::attributes() as $attribute => $type) {
+            foreach (self::attributes() as $attribute => $type) {
                 if (!isset($pathItem->$attribute)) {
                     continue;
                 }

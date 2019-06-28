@@ -99,7 +99,7 @@ abstract class SpecBaseObject implements SpecObjectInterface, DocumentContextInt
                         }
                         $this->_properties[$property] = [];
                         foreach ($data[$property] as $key => $item) {
-                            if ($type[1] === 'string') {
+                            if ($type[1] === Type::STRING) {
                                 if (!is_string($item)) {
                                     $this->_errors[] = "property '$property' must be map<string, string>, but entry '$key' is of type " . \gettype($item) . '.';
                                 }
@@ -127,9 +127,14 @@ abstract class SpecBaseObject implements SpecObjectInterface, DocumentContextInt
      */
     private function instantiate($type, $data)
     {
-        if (isset($data['$ref'])) {
+        if ($data instanceof $type) {
+            return $data;
+        }
+
+        if (is_array($data) && isset($data['$ref'])) {
             return new Reference($data, $type);
         }
+
         try {
             return new $type($data);
         } catch (\TypeError $e) {

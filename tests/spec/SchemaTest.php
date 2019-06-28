@@ -134,4 +134,51 @@ YAML
             'monster' => 'https://gigantic-server.com/schemas/Monster/schema.json',
         ], $schema->discriminator->mapping);
     }
+
+    public function testCreateionFromObjects()
+    {
+        $schema = new Schema([
+            'allOf' => [
+                new Schema(['type' => 'integer']),
+                new Schema(['type' => 'string']),
+            ],
+            'additionalProperties' => new Schema([
+                'type' => 'object',
+            ]),
+            'discriminator' => new Discriminator([
+                'mapping' => ['A' => 'B'],
+            ]),
+        ]);
+
+        $this->assertSame('integer', $schema->allOf[0]->type);
+        $this->assertSame('string', $schema->allOf[1]->type);
+        $this->assertInstanceOf(Schema::class, $schema->additionalProperties);
+        $this->assertSame('object', $schema->additionalProperties->type);
+        $this->assertSame(['A' => 'B'], $schema->discriminator->mapping);
+    }
+
+
+    public function badSchemaProvider()
+    {
+        yield [['properties' => ['a' => 'foo']], 'Unable to instantiate cebe\openapi\spec\Schema Object with data \'foo\''];
+        yield [['properties' => ['a' => 42]], 'Unable to instantiate cebe\openapi\spec\Schema Object with data \'42\''];
+        yield [['properties' => ['a' => false]], 'Unable to instantiate cebe\openapi\spec\Schema Object with data \'\''];
+        yield [['properties' => ['a' => new stdClass()]], "Unable to instantiate cebe\openapi\spec\Schema Object with data 'stdClass Object\n(\n)\n'"];
+
+        yield [['additionalProperties' => 'foo'], 'Schema::$additionalProperties MUST be either array, boolean or a Schema object, "string" given'];
+        yield [['additionalProperties' => 42], 'Schema::$additionalProperties MUST be either array, boolean or a Schema object, "integer" given'];
+        yield [['additionalProperties' => new stdClass()], 'Schema::$additionalProperties MUST be either array, boolean or a Schema object, "stdClass" given'];
+        // The last one can be supported in future, but now SpecBaseObjects::__construct() requires array explicitly
+    }
+
+    /**
+     * @dataProvider badSchemaProvider
+     */
+    public function testPathsCanNotBeCreatedFromBullshit($config, $expectedException)
+    {
+        $this->expectException(\cebe\openapi\exceptions\TypeErrorException::class);
+        $this->expectExceptionMessage($expectedException);
+
+        new Schema($config);
+    }
 }

@@ -50,7 +50,17 @@ class MediaType extends SpecBaseObject
 
         if (!empty($encoding)) {
             foreach ($encoding as $property => $encodingData) {
-                $encoding[$property] = new Encoding($encodingData, $this->schema->properties[$property] ?? null);
+                if ($encodingData instanceof Encoding) {
+                    $encoding[$property] = $encodingData;
+                } elseif (is_array($encodingData)) {
+                    $encoding[$property] = new Encoding($encodingData, $this->schema->properties[$property] ?? null);
+                } else {
+                    $givenType = gettype($encodingData);
+                    if ($givenType === 'object') {
+                        $givenType = get_class($encodingData);
+                    }
+                    throw new TypeErrorException(sprintf('Encoding MUST be either array or Encoding object, "%s" given', $givenType));
+                }
             }
             $this->encoding = $encoding;
         }

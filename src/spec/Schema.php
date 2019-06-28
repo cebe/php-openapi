@@ -121,6 +121,12 @@ class Schema extends SpecBaseObject
                         $e
                     );
                 }
+            } elseif (!($data['additionalProperties'] instanceof Schema || is_bool($data['additionalProperties']))) {
+                $givenType = gettype($data['additionalProperties']);
+                if ($givenType === 'object') {
+                    $givenType = get_class($data['additionalProperties']);
+                }
+                throw new TypeErrorException(sprintf('Schema::$additionalProperties MUST be either array, boolean or a Schema object, "%s" given', $givenType));
             }
         }
         parent::__construct($data);
