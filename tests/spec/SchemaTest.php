@@ -1,7 +1,9 @@
 <?php
 
 use cebe\openapi\Reader;
+use cebe\openapi\ReferenceContext;
 use cebe\openapi\spec\Discriminator;
+use cebe\openapi\spec\Reference;
 use cebe\openapi\spec\Schema;
 use cebe\openapi\spec\Type;
 
@@ -180,5 +182,53 @@ YAML
         $this->expectExceptionMessage($expectedException);
 
         new Schema($config);
+    }
+
+    public function testAllOf()
+    {
+        $json = <<<'JSON'
+{
+  "components": {
+    "schemas": {
+      "identifier": {
+        "type": "object",
+        "properties": {
+           "id": {"type": "string"}
+        }
+      },
+      "person": {
+        "allOf": [
+          {"$ref": "#/components/schemas/identifier"},
+          {
+            "type": "object",
+            "properties": {
+              "name": {
+                "type": "string"
+              }
+            }
+          }
+        ]
+      }
+    }
+  }
+}
+JSON;
+        $openApi = Reader::readFromJson($json);
+        $this->assertInstanceOf(Schema::class, $identifier = $openApi->components->schemas['identifier']);
+        $this->assertInstanceOf(Schema::class, $person = $openApi->components->schemas['person']);
+
+        $this->assertEquals('object', $identifier->type);
+        $this->assertTrue(is_array($person->allOf));
+        $this->assertCount(2, $person->allOf);
+
+        $this->assertInstanceOf(Reference::class, $person->allOf[0]);
+        $this->assertInstanceOf(Schema::class, $refResolved = $person->allOf[0]->resolve(new ReferenceContext($openApi, 'tmp://openapi.yaml')));
+        $this->assertInstanceOf(Schema::class, $person->allOf[1]);
+
+        $this->assertEquals('object', $refResolved->type);
+        $this->assertEquals('object', $person->allOf[1]->type);
+
+        $this->assertArrayHasKey('id', $refResolved->properties);
+        $this->assertArrayHasKey('name', $person->allOf[1]->properties);
     }
 }
