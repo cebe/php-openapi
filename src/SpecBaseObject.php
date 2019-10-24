@@ -62,9 +62,7 @@ abstract class SpecBaseObject implements SpecObjectInterface, DocumentContextInt
                 continue;
             }
 
-            if ($type === Type::STRING || $type === Type::ANY) {
-                $this->_properties[$property] = $data[$property];
-            } elseif ($type === Type::BOOLEAN) {
+            if ($type === Type::BOOLEAN) {
                 if (!\is_bool($data[$property])) {
                     $this->_errors[] = "property '$property' must be boolean, but " . gettype($data[$property]) . " given.";
                     continue;
@@ -85,7 +83,7 @@ abstract class SpecBaseObject implements SpecObjectInterface, DocumentContextInt
                                     $this->_errors[] = "property '$property' must be array of strings, but array has " . gettype($item) . " element.";
                                 }
                                 $this->_properties[$property][] = $item;
-                            } elseif ($type[0] === Type::ANY || $type[0] === Type::BOOLEAN || $type[0] === Type::INTEGER) { // TODO simplify handling of scalar types
+                            } elseif ($type[0] === Type::ANY || Type::isScalar($type[0])) {
                                 $this->_properties[$property][] = $item;
                             } else {
                                 $this->_properties[$property][] = $this->instantiate($type[0], $item);
@@ -104,7 +102,7 @@ abstract class SpecBaseObject implements SpecObjectInterface, DocumentContextInt
                                     $this->_errors[] = "property '$property' must be map<string, string>, but entry '$key' is of type " . \gettype($item) . '.';
                                 }
                                 $this->_properties[$property][$key] = $item;
-                            } elseif ($type[1] === Type::ANY || $type[1] === Type::BOOLEAN || $type[1] === Type::INTEGER) { // TODO simplify handling of scalar types
+                            } elseif ($type[1] === Type::ANY || Type::isScalar($type[1])) {
                                 $this->_properties[$property][$key] = $item;
                             } else {
                                 $this->_properties[$property][$key] = $this->instantiate($type[1], $item);
@@ -112,6 +110,8 @@ abstract class SpecBaseObject implements SpecObjectInterface, DocumentContextInt
                         }
                         break;
                 }
+            } elseif ($type === Type::ANY || Type::isScalar($type)) {
+                $this->_properties[$property] = $data[$property];
             } else {
                 $this->_properties[$property] = $this->instantiate($type, $data[$property]);
             }
@@ -125,9 +125,9 @@ abstract class SpecBaseObject implements SpecObjectInterface, DocumentContextInt
     /**
      * @throws TypeErrorException
      */
-    private function instantiate($type, $data)
+    protected function instantiate($type, $data)
     {
-        if ($data instanceof $type) {
+        if ($data instanceof $type || $data instanceof Reference) {
             return $data;
         }
 
@@ -272,7 +272,7 @@ abstract class SpecBaseObject implements SpecObjectInterface, DocumentContextInt
 
     protected function hasProperty(string $name): bool
     {
-        return isset($this->_properties[$name]) || isset(static::attributes()[$name]);
+        return isset($this->_properties[$name]) || isset($this->attributes()[$name]);
     }
 
     protected function requireProperties(array $names)
@@ -303,13 +303,14 @@ abstract class SpecBaseObject implements SpecObjectInterface, DocumentContextInt
         if (isset($this->_properties[$name])) {
             return $this->_properties[$name];
         }
-        if (isset(static::attributeDefaults()[$name])) {
-            return static::attributeDefaults()[$name];
+        $defaults = $this->attributeDefaults();
+        if (array_key_exists($name, $defaults)) {
+            return $defaults[$name];
         }
-        if (isset(static::attributes()[$name])) {
-            if (is_array(static::attributes()[$name])) {
+        if (isset($this->attributes()[$name])) {
+            if (is_array($this->attributes()[$name])) {
                 return [];
-            } elseif (static::attributes()[$name] === Type::BOOLEAN) {
+            } elseif ($this->attributes()[$name] === Type::BOOLEAN) {
                 return false;
             }
             return null;
@@ -324,7 +325,7 @@ abstract class SpecBaseObject implements SpecObjectInterface, DocumentContextInt
 
     public function __isset($name)
     {
-        if (isset($this->_properties[$name]) || isset(static::attributeDefaults()[$name]) || isset(static::attributes()[$name])) {
+        if (isset($this->_properties[$name]) || isset($this->attributeDefaults()[$name]) || isset($this->attributes()[$name])) {
             return $this->__get($name) !== null;
         }
 

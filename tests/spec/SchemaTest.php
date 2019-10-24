@@ -167,9 +167,9 @@ YAML
         yield [['properties' => ['a' => false]], 'Unable to instantiate cebe\openapi\spec\Schema Object with data \'\''];
         yield [['properties' => ['a' => new stdClass()]], "Unable to instantiate cebe\openapi\spec\Schema Object with data 'stdClass Object\n(\n)\n'"];
 
-        yield [['additionalProperties' => 'foo'], 'Schema::$additionalProperties MUST be either array, boolean or a Schema object, "string" given'];
-        yield [['additionalProperties' => 42], 'Schema::$additionalProperties MUST be either array, boolean or a Schema object, "integer" given'];
-        yield [['additionalProperties' => new stdClass()], 'Schema::$additionalProperties MUST be either array, boolean or a Schema object, "stdClass" given'];
+        yield [['additionalProperties' => 'foo'], 'Schema::$additionalProperties MUST be either boolean or a Schema/Reference object, "string" given'];
+        yield [['additionalProperties' => 42], 'Schema::$additionalProperties MUST be either boolean or a Schema/Reference object, "integer" given'];
+        yield [['additionalProperties' => new stdClass()], 'Schema::$additionalProperties MUST be either boolean or a Schema/Reference object, "stdClass" given'];
         // The last one can be supported in future, but now SpecBaseObjects::__construct() requires array explicitly
     }
 
@@ -230,5 +230,94 @@ JSON;
 
         $this->assertArrayHasKey('id', $refResolved->properties);
         $this->assertArrayHasKey('name', $person->allOf[1]->properties);
+    }
+
+    /**
+     * Ensure Schema properties are accessable and have default values.
+     */
+    public function testSchemaProperties()
+    {
+        $schema = new Schema([]);
+        $validProperties = [
+            // https://github.com/OAI/OpenAPI-Specification/blob/3.0.2/versions/3.0.2.md#schema-object
+            // The following properties are taken directly from the JSON Schema definition and follow the same specifications:
+            'title' => null,
+            'multipleOf' => null,
+            'maximum' => null,
+            'exclusiveMaximum' => false,
+            'minimum' => null,
+            'exclusiveMinimum' => false,
+            'maxLength' => null,
+            'minLength' => null,
+            'pattern' => null,
+            'maxItems' => null,
+            'minItems' => null,
+            'uniqueItems' => false,
+            'maxProperties' => null,
+            'minProperties' => null,
+            'required' => null, // if set, it should not be an empty array, according to the spec
+            'enum' => null, // if it is an array, it means restriction of values
+            // The following properties are taken from the JSON Schema definition but their definitions were adjusted to the OpenAPI Specification.
+            'type' => null,
+            'allOf' => null,
+            'oneOf' => null,
+            'anyOf' => null,
+            'not' => null,
+            'items' => null,
+            'properties' => [],
+            'additionalProperties' => true,
+            'description' => null,
+            'format' => null,
+            'default' => null,
+            // Other than the JSON Schema subset fields, the following fields MAY be used for further schema documentation:
+            'nullable' => false,
+            'readOnly' => false,
+            'writeOnly' => false,
+            'xml' => null,
+            'externalDocs' => null,
+            'example' => null,
+            'deprecated' => false,
+        ];
+
+        foreach($validProperties as $property => $defaultValue) {
+            $this->assertEquals($defaultValue, $schema->$property, "testing property '$property'");
+        }
+    }
+
+    public function testRefAdditionalProperties()
+    {
+        $json = <<<'JSON'
+{
+  "components": {
+    "schemas": {
+      "booleanProperties": {
+        "type": "boolean"
+      },
+      "person": {
+        "type": "object",
+        "properties": {
+          "name": {
+            "type": "string"
+          }
+        },
+        "additionalProperties": {"$ref": "#/components/schemas/booleanProperties"}
+      }
+    }
+  }
+}
+JSON;
+        $openApi = Reader::readFromJson($json);
+        $this->assertInstanceOf(Schema::class, $booleanProperties = $openApi->components->schemas['booleanProperties']);
+        $this->assertInstanceOf(Schema::class, $person = $openApi->components->schemas['person']);
+
+        $this->assertEquals('boolean', $booleanProperties->type);
+        $this->assertInstanceOf(Reference::class, $person->additionalProperties);
+
+        $this->assertInstanceOf(Schema::class, $refResolved = $person->additionalProperties->resolve(new ReferenceContext($openApi, 'tmp://openapi.yaml')));
+
+        $this->assertEquals('boolean', $refResolved->type);
+
+        $schema = new Schema(['additionalProperties' => new Reference(['$ref' => '#/here'], Schema::class)]);
+        $this->assertInstanceOf(Reference::class, $schema->additionalProperties);
     }
 }

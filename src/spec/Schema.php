@@ -41,13 +41,13 @@ use cebe\openapi\SpecBaseObject;
  * @property array $enum
  *
  * @property string $type
- * @property Schema[] $allOf
- * @property Schema[] $oneOf
- * @property Schema[] $anyOf
- * @property Schema|null $not
- * @property Schema|null $items
- * @property Schema[] $properties
- * @property Schema|bool $additionalProperties
+ * @property Schema[]|Reference[] $allOf
+ * @property Schema[]|Reference[] $oneOf
+ * @property Schema[]|Reference[] $anyOf
+ * @property Schema|Reference|null $not
+ * @property Schema|Reference|null $items
+ * @property Schema[]|Reference[] $properties
+ * @property Schema|Reference|bool $additionalProperties
  * @property string $description
  * @property string $format
  * @property mixed $default
@@ -70,6 +70,25 @@ class Schema extends SpecBaseObject
     protected function attributes(): array
     {
         return [
+            // The following properties are taken directly from the JSON Schema definition and follow the same specifications:
+            // types from https://tools.ietf.org/html/draft-wright-json-schema-validation-00#section-4 ff.
+            'title' => Type::STRING,
+            'multipleOf' => Type::NUMBER,
+            'maximum' => Type::NUMBER,
+            'exclusiveMaximum' => Type::BOOLEAN,
+            'minimum' => Type::NUMBER,
+            'exclusiveMinimum' => Type::BOOLEAN,
+            'maxLength' => Type::INTEGER,
+            'minLength' => Type::INTEGER,
+            'pattern' => Type::STRING,
+            'maxItems' => Type::INTEGER,
+            'minItems' => Type::INTEGER,
+            'uniqueItems' => Type::BOOLEAN,
+            'maxProperties' => Type::INTEGER,
+            'minProperties' => Type::INTEGER,
+            'required' => [Type::STRING],
+            'enum' => [Type::ANY],
+            // The following properties are taken from the JSON Schema definition but their definitions were adjusted to the OpenAPI Specification.
             'type' => Type::STRING,
             'allOf' => [Schema::class],
             'oneOf' => [Schema::class],
@@ -81,7 +100,7 @@ class Schema extends SpecBaseObject
             'description' => Type::STRING,
             'format' => Type::STRING,
             'default' => Type::ANY,
-
+            // Other than the JSON Schema subset fields, the following fields MAY be used for further schema documentation:
             'nullable' => Type::BOOLEAN,
             'discriminator' => Discriminator::class,
             'readOnly' => Type::BOOLEAN,
@@ -100,6 +119,11 @@ class Schema extends SpecBaseObject
     {
         return [
             'additionalProperties' => true,
+            'required' => null,
+            'enum' => null,
+            'allOf' => null,
+            'oneOf' => null,
+            'anyOf' => null,
         ];
     }
 
@@ -112,21 +136,13 @@ class Schema extends SpecBaseObject
     {
         if (isset($data['additionalProperties'])) {
             if (is_array($data['additionalProperties'])) {
-                try {
-                    $data['additionalProperties'] = new Schema($data['additionalProperties']);
-                } catch (\TypeError $e) {
-                    throw new TypeErrorException(
-                        "Unable to instantiate Schema Object with data '" . print_r($data['additionalProperties'], true) . "'",
-                        $e->getCode(),
-                        $e
-                    );
-                }
-            } elseif (!($data['additionalProperties'] instanceof Schema || is_bool($data['additionalProperties']))) {
+                $data['additionalProperties'] = $this->instantiate(Schema::class, $data['additionalProperties']);
+            } elseif (!($data['additionalProperties'] instanceof Schema || $data['additionalProperties'] instanceof Reference || is_bool($data['additionalProperties']))) {
                 $givenType = gettype($data['additionalProperties']);
                 if ($givenType === 'object') {
                     $givenType = get_class($data['additionalProperties']);
                 }
-                throw new TypeErrorException(sprintf('Schema::$additionalProperties MUST be either array, boolean or a Schema object, "%s" given', $givenType));
+                throw new TypeErrorException(sprintf('Schema::$additionalProperties MUST be either boolean or a Schema/Reference object, "%s" given', $givenType));
             }
         }
         parent::__construct($data);
