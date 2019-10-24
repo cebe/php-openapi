@@ -29,6 +29,7 @@ class Type
      *
      * @param string $type value from one of the type constants defined in this class.
      * @return bool whether the type is a scalar type.
+     * @since 1.2.1
      */
     public static function isScalar(string $type): bool
     {
