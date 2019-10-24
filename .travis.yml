@@ -4,9 +4,19 @@ matrix:
   include:
     # linux tests
     - php: '7.1'
+      env: YAML=3.0
+    - php: '7.1'
+      env: YAML=4.0
     - php: '7.2'
+      env: YAML=3.0
+    - php: '7.2'
+      env: YAML=4.0
     - php: '7.3'
+      env: YAML=3.0
+    - php: '7.3'
+      env: YAML=4.0
     - php: nightly
+      env: YAML=4.0
     # windows tests
     # https://travis-ci.community/t/where-to-contribute-php-support-for-windows/304
     - os: windows
@@ -23,14 +33,17 @@ matrix:
         #- ls /c/tools/composer
         - wget https://raw.githubusercontent.com/composer/getcomposer.org/76a7060ccb93902cd7576b67264ad91c8a2700e2/web/installer -O - -q | php -dextension=/c/tools/php73/ext/php_openssl.dll --
         - ls
-      install: php -dextension=/c/tools/php73/ext/php_openssl.dll -dextension=/c/tools/php73/ext/php_mbstring.dll composer.phar install --prefer-dist --no-interaction
+      install:
+        - php -dextension=/c/tools/php73/ext/php_openssl.dll -dextension=/c/tools/php73/ext/php_mbstring.dll composer.phar install --prefer-dist --no-interaction
       script: php -dextension=/c/tools/php73/ext/php_openssl.dll -dextension=/c/tools/php73/ext/php_mbstring.dll vendor/phpunit/phpunit/phpunit
 
   # allow php nightly to fail until https://travis-ci.community/t/php-nightly-now-requires-oniguruma/2237 is fixed
   allow_failures:
     - php: nightly
 
-install: make install
+install:
+  - make install
+  - composer require symfony/yaml:"^${YAML}" --prefer-dist --no-interaction
 script:
   - make lint
   - make test
