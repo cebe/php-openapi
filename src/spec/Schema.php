@@ -136,21 +136,13 @@ class Schema extends SpecBaseObject
     {
         if (isset($data['additionalProperties'])) {
             if (is_array($data['additionalProperties'])) {
-                try {
-                    $data['additionalProperties'] = new Schema($data['additionalProperties']);
-                } catch (\TypeError $e) {
-                    throw new TypeErrorException(
-                        "Unable to instantiate Schema Object with data '" . print_r($data['additionalProperties'], true) . "'",
-                        $e->getCode(),
-                        $e
-                    );
-                }
-            } elseif (!($data['additionalProperties'] instanceof Schema || is_bool($data['additionalProperties']))) {
+                $data['additionalProperties'] = $this->instantiate(Schema::class, $data['additionalProperties']);
+            } elseif (!($data['additionalProperties'] instanceof Schema || $data['additionalProperties'] instanceof Reference || is_bool($data['additionalProperties']))) {
                 $givenType = gettype($data['additionalProperties']);
                 if ($givenType === 'object') {
                     $givenType = get_class($data['additionalProperties']);
                 }
-                throw new TypeErrorException(sprintf('Schema::$additionalProperties MUST be either array, boolean or a Schema object, "%s" given', $givenType));
+                throw new TypeErrorException(sprintf('Schema::$additionalProperties MUST be either boolean or a Schema/Reference object, "%s" given', $givenType));
             }
         }
         parent::__construct($data);

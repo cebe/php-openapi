@@ -167,9 +167,9 @@ YAML
         yield [['properties' => ['a' => false]], 'Unable to instantiate cebe\openapi\spec\Schema Object with data \'\''];
         yield [['properties' => ['a' => new stdClass()]], "Unable to instantiate cebe\openapi\spec\Schema Object with data 'stdClass Object\n(\n)\n'"];
 
-        yield [['additionalProperties' => 'foo'], 'Schema::$additionalProperties MUST be either array, boolean or a Schema object, "string" given'];
-        yield [['additionalProperties' => 42], 'Schema::$additionalProperties MUST be either array, boolean or a Schema object, "integer" given'];
-        yield [['additionalProperties' => new stdClass()], 'Schema::$additionalProperties MUST be either array, boolean or a Schema object, "stdClass" given'];
+        yield [['additionalProperties' => 'foo'], 'Schema::$additionalProperties MUST be either boolean or a Schema/Reference object, "string" given'];
+        yield [['additionalProperties' => 42], 'Schema::$additionalProperties MUST be either boolean or a Schema/Reference object, "integer" given'];
+        yield [['additionalProperties' => new stdClass()], 'Schema::$additionalProperties MUST be either boolean or a Schema/Reference object, "stdClass" given'];
         // The last one can be supported in future, but now SpecBaseObjects::__construct() requires array explicitly
     }
 
@@ -282,5 +282,42 @@ JSON;
         foreach($validProperties as $property => $defaultValue) {
             $this->assertEquals($defaultValue, $schema->$property, "testing property '$property'");
         }
+    }
+
+    public function testRefAdditionalProperties()
+    {
+        $json = <<<'JSON'
+{
+  "components": {
+    "schemas": {
+      "booleanProperties": {
+        "type": "boolean"
+      },
+      "person": {
+        "type": "object",
+        "properties": {
+          "name": {
+            "type": "string"
+          }
+        },
+        "additionalProperties": {"$ref": "#/components/schemas/booleanProperties"}
+      }
+    }
+  }
+}
+JSON;
+        $openApi = Reader::readFromJson($json);
+        $this->assertInstanceOf(Schema::class, $booleanProperties = $openApi->components->schemas['booleanProperties']);
+        $this->assertInstanceOf(Schema::class, $person = $openApi->components->schemas['person']);
+
+        $this->assertEquals('boolean', $booleanProperties->type);
+        $this->assertInstanceOf(Reference::class, $person->additionalProperties);
+
+        $this->assertInstanceOf(Schema::class, $refResolved = $person->additionalProperties->resolve(new ReferenceContext($openApi, 'tmp://openapi.yaml')));
+
+        $this->assertEquals('boolean', $refResolved->type);
+
+        $schema = new Schema(['additionalProperties' => new Reference(['$ref' => '#/here'], Schema::class)]);
+        $this->assertInstanceOf(Reference::class, $schema->additionalProperties);
     }
 }

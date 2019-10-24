@@ -125,9 +125,9 @@ abstract class SpecBaseObject implements SpecObjectInterface, DocumentContextInt
     /**
      * @throws TypeErrorException
      */
-    private function instantiate($type, $data)
+    protected function instantiate($type, $data)
     {
-        if ($data instanceof $type) {
+        if ($data instanceof $type || $data instanceof Reference) {
             return $data;
         }
 
