@@ -231,4 +231,56 @@ JSON;
         $this->assertArrayHasKey('id', $refResolved->properties);
         $this->assertArrayHasKey('name', $person->allOf[1]->properties);
     }
+
+    /**
+     * Ensure Schema properties are accessable and have default values.
+     */
+    public function testSchemaProperties()
+    {
+        $schema = new Schema([]);
+        $validProperties = [
+            // https://github.com/OAI/OpenAPI-Specification/blob/3.0.2/versions/3.0.2.md#schema-object
+            // The following properties are taken directly from the JSON Schema definition and follow the same specifications:
+            'title' => null,
+            'multipleOf' => null,
+            'maximum' => null,
+            'exclusiveMaximum' => false,
+            'minimum' => null,
+            'exclusiveMinimum' => false,
+            'maxLength' => null,
+            'minLength' => null,
+            'pattern' => null,
+            'maxItems' => null,
+            'minItems' => null,
+            'uniqueItems' => false,
+            'maxProperties' => null,
+            'minProperties' => null,
+            'required' => null, // if set, it should not be an empty array, according to the spec
+            'enum' => null, // if it is an array, it means restriction of values
+            // The following properties are taken from the JSON Schema definition but their definitions were adjusted to the OpenAPI Specification.
+            'type' => null,
+            'allOf' => null,
+            'oneOf' => null,
+            'anyOf' => null,
+            'not' => null,
+            'items' => null,
+            'properties' => [],
+            'additionalProperties' => true,
+            'description' => null,
+            'format' => null,
+            'default' => null,
+            // Other than the JSON Schema subset fields, the following fields MAY be used for further schema documentation:
+            'nullable' => false,
+            'readOnly' => false,
+            'writeOnly' => false,
+            'xml' => null,
+            'externalDocs' => null,
+            'example' => null,
+            'deprecated' => false,
+        ];
+
+        foreach($validProperties as $property => $defaultValue) {
+            $this->assertEquals($defaultValue, $schema->$property, "testing property '$property'");
+        }
+    }
 }
