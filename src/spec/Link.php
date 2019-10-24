@@ -19,7 +19,7 @@ use cebe\openapi\SpecBaseObject;
  * @property array $parameters
  * @property mixed $requestBody
  * @property string $description
- * @property Server $server
+ * @property Server|null $server
  *
  */
 class Link extends SpecBaseObject

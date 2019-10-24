@@ -20,8 +20,8 @@ use cebe\openapi\SpecBaseObject;
  * @property ExternalDocumentation|null $externalDocs
  * @property string $operationId
  * @property Parameter[]|Reference[] $parameters
- * @property RequestBody|Reference $requestBody
- * @property Responses $responses
+ * @property RequestBody|Reference|null $requestBody
+ * @property Responses|null $responses
  * @property Callback[]|Reference[] $callbacks
  * @property bool $deprecated
  * @property SecurityRequirement[] $security
