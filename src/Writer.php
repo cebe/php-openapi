@@ -7,6 +7,7 @@
 
 namespace cebe\openapi;
 
+use cebe\openapi\exceptions\IOException;
 use cebe\openapi\spec\OpenApi;
 use Symfony\Component\Yaml\Yaml;
 
@@ -40,19 +41,25 @@ class Writer
      * Write OpenAPI spec object to JSON file.
      * @param SpecObjectInterface|OpenApi the OpenApi object instance.
      * @param string $fileName file name to write to.
+     * @throws IOException when writing the file fails.
      */
     public static function writeToJsonFile(SpecObjectInterface $object, string $fileName): void
     {
-        file_put_contents($fileName, static::writeToJson($object));
+        if (file_put_contents($fileName, static::writeToJson($object)) === false) {
+            throw new IOException("Failed to write file: '$fileName'");
+        }
     }
 
     /**
      * Write OpenAPI spec object to YAML file.
      * @param SpecObjectInterface|OpenApi the OpenApi object instance.
      * @param string $fileName file name to write to.
+     * @throws IOException when writing the file fails.
      */
     public static function writeToYamlFile(SpecObjectInterface $object, string $fileName): void
     {
-        file_put_contents($fileName, static::writeToYaml($object));
+        if (file_put_contents($fileName, static::writeToYaml($object)) === false) {
+            throw new IOException("Failed to write file: '$fileName'");
+        }
     }
 }

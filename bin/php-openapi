@@ -231,6 +231,9 @@ function read_input($inputFile, $inputFormat)
     } catch (Symfony\Component\Yaml\Exception\ParseException $e) {
         error($e->getMessage());
         exit(1);
+    } catch (cebe\openapi\exceptions\IOException $e) {
+        error($e->getMessage());
+        exit(1);
     }
     return $openApi;
 }

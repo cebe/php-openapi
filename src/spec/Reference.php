@@ -8,6 +8,7 @@
 namespace cebe\openapi\spec;
 
 use cebe\openapi\DocumentContextInterface;
+use cebe\openapi\exceptions\IOException;
 use cebe\openapi\exceptions\TypeErrorException;
 use cebe\openapi\exceptions\UnresolvableReferenceException;
 use cebe\openapi\json\InvalidJsonPointerSyntaxException;
@@ -156,6 +157,12 @@ class Reference implements SpecObjectInterface, DocumentContextInterface
             }
         }
         $jsonReference = $this->_jsonReference;
+        if ($jsonReference === null) {
+            if ($context->throwException) {
+                throw new UnresolvableReferenceException(implode("\n", $this->getErrors()));
+            }
+            return $this;
+        }
         try {
             if ($jsonReference->getDocumentUri() === '') {
                 // resolve in current document
@@ -204,6 +211,14 @@ class Reference implements SpecObjectInterface, DocumentContextInterface
             $this->_errors[] = $message;
             $this->_jsonReference = null;
             return $this;
+        } catch (UnresolvableReferenceException $e) {
+            $e->context = $this->getDocumentPosition();
+            if ($context->throwException) {
+                throw $e;
+            }
+            $this->_errors[] = $e->getMessage();
+            $this->_jsonReference = null;
+            return $this;
         }
     }
 
@@ -214,6 +229,11 @@ class Reference implements SpecObjectInterface, DocumentContextInterface
     {
         try {
             $content = file_get_contents($uri);
+            if ($content === false) {
+                $e = new IOException("Failed to read file: '$uri'");
+                $e->fileName = $uri;
+                throw $e;
+            }
             // TODO lazy content detection, should probably be improved
             if (strpos(ltrim($content), '{') === 0) {
                 return json_decode($content, true);

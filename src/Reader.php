@@ -7,6 +7,7 @@
 
 namespace cebe\openapi;
 
+use cebe\openapi\exceptions\IOException;
 use cebe\openapi\exceptions\TypeErrorException;
 use cebe\openapi\exceptions\UnresolvableReferenceException;
 use cebe\openapi\spec\OpenApi;
@@ -63,10 +64,17 @@ class Reader
      * The type of the returned object depends on the `$baseType` argument.
      * @throws TypeErrorException in case invalid spec data is supplied.
      * @throws UnresolvableReferenceException in case references could not be resolved.
+     * @throws IOException when the file is not readable.
      */
     public static function readFromJsonFile(string $fileName, string $baseType = OpenApi::class, $resolveReferences = true): SpecObjectInterface
     {
-        $spec = static::readFromJson(file_get_contents($fileName), $baseType);
+        $fileContent = file_get_contents($fileName);
+        if ($fileContent === false) {
+            $e = new IOException("Failed to read file: '$fileName'");
+            $e->fileName = $fileName;
+            throw $e;
+        }
+        $spec = static::readFromJson($fileContent, $baseType);
         $spec->setReferenceContext(new ReferenceContext($spec, $fileName));
         if ($resolveReferences) {
             $spec->resolveReferences();
@@ -89,10 +97,17 @@ class Reader
      * The type of the returned object depends on the `$baseType` argument.
      * @throws TypeErrorException in case invalid spec data is supplied.
      * @throws UnresolvableReferenceException in case references could not be resolved.
+     * @throws IOException when the file is not readable.
      */
     public static function readFromYamlFile(string $fileName, string $baseType = OpenApi::class, $resolveReferences = true): SpecObjectInterface
     {
-        $spec = static::readFromYaml(file_get_contents($fileName), $baseType);
+        $fileContent = file_get_contents($fileName);
+        if ($fileContent === false) {
+            $e = new IOException("Failed to read file: '$fileName'");
+            $e->fileName = $fileName;
+            throw $e;
+        }
+        $spec = static::readFromYaml($fileContent, $baseType);
         $spec->setReferenceContext(new ReferenceContext($spec, $fileName));
         if ($resolveReferences) {
             $spec->resolveReferences();
