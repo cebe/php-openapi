@@ -4,27 +4,22 @@ matrix:
   include:
     # linux tests
     - php: '7.1'
-      env:
-        - YAML=3.0
-        - YAML=4.0
+      env: YAML=3.0
+    - php: '7.1'
+      env: YAML=4.0
     - php: '7.2'
-      env:
-        - YAML=3.0
-        - YAML=4.0
+      env: YAML=3.0
+    - php: '7.2'
+      env: YAML=4.0
     - php: '7.3'
-      env:
-        - YAML=3.0
-        - YAML=4.0
+      env: YAML=3.0
+    - php: '7.3'
+      env: YAML=4.0
     - php: nightly
-      env:
-        - YAML=3.0
-        - YAML=4.0
+      env: YAML=4.0
     # windows tests
     # https://travis-ci.community/t/where-to-contribute-php-support-for-windows/304
     - os: windows
-      env:
-        - YAML=3.0
-        - YAML=4.0
       language: sh
       before_install:
         - export PATH="/c/tools/composer:/c/tools/php73:$PATH"
@@ -40,7 +35,6 @@ matrix:
         - ls
       install:
         - php -dextension=/c/tools/php73/ext/php_openssl.dll -dextension=/c/tools/php73/ext/php_mbstring.dll composer.phar install --prefer-dist --no-interaction
-        - php -dextension=/c/tools/php73/ext/php_openssl.dll -dextension=/c/tools/php73/ext/php_mbstring.dll composer.phar require symfony/yaml:"^${YAML}" --prefer-dist --no-interaction
       script: php -dextension=/c/tools/php73/ext/php_openssl.dll -dextension=/c/tools/php73/ext/php_mbstring.dll vendor/phpunit/phpunit/phpunit
 
   # allow php nightly to fail until https://travis-ci.community/t/php-nightly-now-requires-oniguruma/2237 is fixed
