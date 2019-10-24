@@ -170,4 +170,39 @@ YAML
 
         $this->assertSame(['write:pets', 'read:pets'], $securityRequirement->petstore_auth);
     }
+
+    public function testDefaultSecurity()
+    {
+        $openapi = Reader::readFromYaml(<<<YAML
+paths:
+  /path/one:
+    post:
+      description: path one
+      # [...]
+      security: [] # default security
+
+  /path/two:
+    post:
+      description: path two
+      # [...]
+      # No security entry defined there
+
+components:
+  securitySchemes:
+    Bearer:
+      type: http
+      scheme: bearer
+      bearerFormat: JWT
+
+security:
+  - Bearer: []
+YAML
+        );
+
+        $this->assertSame([], $openapi->paths->getPath('/path/one')->post->security);
+        $this->assertSame(null, $openapi->paths->getPath('/path/two')->post->security);
+
+        $this->assertCount(1, $openapi->security);
+        $this->assertSame([], $openapi->security[0]->Bearer);
+    }
 }

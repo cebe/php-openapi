@@ -51,6 +51,13 @@ class Operation extends SpecBaseObject
         ];
     }
 
+    protected function attributeDefaults(): array
+    {
+        return [
+            'security' => null,
+        ];
+    }
+
     /**
      * Perform validation on this object, check data against OpenAPI Specification rules.
      *
