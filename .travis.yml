@@ -1,19 +1,30 @@
 language: php
 
-env:
-  - YAML=3.0
-  - YAML=4.0
-
 matrix:
   include:
     # linux tests
     - php: '7.1'
+      env:
+        - YAML=3.0
+        - YAML=4.0
     - php: '7.2'
+      env:
+        - YAML=3.0
+        - YAML=4.0
     - php: '7.3'
+      env:
+        - YAML=3.0
+        - YAML=4.0
     - php: nightly
+      env:
+        - YAML=3.0
+        - YAML=4.0
     # windows tests
     # https://travis-ci.community/t/where-to-contribute-php-support-for-windows/304
     - os: windows
+      env:
+        - YAML=3.0
+        - YAML=4.0
       language: sh
       before_install:
         - export PATH="/c/tools/composer:/c/tools/php73:$PATH"
