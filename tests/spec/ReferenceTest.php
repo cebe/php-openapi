@@ -162,15 +162,43 @@ YAML
 
         // second level reference inside of definitions.yaml
         $this->assertArrayHasKey('food', $openapi->components->schemas['Dog']->properties);
-        $this->assertInstanceOf(Reference::class, $openapi->components->schemas['Dog']->properties['food']);
+        $this->assertInstanceOf(Schema::class, $openapi->components->schemas['Dog']->properties['food']);
+        $this->assertArrayHasKey('id', $openapi->components->schemas['Dog']->properties['food']->properties);
+        $this->assertArrayHasKey('name', $openapi->components->schemas['Dog']->properties['food']->properties);
+        $this->assertEquals(1, $openapi->components->schemas['Dog']->properties['food']->properties['id']->example);
+    }
+
+    public function testResolveFileInSubdir()
+    {
+        $file = __DIR__ . '/data/reference/subdir.yaml';
+        /** @var $openapi OpenApi */
+        $openapi = Reader::readFromYamlFile($file, OpenApi::class, false);
+
+        $result = $openapi->validate();
+        $this->assertEquals([], $openapi->getErrors());
+        $this->assertTrue($result);
+
+        $this->assertInstanceOf(Reference::class, $petItems = $openapi->components->schemas['Pet']);
+        $this->assertInstanceOf(Reference::class, $petItems = $openapi->components->schemas['Dog']);
 
         $openapi->resolveReferences(new \cebe\openapi\ReferenceContext($openapi, $file));
 
+        $this->assertInstanceOf(Schema::class, $petItems = $openapi->components->schemas['Pet']);
+        $this->assertInstanceOf(Schema::class, $petItems = $openapi->components->schemas['Dog']);
+        $this->assertArrayHasKey('id', $openapi->components->schemas['Pet']->properties);
+        $this->assertArrayHasKey('name', $openapi->components->schemas['Dog']->properties);
+
+        // second level reference inside of definitions.yaml
         $this->assertArrayHasKey('food', $openapi->components->schemas['Dog']->properties);
         $this->assertInstanceOf(Schema::class, $openapi->components->schemas['Dog']->properties['food']);
         $this->assertArrayHasKey('id', $openapi->components->schemas['Dog']->properties['food']->properties);
         $this->assertArrayHasKey('name', $openapi->components->schemas['Dog']->properties['food']->properties);
         $this->assertEquals(1, $openapi->components->schemas['Dog']->properties['food']->properties['id']->example);
+
+        $this->assertEquals('return a pet', $openapi->paths->getPath('/pets')->get->responses[200]->description);
+        $responseContent = $openapi->paths->getPath('/pets')->get->responses[200]->content['application/json'];
+        $this->assertInstanceOf(Schema::class, $responseContent->schema);
+        $this->assertEquals('A Pet', $responseContent->schema->description);
     }
 
     public function testResolveFileHttp()

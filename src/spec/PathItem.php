@@ -159,6 +159,30 @@ class PathItem extends SpecBaseObject
                     $this->addError("Conflicting properties, property '$attribute' exists in local PathItem and also in the referenced one.");
                 }
                 $this->$attribute = $pathItem->$attribute;
+
+                // resolve references in all properties assinged from the reference
+                // use the referenced object context in this case
+                if ($this->$attribute instanceof Reference) {
+                    $referencedObject = $this->$attribute->resolve();
+                    $this->$attribute = $referencedObject;
+                    if (!$referencedObject instanceof Reference && $referencedObject !== null) {
+                        $referencedObject->resolveReferences();
+                    }
+                } elseif ($this->$attribute instanceof SpecObjectInterface) {
+                    $this->$attribute->resolveReferences();
+                } elseif (is_array($this->$attribute)) {
+                    foreach ($this->$attribute as $k => $item) {
+                        if ($item instanceof Reference) {
+                            $referencedObject = $item->resolve();
+                            $this->$attribute[$k] = $referencedObject;
+                            if (!$referencedObject instanceof Reference && $referencedObject !== null) {
+                                $referencedObject->resolveReferences();
+                            }
+                        } elseif ($item instanceof SpecObjectInterface) {
+                            $item->resolveReferences();
+                        }
+                    }
+                }
             }
         }
         parent::resolveReferences($context);

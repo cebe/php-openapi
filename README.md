@@ -194,13 +194,11 @@ $openapi->resolveReferences(
 );
 ```
 
-> **Note:** Resolving references currently does not deal with references in referenced files, you have to call it multiple times to resolve these.
-
 ### Validation
 
 The library provides simple validation operations, that check basic OpenAPI spec requirements.
 This is the same as "structural errors found while reading the API Description file" from the CLI tool.
-This validation does not include checking against the OpenAPI v3.0 JSON schema.
+This validation does not include checking against the OpenAPI v3.0 JSON schema, this is only implemented in the CLI.
 
 ```
 // return `true` in case no errors have been found, `false` in case of errors.

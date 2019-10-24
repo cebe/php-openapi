@@ -21,7 +21,7 @@ use cebe\openapi\SpecBaseObject;
  * @property string $operationId
  * @property Parameter[]|Reference[] $parameters
  * @property RequestBody|Reference|null $requestBody
- * @property Responses|null $responses
+ * @property Responses|Response[]|null $responses
  * @property Callback[]|Reference[] $callbacks
  * @property bool $deprecated
  * @property SecurityRequirement[] $security

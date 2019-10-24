@@ -1,0 +1,6 @@
+type: object
+description: "A Pet"
+properties:
+  id:
+    type: integer
+    format: int64

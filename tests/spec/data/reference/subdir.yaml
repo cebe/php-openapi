@@ -1,0 +1,18 @@
+openapi: 3.0.0
+info:
+  title: Link Example
+  version: 1.0.0
+components:
+  schemas:
+    Pet:
+      $ref: 'subdir/Pet.yaml'
+    Dog:
+      $ref: 'subdir/Dog.yaml'
+paths:
+  '/pet':
+    get:
+      responses:
+        200:
+          description: return a pet
+  '/pets':
+    "$ref": "paths/pets.json"
