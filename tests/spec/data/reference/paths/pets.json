@@ -1,0 +1,14 @@
+{
+  "get": {
+    "responses": {
+      "200": {
+        "description": "return a pet",
+        "content": {
+          "application/json": {
+            "schema": {"$ref":  "../subdir/Pet.yaml"}
+          }
+        }
+      }
+    }
+  }
+}

@@ -343,21 +343,37 @@ abstract class SpecBaseObject implements SpecObjectInterface, DocumentContextInt
      */
     public function resolveReferences(ReferenceContext $context = null)
     {
+        // avoid recursion to get stuck in a loop
+        if ($this->_recursing) {
+            return;
+        }
+        $this->_recursing = true;
+
         foreach ($this->_properties as $property => $value) {
             if ($value instanceof Reference) {
-                $this->_properties[$property] = $value->resolve($context);
+                $referencedObject = $value->resolve($context);
+                $this->_properties[$property] = $referencedObject;
+                if (!$referencedObject instanceof Reference && $referencedObject !== null) {
+                    $referencedObject->resolveReferences();
+                }
             } elseif ($value instanceof SpecObjectInterface) {
                 $value->resolveReferences($context);
             } elseif (is_array($value)) {
                 foreach ($value as $k => $item) {
                     if ($item instanceof Reference) {
-                        $this->_properties[$property][$k] = $item->resolve($context);
+                        $referencedObject = $item->resolve($context);
+                        $this->_properties[$property][$k] = $referencedObject;
+                        if (!$referencedObject instanceof Reference && $referencedObject !== null) {
+                            $referencedObject->resolveReferences();
+                        }
                     } elseif ($item instanceof SpecObjectInterface) {
                         $item->resolveReferences($context);
                     }
                 }
             }
         }
+
+        $this->_recursing = false;
     }
 
     /**
