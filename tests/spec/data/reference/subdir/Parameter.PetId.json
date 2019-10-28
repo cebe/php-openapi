@@ -1,0 +1,10 @@
+{
+    "name": "petId",
+    "description": "Represents the id of a pet",
+    "in": "path",
+    "required": true,
+    "schema": {
+        "type": "integer"
+    },
+    "style": "simple"
+}

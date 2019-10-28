@@ -192,12 +192,16 @@ class Reference implements SpecObjectInterface, DocumentContextInterface
             if ($referencedData === null) {
                 return null;
             }
-            /** @var $referencedObject SpecObjectInterface */
-            $referencedObject = new $this->_to($referencedData);
+
+            // transitive reference
+            if (isset($referencedData['$ref'])) {
+                return (new Reference($referencedData, $this->_to))->resolve(new ReferenceContext(null, $file));
+            } else {
+                /** @var $referencedObject SpecObjectInterface */
+                $referencedObject = new $this->_to($referencedData);
+            }
             if ($jsonReference->getJsonPointer()->getPointer() === '') {
                 $newContext = new ReferenceContext($referencedObject, $file);
-                $newContext->throwException = $context->throwException;
-                $referencedObject->setReferenceContext($newContext);
                 if ($referencedObject instanceof DocumentContextInterface) {
                     $referencedObject->setDocumentContext($referencedObject, $jsonReference->getJsonPointer());
                 }
@@ -206,9 +210,9 @@ class Reference implements SpecObjectInterface, DocumentContextInterface
                 // the whole document. We do not know the base type of the file at this point,
                 // so base document must be null.
                 $newContext = new ReferenceContext(null, $file);
-                $newContext->throwException = $context->throwException;
-                $referencedObject->setReferenceContext($newContext);
             }
+            $newContext->throwException = $context->throwException;
+            $referencedObject->setReferenceContext($newContext);
 
             return $referencedObject;
         } catch (NonexistentJsonPointerReferenceException $e) {
