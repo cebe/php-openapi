@@ -106,6 +106,8 @@ switch ($command) {
         $referenceContext->throwException = false;
         $openApi->resolveReferences($referenceContext);
 
+        $openApi->setDocumentContext($openApi, new \cebe\openapi\json\JsonPointer(''));
+
         // Validate
 
         $openApi->validate();
