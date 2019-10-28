@@ -137,7 +137,34 @@ switch ($command) {
         }
         if (!$validator->isValid()) {
             print_formatted("\BOpenAPI v3.0 schema violations:\C\n", STDERR);
-            foreach ($validator->getErrors() as $error) {
+            $errors = $validator->getErrors();
+            foreach ($errors as $error) {
+                // hide some errors triggered by other errors further down the path
+                if (strpos($error['message'], 'The property $ref is required') !== false && substr($error['property'], -4, 4) === '$ref') {
+                    $hasErrorInPath = false;
+                    foreach ($errors as $suberror) {
+                        if ($suberror['property'] !== $error['property'] && strpos($suberror['property'], substr($error['property'], 0, -4)) === 0) {
+                            $hasErrorInPath = true;
+                            break;
+                        }
+                    }
+                    if ($hasErrorInPath) {
+                        continue;
+                    }
+                }
+                if (strpos($error['message'], 'Failed to match exactly one schema') !== false) {
+                    $hasErrorInPath = false;
+                    foreach ($errors as $suberror) {
+                        if (strpos($suberror['property'], $error['property'] . '.') === 0) {
+                            $hasErrorInPath = true;
+                            break;
+                        }
+                    }
+                    if ($hasErrorInPath) {
+                        continue;
+                    }
+                }
+
                 print_formatted(sprintf("- [\Y%s\C] %s\n", escape_formatted($error['property']), escape_formatted($error['message'])), STDERR);
             }
         }
@@ -306,7 +333,7 @@ function print_formatted($string, $stream) {
     fwrite($stream, strtr($string, [
             '\\Y' => "\033[33m", // yellow
             '\\G' => "\033[32m", // green
-            '\\R' => "\033[31m", // green
+            '\\R' => "\033[31m", // red
             '\\B' => "\033[1m", // bold
             '\\C' => "\033[0m", // clear
             '\\\\' => '\\',
