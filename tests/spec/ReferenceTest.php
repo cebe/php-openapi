@@ -2,6 +2,7 @@
 
 use cebe\openapi\Reader;
 use cebe\openapi\spec\OpenApi;
+use cebe\openapi\spec\Parameter;
 use cebe\openapi\spec\Reference;
 use cebe\openapi\spec\RequestBody;
 use cebe\openapi\spec\Response;
@@ -178,17 +179,22 @@ YAML
         $this->assertEquals([], $openapi->getErrors());
         $this->assertTrue($result);
 
-        $this->assertInstanceOf(Reference::class, $petItems = $openapi->components->schemas['Pet']);
-        $this->assertInstanceOf(Reference::class, $petItems = $openapi->components->schemas['Dog']);
+        $this->assertInstanceOf(Reference::class, $openapi->components->schemas['Pet']);
+        $this->assertInstanceOf(Reference::class, $openapi->components->schemas['Dog']);
+        $this->assertInstanceOf(Reference::class, $openapi->components->parameters['Parameter.PetId']);
 
         $openapi->resolveReferences(new \cebe\openapi\ReferenceContext($openapi, $file));
 
-        $this->assertInstanceOf(Schema::class, $petItems = $openapi->components->schemas['Pet']);
-        $this->assertInstanceOf(Schema::class, $petItems = $openapi->components->schemas['Dog']);
+        $this->assertInstanceOf(Schema::class, $openapi->components->schemas['Pet']);
+        $this->assertInstanceOf(Schema::class, $openapi->components->schemas['Dog']);
+        $this->assertInstanceOf(Parameter::class, $openapi->components->parameters['Parameter.PetId']);
         $this->assertArrayHasKey('id', $openapi->components->schemas['Pet']->properties);
         $this->assertArrayHasKey('name', $openapi->components->schemas['Dog']->properties);
+        $this->assertEquals('petId', $openapi->components->parameters['Parameter.PetId']->name);
+        $this->assertInstanceOf(Schema::class, $openapi->components->parameters['Parameter.PetId']->schema);
+        $this->assertEquals('integer', $openapi->components->parameters['Parameter.PetId']->schema->type);
 
-        // second level reference inside of definitions.yaml
+        // second level references
         $this->assertArrayHasKey('food', $openapi->components->schemas['Dog']->properties);
         $this->assertInstanceOf(Schema::class, $openapi->components->schemas['Dog']->properties['food']);
         $this->assertArrayHasKey('id', $openapi->components->schemas['Dog']->properties['food']->properties);
@@ -199,6 +205,13 @@ YAML
         $responseContent = $openapi->paths->getPath('/pets')->get->responses[200]->content['application/json'];
         $this->assertInstanceOf(Schema::class, $responseContent->schema);
         $this->assertEquals('A Pet', $responseContent->schema->description);
+
+        // third level reference back to original file
+        $this->assertCount(1, $parameters = $openapi->paths->getPath('/pets')->get->parameters);
+        $parameter = reset($parameters);
+        $this->assertEquals('petId', $parameter->name);
+        $this->assertInstanceOf(Schema::class, $parameter->schema);
+        $this->assertEquals('integer', $parameter->schema->type);
     }
 
     public function testResolveFileHttp()

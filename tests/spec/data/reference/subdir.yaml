@@ -8,6 +8,9 @@ components:
       $ref: 'subdir/Pet.yaml'
     Dog:
       $ref: 'subdir/Dog.yaml'
+  parameters:
+    "Parameter.PetId":
+      "$ref": "./subdir/Parameter.PetId.json"
 paths:
   '/pet':
     get:

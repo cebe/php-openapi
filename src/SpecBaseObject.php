@@ -411,6 +411,12 @@ abstract class SpecBaseObject implements SpecObjectInterface, DocumentContextInt
         $this->_baseDocument = $baseDocument;
         $this->_jsonPointer = $jsonPointer;
 
+        // avoid recursion to get stuck in a loop
+        if ($this->_recursing) {
+            return;
+        }
+        $this->_recursing = true;
+
         foreach ($this->_properties as $property => $value) {
             if ($value instanceof DocumentContextInterface) {
                 $value->setDocumentContext($baseDocument, $jsonPointer->append($property));
@@ -422,6 +428,8 @@ abstract class SpecBaseObject implements SpecObjectInterface, DocumentContextInt
                 }
             }
         }
+
+        $this->_recursing = false;
     }
 
     /**
