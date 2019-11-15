@@ -130,7 +130,11 @@ switch ($command) {
         }
 
         if (!empty($errors)) {
-            print_formatted("\BErrors found while reading the API Description:\C\n", STDERR);
+            if ($inputFile === null) {
+                print_formatted("\BErrors found while reading the API description from STDIN:\C\n", STDERR);
+            } else {
+                print_formatted("\BErrors found while reading the API description from {$inputFile}:\C\n", STDERR);
+            }
             foreach ($errors as $error) {
                 if (($openPos = strpos($error, '[')) !== false && ($closePos = strpos($error, ']')) !== false && $openPos < $closePos) {
                     $error = escape_formatted(substr($error, 0, $openPos + 1)) . '\Y'
