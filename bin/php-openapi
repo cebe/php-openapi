@@ -32,6 +32,7 @@ $inputFile = null;
 $inputFormat = null;
 $outputFile = null;
 $outputFormat = null;
+$silentMode = false;
 foreach($argv as $k => $arg) {
     if ($k == 0) {
         continue;
@@ -66,6 +67,10 @@ foreach($argv as $k => $arg) {
                 } else {
                     error("Conflicting arguments: only one of --write-json or --write-yaml is allowed!", "usage");
                 }
+            break;
+            case '-s':
+            case '--silent':
+                $silentMode = true;
             break;
             case '-h':
             case '--help':
@@ -118,7 +123,9 @@ switch ($command) {
         $validator->validate($openApiData, (object)['$ref' => 'file://' . dirname(__DIR__) . '/schemas/openapi-v3.0.json']);
 
         if ($validator->isValid() && empty($errors)) {
-            print_formatted("The supplied API Description \B\Gvalidates\C against the OpenAPI v3.0 schema.\n", STDERR);
+            if(!$silentMode) {
+                print_formatted("The supplied API Description \B\Gvalidates\C against the OpenAPI v3.0 schema.\n", STDERR);
+            }
             exit(0);
         }
 
@@ -307,6 +314,7 @@ Usage:
     \Y--read-yaml\C   force reading input as YAML. Auto-detect if not specified.
     \Y--write-json\C  force writing output as JSON. Auto-detect if not specified.
     \Y--write-yaml\C  force writing output as YAML. Auto-detect if not specified.
+    \Y-s, --silent\C  silent mode. Will hide all success/information messages and only print errors.
 
 
 EOF
