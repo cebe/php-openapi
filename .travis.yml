@@ -11,12 +11,16 @@ matrix:
       env: YAML=3.0
     - php: '7.2'
       env: YAML=4.0
+    - php: '7.2'
+      env: YAML=5.0
     - php: '7.3'
       env: YAML=3.0
     - php: '7.3'
       env: YAML=4.0
+    - php: '7.3'
+      env: YAML=5.0
     - php: nightly
-      env: YAML=4.0
+      env: YAML=5.0
     # windows tests
     # https://travis-ci.community/t/where-to-contribute-php-support-for-windows/304
     - os: windows
