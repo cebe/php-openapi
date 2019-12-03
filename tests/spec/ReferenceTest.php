@@ -257,4 +257,51 @@ YAML
         $this->assertInstanceOf(RequestBody::class, $newPlaylistBody);
         $this->assertSame($playlistsBody, $newPlaylistBody);
     }
+
+    public function testReferenceToArray()
+    {
+        $schema = <<<'YAML'
+openapi: 3.0.0
+components:
+  schemas:
+    Pet:
+      type: object
+      properties:
+        id:
+          type: integer
+        typeA:
+          type: string
+          enum:
+            - "One"
+            - "Two"
+        typeB:
+          type: string
+          enum:
+            $ref: '#/components/schemas/Pet/properties/typeA/enum'
+        typeC:
+          type: string
+          enum:
+            - "Three"
+            - $ref: '#/components/schemas/Pet/properties/typeA/enum/1'
+        typeD:
+          type: string
+          enum:
+            $ref: 'definitions.yaml#/Dog/properties/typeD/enum'
+        typeE:
+          type: string
+          enum:
+            - $ref: 'definitions.yaml#/Dog/properties/typeD/enum/1'
+            - "Six"
+
+YAML;
+        $openapi = Reader::readFromYaml($schema);
+        $openapi->resolveReferences(new \cebe\openapi\ReferenceContext($openapi, 'file://' . __DIR__ . '/data/reference/definitions.yaml'));
+
+        $this->assertTrue(isset($openapi->components->schemas['Pet']));
+        $this->assertEquals(['One', 'Two'], $openapi->components->schemas['Pet']->properties['typeA']->enum);
+        $this->assertEquals(['One', 'Two'], $openapi->components->schemas['Pet']->properties['typeB']->enum);
+        $this->assertEquals(['Three', 'Two'], $openapi->components->schemas['Pet']->properties['typeC']->enum);
+        $this->assertEquals(['Four', 'Five'], $openapi->components->schemas['Pet']->properties['typeD']->enum);
+        $this->assertEquals(['Five', 'Six'], $openapi->components->schemas['Pet']->properties['typeE']->enum);
+    }
 }
