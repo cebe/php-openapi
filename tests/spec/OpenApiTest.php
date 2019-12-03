@@ -171,7 +171,10 @@ class OpenApiTest extends \PHPUnit\Framework\TestCase
             $nexmoExamples
         );
         foreach($all as $path) {
-            yield [substr($path, strlen(__DIR__ . '/../../vendor/')), basename($path)];
+            yield [
+                substr($path, strlen(__DIR__ . '/../../vendor/')),
+                basename(dirname($path, 2)) . DIRECTORY_SEPARATOR . basename(dirname($path, 1)) . DIRECTORY_SEPARATOR . basename($path)
+            ];
         }
     }
 
