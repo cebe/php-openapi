@@ -73,6 +73,11 @@ abstract class SpecBaseObject implements SpecObjectInterface, DocumentContextInt
                     $this->_errors[] = "property '$property' must be array, but " . gettype($data[$property]) . " given.";
                     continue;
                 }
+                if (isset($data[$property]['$ref'])) {
+                    $this->_properties[$property] = new Reference($data[$property], null);
+                    unset($data[$property]);
+                    continue;
+                }
                 switch (\count($type)) {
                     case 1:
                         // array
@@ -83,8 +88,14 @@ abstract class SpecBaseObject implements SpecObjectInterface, DocumentContextInt
                                     $this->_errors[] = "property '$property' must be array of strings, but array has " . gettype($item) . " element.";
                                 }
                                 $this->_properties[$property][] = $item;
-                            } elseif ($type[0] === Type::ANY || Type::isScalar($type[0])) {
+                            } elseif (Type::isScalar($type[0])) {
                                 $this->_properties[$property][] = $item;
+                            } elseif ($type[0] === Type::ANY) {
+                                if (is_array($item) && isset($item['$ref'])) {
+                                    $this->_properties[$property][] = new Reference($item, null);
+                                } else {
+                                    $this->_properties[$property][] = $item;
+                                }
                             } else {
                                 $this->_properties[$property][] = $this->instantiate($type[0], $item);
                             }
@@ -110,8 +121,14 @@ abstract class SpecBaseObject implements SpecObjectInterface, DocumentContextInt
                         }
                         break;
                 }
-            } elseif ($type === Type::ANY || Type::isScalar($type)) {
+            } elseif (Type::isScalar($type)) {
                 $this->_properties[$property] = $data[$property];
+            } elseif ($type === Type::ANY) {
+                if (is_array($data[$property]) && isset($data[$property]['$ref'])) {
+                    $this->_properties[$property] = new Reference($data[$property], null);
+                } else {
+                    $this->_properties[$property] = $data[$property];
+                }
             } else {
                 $this->_properties[$property] = $this->instantiate($type, $data[$property]);
             }
@@ -353,7 +370,7 @@ abstract class SpecBaseObject implements SpecObjectInterface, DocumentContextInt
             if ($value instanceof Reference) {
                 $referencedObject = $value->resolve($context);
                 $this->_properties[$property] = $referencedObject;
-                if (!$referencedObject instanceof Reference && $referencedObject !== null) {
+                if (!$referencedObject instanceof Reference && $referencedObject instanceof SpecObjectInterface) {
                     $referencedObject->resolveReferences();
                 }
             } elseif ($value instanceof SpecObjectInterface) {
@@ -363,7 +380,7 @@ abstract class SpecBaseObject implements SpecObjectInterface, DocumentContextInt
                     if ($item instanceof Reference) {
                         $referencedObject = $item->resolve($context);
                         $this->_properties[$property][$k] = $referencedObject;
-                        if (!$referencedObject instanceof Reference && $referencedObject !== null) {
+                        if (!$referencedObject instanceof Reference && $referencedObject instanceof SpecObjectInterface) {
                             $referencedObject->resolveReferences();
                         }
                     } elseif ($item instanceof SpecObjectInterface) {
