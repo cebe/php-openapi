@@ -73,31 +73,30 @@ abstract class SpecBaseObject implements SpecObjectInterface, DocumentContextInt
                     $this->_errors[] = "property '$property' must be array, but " . gettype($data[$property]) . " given.";
                     continue;
                 }
-                if (isset($data[$property]['$ref'])) {
-                    $this->_properties[$property] = new Reference($data[$property], null);
-                    unset($data[$property]);
-                    continue;
-                }
                 switch (\count($type)) {
                     case 1:
-                        // array
-                        $this->_properties[$property] = [];
-                        foreach ($data[$property] as $item) {
-                            if ($type[0] === Type::STRING) {
-                                if (!is_string($item)) {
-                                    $this->_errors[] = "property '$property' must be array of strings, but array has " . gettype($item) . " element.";
-                                }
-                                $this->_properties[$property][] = $item;
-                            } elseif (Type::isScalar($type[0])) {
-                                $this->_properties[$property][] = $item;
-                            } elseif ($type[0] === Type::ANY) {
-                                if (is_array($item) && isset($item['$ref'])) {
-                                    $this->_properties[$property][] = new Reference($item, null);
-                                } else {
+                        if (isset($data[$property]['$ref'])) {
+                            $this->_properties[$property] = new Reference($data[$property], null);
+                        } else {
+                            // array
+                            $this->_properties[$property] = [];
+                            foreach ($data[$property] as $item) {
+                                if ($type[0] === Type::STRING) {
+                                    if (!is_string($item)) {
+                                        $this->_errors[] = "property '$property' must be array of strings, but array has " . gettype($item) . " element.";
+                                    }
                                     $this->_properties[$property][] = $item;
+                                } elseif (Type::isScalar($type[0])) {
+                                    $this->_properties[$property][] = $item;
+                                } elseif ($type[0] === Type::ANY) {
+                                    if (is_array($item) && isset($item['$ref'])) {
+                                        $this->_properties[$property][] = new Reference($item, null);
+                                    } else {
+                                        $this->_properties[$property][] = $item;
+                                    }
+                                } else {
+                                    $this->_properties[$property][] = $this->instantiate($type[0], $item);
                                 }
-                            } else {
-                                $this->_properties[$property][] = $this->instantiate($type[0], $item);
                             }
                         }
                         break;
