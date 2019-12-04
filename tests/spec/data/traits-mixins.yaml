@@ -1,0 +1,60 @@
+# test whether we can read YAML files that use mixin feature
+x-ResourceCommon: &ResourceCommon
+    uuid:
+      type: string
+      description: uuid of the resource
+    name:
+      type: string
+      description: name of the resource
+
+openapi: 3.0.0
+info:
+  title: Test API
+  version: 1.0.0
+paths:
+  /foo:
+    put:
+      description: create foo
+      responses:
+        '200': &RESP_OK
+          description: request succeeded
+          headers: &RESP_HEADERS
+            X-Request-Id:
+              description: the request id
+          schema:
+            $ref: '#/components/schemas/Foo'
+        '404': &RESP_ERROR
+          description: resource not found
+          headers: *RESP_HEADERS
+          schema:
+            $ref: "#/components/schemas/Error"
+        '428': *RESP_ERROR
+        default: *RESP_ERROR
+components:
+  responses:
+    Bar:
+      description: A bar
+      content:
+        application/json:
+          schema: { type: object }
+  schemas:
+    Error:
+      description: This is an error
+      type: object
+      properties:
+        message:
+          type: string
+        code:
+          type: number
+          format: int64
+    Foo:
+      description: A foo resource type
+      type: object
+      properties:
+        <<: *ResourceCommon
+        id:
+          type: string
+          description: id of the foo
+        description:
+          type: string
+          description: description of foo
