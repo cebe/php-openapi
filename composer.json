@@ -38,11 +38,6 @@
 			"cebe\\openapi\\": "src/"
 		}
 	},
-	"config": {
-		"platform": {
-			"php": "7.1.3"
-		}
-	},
 	"extra": {
 		"branch-alias": {
 			"dev-master": "1.0.x-dev"
