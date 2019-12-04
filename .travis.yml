@@ -4,19 +4,29 @@ matrix:
   include:
     # linux tests
     - php: '7.1'
-      env: YAML=3.0
+      env: YAML=^3.0
     - php: '7.1'
-      env: YAML=4.0
+      env: YAML=^4.0
     - php: '7.2'
-      env: YAML=3.0
+      env: YAML=^3.0
     - php: '7.2'
-      env: YAML=4.0
+      env: YAML=^4.0
     - php: '7.3'
-      env: YAML=3.0
+      env: YAML=^3.0
     - php: '7.3'
-      env: YAML=4.0
+      env: YAML=^4.0
+    - php: '7.3'
+      env: YAML=~4.1.0
+    - php: '7.3'
+      env: YAML=~4.2.0
+    - php: '7.3'
+      env: YAML=~4.3.0
+    - php: '7.3'
+      env: YAML=~4.4.0
+    - php: '7.3'
+      env: YAML=^5.0
     - php: nightly
-      env: YAML=4.0
+      env: YAML=^4.0
     # windows tests
     # https://travis-ci.community/t/where-to-contribute-php-support-for-windows/304
     - os: windows
@@ -43,7 +53,7 @@ matrix:
 
 install:
   - make install
-  - composer require symfony/yaml:"^${YAML}" --prefer-dist --no-interaction
+  - composer require symfony/yaml:"${YAML}" --prefer-dist --no-interaction
 script:
   - make lint
   - make test

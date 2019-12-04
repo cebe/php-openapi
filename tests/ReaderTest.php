@@ -89,7 +89,37 @@ YAML
         $this->assertEquals("1.0.0", $openapi->info->version);
     }
 
-    
+    public function testSymfonyYamlBugHunt()
+    {
+        $openApiFile = __DIR__ . '/../vendor/oai/openapi-specification/examples/v3.0/uspto.yaml';
+        $openapi = \cebe\openapi\Reader::readFromYamlFile($openApiFile);
+
+        $inlineYamlExample = $openapi->paths['/']->get->responses['200']->content['application/json']->example;
+        $this->assertInternalType('array', $inlineYamlExample);
+        $expectedArray = json_decode(<<<JSON
+{
+  "total": 2,
+  "apis": [
+    {
+      "apiKey": "oa_citations",
+      "apiVersionNumber": "v1",
+      "apiUrl": "https://developer.uspto.gov/ds-api/oa_citations/v1/fields",
+      "apiDocumentationUrl": "https://developer.uspto.gov/ds-api-docs/index.html?url=https://developer.uspto.gov/ds-api/swagger/docs/oa_citations.json"
+    },
+    {
+      "apiKey": "cancer_moonshot",
+      "apiVersionNumber": "v1",
+      "apiUrl": "https://developer.uspto.gov/ds-api/cancer_moonshot/v1/fields",
+      "apiDocumentationUrl": "https://developer.uspto.gov/ds-api-docs/index.html?url=https://developer.uspto.gov/ds-api/swagger/docs/cancer_moonshot.json"
+    }
+  ]
+}
+JSON
+        , true);
+        $this->assertEquals($expectedArray, $inlineYamlExample);
+    }
+
+
     // TODO test invalid JSON
     // TODO test invalid YAML
 }
