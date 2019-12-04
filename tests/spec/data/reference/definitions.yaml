@@ -11,3 +11,8 @@ Dog:
       type: string
     food:
       $ref: 'Food.yaml'
+    typeD:
+      type: string
+      enum:
+        - "Four"
+        - "Five"

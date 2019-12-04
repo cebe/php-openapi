@@ -174,7 +174,9 @@ class Reference implements SpecObjectInterface, DocumentContextInterface
                     // TODO type error if resolved object does not match $this->_to ?
                     /** @var $referencedObject SpecObjectInterface */
                     $referencedObject = $jsonReference->getJsonPointer()->evaluate($baseSpec);
-                    $referencedObject->setReferenceContext($context);
+                    if ($referencedObject instanceof SpecObjectInterface) {
+                        $referencedObject->setReferenceContext($context);
+                    }
                     return $referencedObject;
                 } else {
                     // if current document was loaded via reference, it may be null,
@@ -196,10 +198,10 @@ class Reference implements SpecObjectInterface, DocumentContextInterface
             // transitive reference
             if (isset($referencedData['$ref'])) {
                 return (new Reference($referencedData, $this->_to))->resolve(new ReferenceContext(null, $file));
-            } else {
-                /** @var $referencedObject SpecObjectInterface */
-                $referencedObject = new $this->_to($referencedData);
             }
+            /** @var $referencedObject SpecObjectInterface|array */
+            $referencedObject = $this->_to !== null ? new $this->_to($referencedData) : $referencedData;
+
             if ($jsonReference->getJsonPointer()->getPointer() === '') {
                 $newContext = new ReferenceContext($referencedObject, $file);
                 if ($referencedObject instanceof DocumentContextInterface) {
@@ -212,7 +214,9 @@ class Reference implements SpecObjectInterface, DocumentContextInterface
                 $newContext = new ReferenceContext(null, $file);
             }
             $newContext->throwException = $context->throwException;
-            $referencedObject->setReferenceContext($newContext);
+            if ($referencedObject instanceof SpecObjectInterface) {
+                $referencedObject->setReferenceContext($newContext);
+            }
 
             return $referencedObject;
         } catch (NonexistentJsonPointerReferenceException $e) {
