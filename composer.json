@@ -20,12 +20,12 @@
 	"require": {
 		"php": ">=7.1.0",
 		"ext-json": "*",
-		"symfony/yaml": "^3.0 | ^4.0",
+		"symfony/yaml": "^3.0 | ~4.0.0 | ~4.1.0 | ~4.2.0 | ~4.3.0",
 		"justinrainbow/json-schema": "^5.0"
 	},
 	"require-dev": {
 		"cebe/indent": "*",
-		"friendsofphp/php-cs-fixer": "~2.13.1",
+		"friendsofphp/php-cs-fixer": "~2.16.1",
 		"phpunit/phpunit": "^6.5",
 
 		"oai/openapi-specification": "3.0.2",
@@ -36,11 +36,6 @@
 	"autoload": {
 		"psr-4": {
 			"cebe\\openapi\\": "src/"
-		}
-	},
-	"config": {
-		"platform": {
-			"php": "7.1.3"
 		}
 	},
 	"extra": {
