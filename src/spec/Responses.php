@@ -27,7 +27,7 @@ use Traversable;
 class Responses implements SpecObjectInterface, DocumentContextInterface, ArrayAccess, Countable, IteratorAggregate
 {
     /**
-     * @var Response[]|Reference[]
+     * @var (Response|Reference|null)[]
      */
     private $_responses = [];
     private $_errors = [];
@@ -90,7 +90,7 @@ class Responses implements SpecObjectInterface, DocumentContextInterface, ArrayA
 
     /**
      * @param string $statusCode HTTP status code
-     * @return Response|Reference
+     * @return Response|Reference|null
      */
     public function getResponse($statusCode)
     {
@@ -115,7 +115,7 @@ class Responses implements SpecObjectInterface, DocumentContextInterface, ArrayA
     }
 
     /**
-     * @return Response[]|Reference[]
+     * @return (Response|Reference|null)[]
      */
     public function getResponses(): array
     {
@@ -239,6 +239,7 @@ class Responses implements SpecObjectInterface, DocumentContextInterface, ArrayA
     {
         foreach ($this->_responses as $key => $response) {
             if ($response instanceof Reference) {
+                /** @var Response|Reference|null $referencedObject */
                 $referencedObject = $response->resolve($context);
                 $this->_responses[$key] = $referencedObject;
                 if (!$referencedObject instanceof Reference && $referencedObject !== null) {
