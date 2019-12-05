@@ -54,6 +54,7 @@ install:
   - composer require symfony/yaml:"${YAML}" --prefer-dist --no-interaction
 script:
   - make lint
+  - make stan
   - make test
   - if [[ $TRAVIS_PHP_VERSION = "7.3" || $TRAVIS_PHP_VERSION = "nightly" ]]; then true; else make check-style; fi
   - make coverage
