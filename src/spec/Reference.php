@@ -172,7 +172,7 @@ class Reference implements SpecObjectInterface, DocumentContextInterface
                 $baseSpec = $context->getBaseSpec();
                 if ($baseSpec !== null) {
                     // TODO type error if resolved object does not match $this->_to ?
-                    /** @var $referencedObject SpecObjectInterface */
+                    /** @var SpecObjectInterface $referencedObject */
                     $referencedObject = $jsonReference->getJsonPointer()->evaluate($baseSpec);
                     if ($referencedObject instanceof SpecObjectInterface) {
                         $referencedObject->setReferenceContext($context);
@@ -199,7 +199,7 @@ class Reference implements SpecObjectInterface, DocumentContextInterface
             if (isset($referencedData['$ref'])) {
                 return (new Reference($referencedData, $this->_to))->resolve(new ReferenceContext(null, $file));
             }
-            /** @var $referencedObject SpecObjectInterface|array */
+            /** @var SpecObjectInterface|array $referencedObject */
             $referencedObject = $this->_to !== null ? new $this->_to($referencedData) : $referencedData;
 
             if ($jsonReference->getJsonPointer()->getPointer() === '') {

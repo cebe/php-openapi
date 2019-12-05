@@ -19,7 +19,7 @@ class Writer
 {
     /**
      * Convert OpenAPI spec object to JSON data.
-     * @param SpecObjectInterface|OpenApi the OpenApi object instance.
+     * @param SpecObjectInterface|OpenApi $object the OpenApi object instance.
      * @return string JSON string.
      */
     public static function writeToJson(SpecObjectInterface $object): string
@@ -29,7 +29,7 @@ class Writer
 
     /**
      * Convert OpenAPI spec object to YAML data.
-     * @param SpecObjectInterface|OpenApi the OpenApi object instance.
+     * @param SpecObjectInterface|OpenApi $object the OpenApi object instance.
      * @return string YAML string.
      */
     public static function writeToYaml(SpecObjectInterface $object): string
@@ -39,7 +39,7 @@ class Writer
 
     /**
      * Write OpenAPI spec object to JSON file.
-     * @param SpecObjectInterface|OpenApi the OpenApi object instance.
+     * @param SpecObjectInterface|OpenApi $object the OpenApi object instance.
      * @param string $fileName file name to write to.
      * @throws IOException when writing the file fails.
      */
@@ -52,7 +52,7 @@ class Writer
 
     /**
      * Write OpenAPI spec object to YAML file.
-     * @param SpecObjectInterface|OpenApi the OpenApi object instance.
+     * @param SpecObjectInterface|OpenApi $object the OpenApi object instance.
      * @param string $fileName file name to write to.
      * @throws IOException when writing the file fails.
      */

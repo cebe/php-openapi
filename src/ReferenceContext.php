@@ -57,17 +57,11 @@ class ReferenceContext
         throw new UnresolvableReferenceException('Can not resolve references for a specification given as a relative path.');
     }
 
-    /**
-     * @return mixed
-     */
     public function getBaseSpec(): ?SpecObjectInterface
     {
         return $this->_baseSpec;
     }
 
-    /**
-     * @return mixed
-     */
     public function getUri(): string
     {
         return $this->_uri;
