@@ -57,6 +57,7 @@ JSON
       "type": "string"
     },
     "address": {
+      "nullable": "true",
       "$ref": "#/components/schemas/Address"
     },
     "age": {
@@ -77,6 +78,7 @@ JSON
         $this->assertEquals(['name'], $schema->required);
         $this->assertEquals(Type::INTEGER, $schema->properties['age']->type);
         $this->assertEquals(0, $schema->properties['age']->minimum);
+        $this->assertTrue($schema->properties['address']->nullable);
 
         // additionalProperties defaults to true.
         $this->assertTrue($schema->additionalProperties);
