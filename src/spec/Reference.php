@@ -145,7 +145,7 @@ class Reference implements SpecObjectInterface, DocumentContextInterface
      * @param ReferenceContext $context the reference context to use for resolution.
      * If not specified, `getContext()` will be called to determine the context, if
      * that does not return a context, the UnresolvableReferenceException will be thrown.
-     * @return SpecObjectInterface the resolved spec type.
+     * @return SpecObjectInterface|array|null the resolved spec type.
      * You might want to call resolveReferences() on the resolved object to recursively resolve recursive references.
      * This is not done automatically to avoid recursion to run into the same function again.
      * If you call resolveReferences() make sure to replace the Reference with the resolved object first.
@@ -172,7 +172,7 @@ class Reference implements SpecObjectInterface, DocumentContextInterface
                 $baseSpec = $context->getBaseSpec();
                 if ($baseSpec !== null) {
                     // TODO type error if resolved object does not match $this->_to ?
-                    /** @var $referencedObject SpecObjectInterface */
+                    /** @var SpecObjectInterface $referencedObject */
                     $referencedObject = $jsonReference->getJsonPointer()->evaluate($baseSpec);
                     if ($referencedObject instanceof SpecObjectInterface) {
                         $referencedObject->setReferenceContext($context);
@@ -199,7 +199,7 @@ class Reference implements SpecObjectInterface, DocumentContextInterface
             if (isset($referencedData['$ref'])) {
                 return (new Reference($referencedData, $this->_to))->resolve(new ReferenceContext(null, $file));
             }
-            /** @var $referencedObject SpecObjectInterface|array */
+            /** @var SpecObjectInterface|array $referencedObject */
             $referencedObject = $this->_to !== null ? new $this->_to($referencedData) : $referencedData;
 
             if ($jsonReference->getJsonPointer()->getPointer() === '') {

@@ -31,7 +31,7 @@ use Traversable;
 class Paths implements SpecObjectInterface, DocumentContextInterface, ArrayAccess, Countable, IteratorAggregate
 {
     /**
-     * @var PathItem[]
+     * @var (PathItem|null)[]
      */
     private $_paths = [];
 
@@ -43,7 +43,7 @@ class Paths implements SpecObjectInterface, DocumentContextInterface, ArrayAcces
 
     /**
      * Create an object from spec data.
-     * @param PathItem[]|array[] $data spec data read from YAML or JSON
+     * @param (PathItem|array|null)[] $data spec data read from YAML or JSON
      * @throws TypeErrorException in case invalid data is supplied.
      */
     public function __construct(array $data)

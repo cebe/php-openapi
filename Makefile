@@ -25,6 +25,9 @@ lint:
 	node_modules/.bin/speccy lint tests/spec/data/reference/playlist.json
 	node_modules/.bin/speccy lint tests/spec/data/recursion.json
 
+stan:
+	php $(PHPARGS) vendor/bin/phpstan analyse -l 5 src
+
 # copy openapi3 json schema
 schemas/openapi-v3.0.json: vendor/oai/openapi-specification/schemas/v3.0/schema.json
 	cp $< $@

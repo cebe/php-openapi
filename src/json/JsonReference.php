@@ -90,9 +90,6 @@ final class JsonReference implements JsonSerializable
     }
 
 
-    /**
-     * @return string returns the JSON Pointer.
-     */
     public function getJsonPointer(): JsonPointer
     {
         return $this->_pointer;

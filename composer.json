@@ -31,7 +31,8 @@
 		"oai/openapi-specification": "3.0.2",
 		"mermade/openapi3-examples": "1.0.0",
 		"apis-guru/openapi-directory": "1.0.0",
-		"nexmo/api-specification": "1.0.0"
+		"nexmo/api-specification": "1.0.0",
+		"phpstan/phpstan": "^0.12.0"
 	},
 	"autoload": {
 		"psr-4": {

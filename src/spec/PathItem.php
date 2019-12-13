@@ -66,7 +66,7 @@ class PathItem extends SpecBaseObject
     /**
      * Create an object from spec data.
      * @param array $data spec data read from YAML or JSON
-     * @throws TypeErrorException in case invalid data is supplied.
+     * @throws \cebe\openapi\exceptions\TypeErrorException in case invalid data is supplied.
      */
     public function __construct(array $data)
     {
@@ -142,7 +142,7 @@ class PathItem extends SpecBaseObject
 
     /**
      * Resolves all Reference Objects in this object and replaces them with their resolution.
-     * @throws exceptions\UnresolvableReferenceException in case resolving a reference fails.
+     * @throws \cebe\openapi\exceptions\UnresolvableReferenceException in case resolving a reference fails.
      */
     public function resolveReferences(ReferenceContext $context = null)
     {
