@@ -1,0 +1,44 @@
+openapi: 3.0.2
+info:
+  title: My API
+  version: "123"
+components:
+  schemas:
+    SomeResponse:
+      type: object
+      properties:
+        name:
+          type: string
+          description: Name of SomeResponse
+        recursive:
+          $ref: '#/components/schemas/RecursiveItem'
+
+    AnotherResponse:
+      type: object
+      properties:
+        uuid:
+          type: string
+          format: uuid
+          description: UUID of AnotherResponse
+        recursive:
+          $ref: '#/components/schemas/RecursiveItem'
+
+
+    RecursiveItem:
+      type: object
+      properties:
+        children:
+          type: array
+          items:
+            oneOf:
+              - $ref: '#/components/schemas/RecursiveItem'
+              - $ref: '#/components/schemas/SomeResponse'
+
+
+paths:
+  '/':
+    get:
+      description: default
+      responses:
+        200:
+          description: ok
