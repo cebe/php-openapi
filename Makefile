@@ -1,6 +1,6 @@
 TESTCASE=
-PHPARGS=
-#PHPARGS=-dzend_extension=xdebug.so -dxdebug.remote_enable=1
+PHPARGS=-dmemory_limit=64M
+#PHPARGS=-dmemory_limit=64M -dzend_extension=xdebug.so -dxdebug.remote_enable=1
 
 all:
 
@@ -18,10 +18,13 @@ install:
 
 test:
 	php $(PHPARGS) vendor/bin/phpunit $(TESTCASE)
+	php $(PHPARGS) bin/php-openapi validate tests/spec/data/recursion.json
+	php $(PHPARGS) bin/php-openapi validate tests/spec/data/recursion2.yaml
 
 lint:
 	php $(PHPARGS) bin/php-openapi validate tests/spec/data/reference/playlist.json
 	php $(PHPARGS) bin/php-openapi validate tests/spec/data/recursion.json
+	php $(PHPARGS) bin/php-openapi validate tests/spec/data/recursion2.yaml
 	node_modules/.bin/speccy lint tests/spec/data/reference/playlist.json
 	node_modules/.bin/speccy lint tests/spec/data/recursion.json
 

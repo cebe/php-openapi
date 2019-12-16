@@ -24,7 +24,13 @@ abstract class SpecBaseObject implements SpecObjectInterface, DocumentContextInt
 {
     private $_properties = [];
     private $_errors = [];
-    private $_recursing = false;
+
+    private $_recursingSerializableData = false;
+    private $_recursingValidate = false;
+    private $_recursingErrors = false;
+    private $_recursingReferences = false;
+    private $_recursingReferenceContext = false;
+    private $_recursingDocumentContext = false;
 
     private $_baseDocument;
     private $_jsonPointer;
@@ -168,11 +174,11 @@ abstract class SpecBaseObject implements SpecObjectInterface, DocumentContextInt
      */
     public function getSerializableData()
     {
-        if ($this->_recursing) {
+        if ($this->_recursingSerializableData) {
             // return a reference
             return (object) ['$ref' => JsonReference::createFromUri('', $this->getDocumentPosition())->getReference()];
         }
-        $this->_recursing = true;
+        $this->_recursingSerializableData = true;
 
         $data = $this->_properties;
         foreach ($data as $k => $v) {
@@ -195,7 +201,7 @@ abstract class SpecBaseObject implements SpecObjectInterface, DocumentContextInt
             }
         }
 
-        $this->_recursing = false;
+        $this->_recursingSerializableData = false;
 
         return (object) $data;
     }
@@ -208,10 +214,10 @@ abstract class SpecBaseObject implements SpecObjectInterface, DocumentContextInt
     public function validate(): bool
     {
         // avoid recursion to get stuck in a loop
-        if ($this->_recursing) {
+        if ($this->_recursingValidate) {
             return true;
         }
-        $this->_recursing = true;
+        $this->_recursingValidate = true;
         $valid = true;
         foreach ($this->_properties as $v) {
             if ($v instanceof SpecObjectInterface) {
@@ -228,7 +234,7 @@ abstract class SpecBaseObject implements SpecObjectInterface, DocumentContextInt
                 }
             }
         }
-        $this->_recursing = false;
+        $this->_recursingValidate = false;
 
         $this->performValidation();
 
@@ -246,10 +252,10 @@ abstract class SpecBaseObject implements SpecObjectInterface, DocumentContextInt
     public function getErrors(): array
     {
         // avoid recursion to get stuck in a loop
-        if ($this->_recursing) {
+        if ($this->_recursingErrors) {
             return [];
         }
-        $this->_recursing = true;
+        $this->_recursingErrors = true;
 
         if (($pos = $this->getDocumentPosition()) !== null) {
             $errors = [
@@ -272,7 +278,7 @@ abstract class SpecBaseObject implements SpecObjectInterface, DocumentContextInt
             }
         }
 
-        $this->_recursing = false;
+        $this->_recursingErrors = false;
 
         return array_merge(...$errors);
     }
@@ -360,10 +366,10 @@ abstract class SpecBaseObject implements SpecObjectInterface, DocumentContextInt
     public function resolveReferences(ReferenceContext $context = null)
     {
         // avoid recursion to get stuck in a loop
-        if ($this->_recursing) {
+        if ($this->_recursingReferences) {
             return;
         }
-        $this->_recursing = true;
+        $this->_recursingReferences = true;
 
         foreach ($this->_properties as $property => $value) {
             if ($value instanceof Reference) {
@@ -389,7 +395,7 @@ abstract class SpecBaseObject implements SpecObjectInterface, DocumentContextInt
             }
         }
 
-        $this->_recursing = false;
+        $this->_recursingReferences = false;
     }
 
     /**
@@ -397,6 +403,12 @@ abstract class SpecBaseObject implements SpecObjectInterface, DocumentContextInt
      */
     public function setReferenceContext(ReferenceContext $context)
     {
+        // avoid recursion to get stuck in a loop
+        if ($this->_recursingReferenceContext) {
+            return;
+        }
+        $this->_recursingReferenceContext = true;
+
         foreach ($this->_properties as $property => $value) {
             if ($value instanceof Reference) {
                 $value->setContext($context);
@@ -412,6 +424,8 @@ abstract class SpecBaseObject implements SpecObjectInterface, DocumentContextInt
                 }
             }
         }
+
+        $this->_recursingReferenceContext = false;
     }
 
     /**
@@ -428,10 +442,10 @@ abstract class SpecBaseObject implements SpecObjectInterface, DocumentContextInt
         $this->_jsonPointer = $jsonPointer;
 
         // avoid recursion to get stuck in a loop
-        if ($this->_recursing) {
+        if ($this->_recursingDocumentContext) {
             return;
         }
-        $this->_recursing = true;
+        $this->_recursingDocumentContext = true;
 
         foreach ($this->_properties as $property => $value) {
             if ($value instanceof DocumentContextInterface) {
@@ -445,7 +459,7 @@ abstract class SpecBaseObject implements SpecObjectInterface, DocumentContextInt
             }
         }
 
-        $this->_recursing = false;
+        $this->_recursingDocumentContext = false;
     }
 
     /**
