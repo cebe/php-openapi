@@ -115,7 +115,17 @@ class Parameter extends SpecBaseObject
             }
         }
         if (!empty($this->content) && !empty($this->schema)) {
-            $this->addError("A Parameter Object MUST contain either a schema property, or a content property, but not both. ");
+            $this->addError('A Parameter Object MUST contain either a schema property, or a content property, but not both.');
+        }
+
+        $supportedSerializationStyles = [
+            'path' => ['simple', 'label', 'matrix'],
+            'query' => ['form', 'spaceDelimited', 'pipeDelimited', 'deepObject'],
+            'header' => ['simple'],
+            'cookie' => ['form'],
+        ];
+        if(!in_array($this->style, $supportedSerializationStyles[$this->in])) {
+            $this->addError('A Parameter Object DOES NOT support this serialization style.');
         }
     }
 }

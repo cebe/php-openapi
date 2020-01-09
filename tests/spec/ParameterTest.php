@@ -148,4 +148,69 @@ YAML
         $this->assertEquals('form', $parameter->style);
         $this->assertTrue($parameter->explode);
     }
+
+    public function testItValidatesSchemaAndContentCombination()
+    {
+        /** @var $parameter Parameter */
+        $parameter = Reader::readFromYaml(<<<'YAML'
+name: token
+in: cookie
+schema:
+  type: object
+content:
+  application/json:
+    schema:
+      type: object
+YAML
+            , Parameter::class);
+
+        $result = $parameter->validate();
+        $this->assertEquals(['A Parameter Object MUST contain either a schema property, or a content property, but not both.'], $parameter->getErrors());
+        $this->assertFalse($result);
+    }
+
+    public function testItValidatesSupportedSerializationStyles()
+    {
+        // 1. Prepare test inputs
+        $specTemplate = <<<YAML
+name: token
+required: true
+in: %s
+style: %s
+YAML;
+        $goodCombinations = [
+            'path' => ['simple', 'label', 'matrix'],
+            'query' => ['form', 'spaceDelimited', 'pipeDelimited', 'deepObject'],
+            'header' => ['simple'],
+            'cookie' => ['form'],
+        ];
+        $badCombinations = [
+            'path' => ['unknown', 'form', 'spaceDelimited', 'pipeDelimited', 'deepObject'],
+            'query' => ['unknown', 'simple', 'label', 'matrix'],
+            'header' => ['unknown', 'form', 'spaceDelimited', 'pipeDelimited', 'deepObject', 'matrix'],
+            'cookie' => ['unknown', 'spaceDelimited', 'pipeDelimited', 'deepObject', 'matrix', 'label', 'matrix'],
+        ];
+
+        // 2. Run tests for valid input
+        foreach($goodCombinations as $in=>$styles) {
+            foreach($styles as $style) {
+                /** @var $parameter Parameter */
+                $parameter = Reader::readFromYaml(sprintf($specTemplate, $in, $style) , Parameter::class);
+                $result = $parameter->validate();
+                $this->assertEquals([], $parameter->getErrors());
+                $this->assertTrue($result);
+            }
+        }
+
+        // 2. Run tests for invalid input
+        foreach($badCombinations as $in=>$styles) {
+            foreach($styles as $style) {
+                /** @var $parameter Parameter */
+                $parameter = Reader::readFromYaml(sprintf($specTemplate, $in, $style) , Parameter::class);
+                $result = $parameter->validate();
+                $this->assertEquals(['A Parameter Object DOES NOT support this serialization style.'], $parameter->getErrors());
+                $this->assertFalse($result);
+            }
+        }
+    }
 }
