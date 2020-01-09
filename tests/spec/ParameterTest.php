@@ -186,7 +186,7 @@ YAML
             , Parameter::class);
 
         $result = $parameter->validate();
-        $this->assertEquals(['A Parameter Object MUST with Content property must have A SINGLE content type.'], $parameter->getErrors());
+        $this->assertEquals(['A Parameter Object with Content property MUST have A SINGLE content type.'], $parameter->getErrors());
         $this->assertFalse($result);
     }
 
