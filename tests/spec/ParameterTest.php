@@ -169,6 +169,28 @@ YAML
         $this->assertFalse($result);
     }
 
+    public function testItValidatesContentCanHaveOnlySingleKey()
+    {
+        /** @var $parameter Parameter */
+        $parameter = Reader::readFromYaml(<<<'YAML'
+name: token
+in: cookie
+content:
+  application/json:
+    schema:
+      type: object
+  application/xml:
+    schema:
+      type: object
+YAML
+            , Parameter::class);
+
+        $result = $parameter->validate();
+        $this->assertEquals(['A Parameter Object MUST with Content property must have A SINGLE content type.'], $parameter->getErrors());
+        $this->assertFalse($result);
+    }
+
+
     public function testItValidatesSupportedSerializationStyles()
     {
         // 1. Prepare test inputs
