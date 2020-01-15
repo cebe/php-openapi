@@ -14,3 +14,7 @@ paths:
       responses:
         200:
           description: return a pet
+          content:
+            'application/json':
+              schema:
+                $ref: "#/components/schemas/Pet"
