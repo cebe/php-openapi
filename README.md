@@ -25,7 +25,7 @@ do awesome work:
 
 - [cebe/yii2-openapi](https://github.com/cebe/yii2-openapi) Code Generator for REST API from OpenAPI 3 Descriptions, includes fake data generator.
 - [cebe/yii2-app-api](https://github.com/cebe/yii2-app-api) Yii framework application template for developing API-first applications.
-- [lezhnev74/openapi-psr7-validator](https://github.com/lezhnev74/openapi-psr7-validator) validates PSR-7 messages (HTTP request/response) against OpenAPI descriptions.
+- [league/openapi-psr7-validator](https://github.com/thephpleague/openapi-psr7-validator) validates PSR-7 messages (HTTP request/response) against OpenAPI descriptions.
 - ... ([add yours](https://github.com/cebe/php-openapi/edit/master/README.md#L24))
 
 ## Usage
