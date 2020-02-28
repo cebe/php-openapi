@@ -174,6 +174,24 @@ class Reference implements SpecObjectInterface, DocumentContextInterface
                     // TODO type error if resolved object does not match $this->_to ?
                     /** @var SpecObjectInterface $referencedObject */
                     $referencedObject = $jsonReference->getJsonPointer()->evaluate($baseSpec);
+                    // transitive reference
+                    if ($referencedObject instanceof Reference) {
+                        if ($referencedObject->_to === null) {
+                            $referencedObject->_to = $this->_to;
+                        }
+                        $referencedObject->setContext($context);
+
+                        if ($referencedObject === $this) { // catch recursion
+                            throw new UnresolvableReferenceException('Cyclic reference detected on a Reference Object.');
+                        }
+
+                        $transitiveRefResult = $referencedObject->resolve();
+
+                        if ($transitiveRefResult === $this) { // catch recursion
+                            throw new UnresolvableReferenceException('Cyclic reference detected on a Reference Object.');
+                        }
+                        return $transitiveRefResult;
+                    }
                     if ($referencedObject instanceof SpecObjectInterface) {
                         $referencedObject->setReferenceContext($context);
                     }

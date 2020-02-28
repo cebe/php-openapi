@@ -304,4 +304,78 @@ YAML;
         $this->assertEquals(['Four', 'Five'], $openapi->components->schemas['Pet']->properties['typeD']->enum);
         $this->assertEquals(['Five', 'Six'], $openapi->components->schemas['Pet']->properties['typeE']->enum);
     }
+
+    /**
+     * References to references fail as "cyclic reference"
+     * @see https://github.com/cebe/php-openapi/issues/57
+     */
+    public function testTransitiveReference()
+    {
+        $schema = <<<'YAML'
+openapi: 3.0.2
+info:
+  title: 'City API'
+  version: dev
+paths:
+  '/city':
+    get:
+      description: 'Get City'
+      responses:
+        '200':
+          description: 'success'
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/City'
+components:
+  schemas:
+    City:
+      $ref: '#/components/schemas/Named'
+    Named:
+      type: string
+
+YAML;
+
+        $openapi = Reader::readFromYaml($schema);
+        $openapi->resolveReferences(new \cebe\openapi\ReferenceContext($openapi, 'file:///tmp/openapi.yaml'));
+
+        $this->assertTrue(isset($openapi->components->schemas['City']));
+        $this->assertTrue(isset($openapi->components->schemas['Named']));
+        $this->assertEquals('string', $openapi->components->schemas['Named']->type);
+        $this->assertEquals('string', $openapi->components->schemas['City']->type);
+        $this->assertEquals('string', $openapi->paths['/city']->get->responses[200]->content['application/json']->schema->type);
+    }
+
+    public function testTransitiveReferenceCyclic()
+    {
+        $schema = <<<'YAML'
+openapi: 3.0.2
+info:
+  title: 'City API'
+  version: dev
+paths:
+  '/city':
+    get:
+      description: 'Get City'
+      responses:
+        '200':
+          description: 'success'
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/City'
+components:
+  schemas:
+    City:
+      $ref: '#/components/schemas/City'
+
+YAML;
+
+        $openapi = Reader::readFromYaml($schema);
+
+        $this->expectException(\cebe\openapi\exceptions\UnresolvableReferenceException::class);
+        $this->expectExceptionMessage('Cyclic reference detected on a Reference Object.');
+
+        $openapi->resolveReferences(new \cebe\openapi\ReferenceContext($openapi, 'file:///tmp/openapi.yaml'));
+    }
 }
