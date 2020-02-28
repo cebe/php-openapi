@@ -346,6 +346,44 @@ YAML;
         $this->assertEquals('string', $openapi->paths['/city']->get->responses[200]->content['application/json']->schema->type);
     }
 
+    /**
+     * References to references fail as "cyclic reference"
+     * @see https://github.com/cebe/php-openapi/issues/54
+     */
+    public function testTransitiveReferenceToFile()
+    {
+        $schema = <<<'YAML'
+openapi: 3.0.2
+info:
+  title: 'Dog API'
+  version: dev
+paths:
+  '/dog':
+    get:
+      description: 'Get Dog'
+      responses:
+        '200':
+          description: 'success'
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Dog'
+components:
+  schemas:
+    Dog:
+      $ref: 'definitions.yaml#/Dog'
+
+YAML;
+
+        $openapi = Reader::readFromYaml($schema);
+        $openapi->resolveReferences(new \cebe\openapi\ReferenceContext($openapi, 'file://' . __DIR__ . '/data/reference/definitions.yaml'));
+
+        $this->assertTrue(isset($openapi->components->schemas['Dog']));
+        $this->assertEquals('object', $openapi->components->schemas['Dog']->type);
+        $this->assertEquals('object', $openapi->components->schemas['Dog']->type);
+        $this->assertEquals('object', $openapi->paths['/dog']->get->responses[200]->content['application/json']->schema->type);
+    }
+
     public function testTransitiveReferenceCyclic()
     {
         $schema = <<<'YAML'
