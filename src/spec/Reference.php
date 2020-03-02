@@ -221,7 +221,7 @@ class Reference implements SpecObjectInterface, DocumentContextInterface
             $referencedObject = $this->_to !== null ? new $this->_to($referencedData) : $referencedData;
 
             if ($jsonReference->getJsonPointer()->getPointer() === '') {
-                $newContext = new ReferenceContext($referencedObject, $file);
+                $newContext = new ReferenceContext($referencedObject instanceof SpecObjectInterface ? $referencedObject : null, $file);
                 if ($referencedObject instanceof DocumentContextInterface) {
                     $referencedObject->setDocumentContext($referencedObject, $jsonReference->getJsonPointer());
                 }
