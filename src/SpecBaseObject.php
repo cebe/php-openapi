@@ -157,11 +157,16 @@ abstract class SpecBaseObject implements SpecObjectInterface, DocumentContextInt
             return new Reference($data, $type);
         }
 
+        if (!is_array($data)) {
+            throw new TypeErrorException(
+                "Unable to instantiate {$type} Object with data '" . print_r($data, true) . "' at " . $this->getDocumentPosition()
+            );
+        }
         try {
             return new $type($data);
         } catch (\TypeError $e) {
             throw new TypeErrorException(
-                "Unable to instantiate {$type} Object with data '" . print_r($data, true) . "'",
+                "Unable to instantiate {$type} Object with data '" . print_r($data, true) . "' at " . $this->getDocumentPosition(),
                 $e->getCode(),
                 $e
             );
