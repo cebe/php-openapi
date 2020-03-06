@@ -183,6 +183,18 @@ class OpenApiTest extends \PHPUnit\Framework\TestCase
      */
     public function testSpecs($openApiFile)
     {
+        // skip test on symfony/yaml 5.0 due to bug https://github.com/symfony/symfony/issues/34805
+        if ($openApiFile === 'oai/openapi-specification/examples/v3.0/uspto.yaml') {
+            $installed = json_decode(file_get_contents(__DIR__ . '/../../vendor/composer/installed.json'), true);
+            foreach ($installed as $pkg) {
+                if ($pkg['name'] === 'symfony/yaml' && strncmp($pkg['version_normalized'], '5.0', 3) === 0) {
+                    $this->markTestSkipped(
+                        'This test is incompatible with symfony/yaml 4.4 and 5.0, see symfony bug https://github.com/symfony/symfony/issues/34805'
+                    );
+                }
+            }
+        }
+
         if (strtolower(substr($openApiFile, -5, 5)) === '.json') {
             $json = json_decode(file_get_contents(__DIR__ . '/../../vendor/' . $openApiFile), true);
             $openapi = new OpenApi($json);

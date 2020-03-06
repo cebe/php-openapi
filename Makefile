@@ -17,7 +17,7 @@ install:
 	yarn install
 
 test:
-	php $(PHPARGS) vendor/bin/phpunit $(TESTCASE)
+	php $(PHPARGS) vendor/bin/phpunit --verbose $(TESTCASE)
 	php $(PHPARGS) bin/php-openapi validate tests/spec/data/recursion.json
 	php $(PHPARGS) bin/php-openapi validate tests/spec/data/recursion2.yaml
 

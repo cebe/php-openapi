@@ -15,14 +15,14 @@ matrix:
       env: YAML=^3.0
     - php: '7.3'
       env: YAML=~4.3.0
-#    - php: '7.3'
-#      env: YAML=^5.0
+    - php: '7.3'
+      env: YAML=^5.0
     - php: '7.4'
       env: YAML=^3.0
     - php: '7.4'
       env: YAML=~4.3.0
-#    - php: '7.4'
-#      env: YAML=^5.0
+    - php: '7.4'
+      env: YAML=^5.0
     - php: nightly
       env: YAML=~4.3.0
     # windows tests
@@ -43,9 +43,10 @@ matrix:
         - ls
       install:
         - php -dextension=/c/tools/php73/ext/php_openssl.dll -dextension=/c/tools/php73/ext/php_mbstring.dll composer.phar install --prefer-dist --no-interaction
+        - php -dextension=/c/tools/php73/ext/php_openssl.dll -dextension=/c/tools/php73/ext/php_mbstring.dll composer.phar require symfony/yaml:"~4.3.0" --prefer-dist --no-interaction
       script: php -dextension=/c/tools/php73/ext/php_openssl.dll -dextension=/c/tools/php73/ext/php_mbstring.dll vendor/phpunit/phpunit/phpunit
 
-  # allow php nightly to fail until https://travis-ci.community/t/php-nightly-now-requires-oniguruma/2237 is fixed
+  # allow php nightly to fail until there is a phpunit version that supports PHP 8 
   allow_failures:
     - php: nightly
 
