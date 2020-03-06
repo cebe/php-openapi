@@ -127,7 +127,7 @@ class Parameter extends SpecBaseObject
             'header' => ['simple'],
             'cookie' => ['form'],
         ];
-        if (! in_array($this->style, $supportedSerializationStyles[$this->in])) {
+        if (isset($supportedSerializationStyles[$this->in]) && !in_array($this->style, $supportedSerializationStyles[$this->in])) {
             $this->addError('A Parameter Object DOES NOT support this serialization style.');
         }
     }
