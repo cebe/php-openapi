@@ -320,4 +320,39 @@ JSON;
         $schema = new Schema(['additionalProperties' => new Reference(['$ref' => '#/here'], Schema::class)]);
         $this->assertInstanceOf(Reference::class, $schema->additionalProperties);
     }
+
+    /**
+     * Ensure that a property named "$ref" is not interpreted as a reference.
+     * @link https://github.com/OAI/OpenAPI-Specification/issues/2173
+     */
+    public function testPropertyNameRef()
+    {
+        $json = <<<'JSON'
+{
+  "components": {
+    "schemas": {
+      "person": {
+        "type": "object",
+        "properties": {
+          "name": {
+            "type": "string"
+          },
+          "$ref": {
+            "type": "string"
+          }
+        }
+      }
+    }
+  }
+}
+JSON;
+        $openApi = Reader::readFromJson($json);
+        $this->assertInstanceOf(Schema::class, $person = $openApi->components->schemas['person']);
+
+        $this->assertEquals(['name', '$ref'], array_keys($person->properties));
+        $this->assertInstanceOf(Schema::class, $person->properties['name']);
+        $this->assertInstanceOf(Schema::class, $person->properties['$ref']);
+        $this->assertEquals('string', $person->properties['name']->type);
+        $this->assertEquals('string', $person->properties['$ref']->type);
+    }
 }
