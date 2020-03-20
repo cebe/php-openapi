@@ -205,20 +205,19 @@ class Reference implements SpecObjectInterface, DocumentContextInterface
 
             // resolve in external document
             $file = $context->resolveRelativeUri($jsonReference->getDocumentUri());
-            // TODO could be a good idea to cache loaded files in current context to avoid loading the same files over and over again
-            $referencedDocument = $this->fetchReferencedFile($file);
-            $referencedData = $jsonReference->getJsonPointer()->evaluate($referencedDocument);
-
-            if ($referencedData === null) {
-                return null;
+            try {
+                $referencedDocument = $context->fetchReferencedFile($file);
+            } catch (\Throwable $e) {
+                $exception = new UnresolvableReferenceException(
+                    "Failed to resolve Reference '$this->_ref' to $this->_to Object: " . $e->getMessage(),
+                    $e->getCode(),
+                    $e
+                );
+                $exception->context = $this->getDocumentPosition();
+                throw $exception;
             }
 
-            // transitive reference
-            if (isset($referencedData['$ref'])) {
-                return (new Reference($referencedData, $this->_to))->resolve(new ReferenceContext(null, $file));
-            }
-            /** @var SpecObjectInterface|array $referencedObject */
-            $referencedObject = $this->_to !== null ? new $this->_to($referencedData) : $referencedData;
+            $referencedObject = $context->resolveReferenceData($file, $jsonReference->getJsonPointer(), $referencedDocument, $this->_to);
 
             if ($jsonReference->getJsonPointer()->getPointer() === '') {
                 $newContext = new ReferenceContext($referencedObject instanceof SpecObjectInterface ? $referencedObject : null, $file);
@@ -255,35 +254,6 @@ class Reference implements SpecObjectInterface, DocumentContextInterface
             $this->_errors[] = $e->getMessage();
             $this->_jsonReference = null;
             return $this;
-        }
-    }
-
-    /**
-     * @throws UnresolvableReferenceException
-     */
-    private function fetchReferencedFile($uri)
-    {
-        try {
-            $content = file_get_contents($uri);
-            if ($content === false) {
-                $e = new IOException("Failed to read file: '$uri'");
-                $e->fileName = $uri;
-                throw $e;
-            }
-            // TODO lazy content detection, should probably be improved
-            if (strpos(ltrim($content), '{') === 0) {
-                return json_decode($content, true);
-            } else {
-                return Yaml::parse($content);
-            }
-        } catch (\Throwable $e) {
-            $exception = new UnresolvableReferenceException(
-                "Failed to resolve Reference '$this->_ref' to $this->_to Object: " . $e->getMessage(),
-                $e->getCode(),
-                $e
-            );
-            $exception->context = $this->getDocumentPosition();
-            throw $exception;
         }
     }
 

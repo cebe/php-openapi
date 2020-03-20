@@ -7,7 +7,11 @@
 
 namespace cebe\openapi;
 
+use cebe\openapi\exceptions\IOException;
 use cebe\openapi\exceptions\UnresolvableReferenceException;
+use cebe\openapi\json\JsonPointer;
+use cebe\openapi\spec\Reference;
+use Symfony\Component\Yaml\Yaml;
 
 /**
  * ReferenceContext represents a context in which references are resolved.
@@ -27,17 +31,24 @@ class ReferenceContext
      * @var string
      */
     private $_uri;
+    /**
+     * @var ReferenceContextCache
+     */
+    private $_cache;
+
 
     /**
      * ReferenceContext constructor.
      * @param SpecObjectInterface $base the base object of the spec.
      * @param string $uri the URI to the base object.
+     * @param ReferenceContextCache $cache cache instance for storing referenced file data.
      * @throws UnresolvableReferenceException in case an invalid or non-absolute URI is provided.
      */
-    public function __construct(?SpecObjectInterface $base, string $uri)
+    public function __construct(?SpecObjectInterface $base, string $uri, $cache = null)
     {
         $this->_baseSpec = $base;
         $this->_uri = $this->normalizeUri($uri);
+        $this->_cache = $cache ?? new ReferenceContextCache();
     }
 
     /**
@@ -138,4 +149,68 @@ class ReferenceContext
         }
         return '';
     }
+
+    private $_fileCache;
+
+    /**
+     * Fetch referenced file by URI.
+     *
+     * The current context will cache files by URI, so they are only loaded once.
+     *
+     * @throws IOException in case the file is not readable or fetching the file
+     * from a remote URL failed.
+     */
+    public function fetchReferencedFile($uri)
+    {
+        $content = file_get_contents($uri);
+        if ($content === false) {
+            $e = new IOException("Failed to read file: '$uri'");
+            $e->fileName = $uri;
+            throw $e;
+        }
+        // TODO lazy content detection, should be improved
+        if (strpos(ltrim($content), '{') === 0) {
+            return json_decode($content, true);
+        } else {
+            return Yaml::parse($content);
+        }
+    }
+
+    /**
+     * Retrieve the referenced data via JSON pointer.
+     *
+     * This function caches referenced data to make sure references to the same
+     * data structures end up being the same object instance in PHP.
+     *
+     * @param string $uri
+     * @param JsonPointer $pointer
+     * @param array $data
+     * @param string|null $toType
+     * @return SpecObjectInterface|array
+     */
+    public function resolveReferenceData($uri, JsonPointer $pointer, $data, $toType)
+    {
+        $ref = $uri . '#' . $pointer->getPointer();
+        if ($this->_cache->has($ref, $toType)) {
+            return $this->_cache->get($ref, $toType);
+        }
+
+        $referencedData = $pointer->evaluate($data);
+
+        if ($referencedData === null) {
+            return null;
+        }
+
+        // transitive reference
+        if (isset($referencedData['$ref'])) {
+            return (new Reference($referencedData, $toType))->resolve(new ReferenceContext(null, $uri));
+        }
+        /** @var SpecObjectInterface|array $referencedObject */
+        $referencedObject = $toType !== null ? new $toType($referencedData) : $referencedData;
+
+        $this->_cache->set($ref, $toType, $referencedObject);
+
+        return $referencedObject;
+    }
+
 }
