@@ -29,6 +29,8 @@ use Symfony\Component\Yaml\Yaml;
  */
 class Reference implements SpecObjectInterface, DocumentContextInterface
 {
+    static $file_cache = [];
+
     private $_to;
     private $_ref;
     private $_jsonReference;
@@ -263,6 +265,10 @@ class Reference implements SpecObjectInterface, DocumentContextInterface
      */
     private function fetchReferencedFile($uri)
     {
+        if (isset(self::$file_cache[$uri])) {
+            return self::$file_cache[$uri];
+        }
+
         try {
             $content = file_get_contents($uri);
             if ($content === false) {
@@ -272,10 +278,11 @@ class Reference implements SpecObjectInterface, DocumentContextInterface
             }
             // TODO lazy content detection, should probably be improved
             if (strpos(ltrim($content), '{') === 0) {
-                return json_decode($content, true);
+                self::$file_cache[$uri] = json_decode($content, true);
             } else {
-                return Yaml::parse($content);
+                self::$file_cache[$uri] = Yaml::parse($content);
             }
+            return self::$file_cache[$uri];
         } catch (\Throwable $e) {
             $exception = new UnresolvableReferenceException(
                 "Failed to resolve Reference '$this->_ref' to $this->_to Object: " . $e->getMessage(),
