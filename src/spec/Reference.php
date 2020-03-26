@@ -208,7 +208,7 @@ class Reference implements SpecObjectInterface, DocumentContextInterface
             // resolve in external document
             $file = $context->resolveRelativeUri($jsonReference->getDocumentUri());
             // TODO could be a good idea to cache loaded files in current context to avoid loading the same files over and over again
-            $referencedDocument = $this->fetchReferencedFile($file);
+            $referencedDocument = $this->getReferencedFile($file);
             $referencedData = $jsonReference->getJsonPointer()->evaluate($referencedDocument);
 
             if ($referencedData === null) {
@@ -263,12 +263,20 @@ class Reference implements SpecObjectInterface, DocumentContextInterface
     /**
      * @throws UnresolvableReferenceException
      */
-    private function fetchReferencedFile($uri)
+    private function getReferencedFile($uri)
     {
-        if (isset(self::$file_cache[$uri])) {
-            return self::$file_cache[$uri];
+        if(!isset(self::$file_cache[$uri])) {
+            self::$file_cache[$uri] = $this->fetchReferencedFile($uri);
         }
 
+        return self::$file_cache[$uri];
+    }
+
+    /**
+     * @throws UnresolvableReferenceException
+     */
+    private function fetchReferencedFile($uri)
+    {
         try {
             $content = file_get_contents($uri);
             if ($content === false) {
@@ -278,11 +286,10 @@ class Reference implements SpecObjectInterface, DocumentContextInterface
             }
             // TODO lazy content detection, should probably be improved
             if (strpos(ltrim($content), '{') === 0) {
-                self::$file_cache[$uri] = json_decode($content, true);
+                return json_decode($content, true);
             } else {
-                self::$file_cache[$uri] = Yaml::parse($content);
+                return Yaml::parse($content);
             }
-            return self::$file_cache[$uri];
         } catch (\Throwable $e) {
             $exception = new UnresolvableReferenceException(
                 "Failed to resolve Reference '$this->_ref' to $this->_to Object: " . $e->getMessage(),
