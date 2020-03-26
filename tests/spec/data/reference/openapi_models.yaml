@@ -1,0 +1,16 @@
+openapi: 3.0.3
+info:
+  title: Link Example
+  version: 1.0.0
+components:
+  schemas:
+    Pet:
+      $ref: models/Pet.yaml
+    Cat:
+      $ref: models/Cat.yaml
+paths:
+  '/pet':
+    get:
+      responses:
+        200:
+          description: return a pet

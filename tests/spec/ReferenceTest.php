@@ -416,4 +416,48 @@ YAML;
 
         $openapi->resolveReferences(new \cebe\openapi\ReferenceContext($openapi, 'file:///tmp/openapi.yaml'));
     }
+
+    public function testResolveRelativePath()
+    {
+        $openapi = Reader::readFromYamlFile(__DIR__ . '/data/reference/openapi_models.yaml');
+
+        $yaml = \cebe\openapi\Writer::writeToYaml($openapi);
+
+        $this->assertEquals(
+<<<YAML
+openapi: 3.0.3
+info:
+  title: 'Link Example'
+  version: 1.0.0
+paths:
+  /pet:
+    get:
+      responses:
+        '200':
+          description: 'return a pet'
+components:
+  schemas:
+    Pet:
+      type: object
+      properties:
+        id:
+          type: integer
+          format: int64
+        cat:
+          \$ref: '#/components/schemas/Cat' 
+      description: 'A Pet'
+    Cat:
+      type: object
+      properties:
+        id:
+          type: integer
+          format: int64
+        name:
+          type: string
+          description: 'the cats name'
+      description: 'A Cat'
+
+YAML
+            , $yaml);
+    }
 }

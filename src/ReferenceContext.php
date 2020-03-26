@@ -51,6 +51,11 @@ class ReferenceContext
         $this->_cache = $cache ?? new ReferenceContextCache();
     }
 
+    public function getCache(): ReferenceContextCache
+    {
+        return $this->_cache;
+    }
+
     /**
      * @throws UnresolvableReferenceException in case an invalid or non-absolute URI is provided.
      */
@@ -150,8 +155,6 @@ class ReferenceContext
         return '';
     }
 
-    private $_fileCache;
-
     /**
      * Fetch referenced file by URI.
      *
@@ -203,7 +206,7 @@ class ReferenceContext
 
         // transitive reference
         if (isset($referencedData['$ref'])) {
-            return (new Reference($referencedData, $toType))->resolve(new ReferenceContext(null, $uri));
+            return (new Reference($referencedData, $toType))->resolve(new ReferenceContext(null, $uri, $this->_cache));
         }
         /** @var SpecObjectInterface|array $referencedObject */
         $referencedObject = $toType !== null ? new $toType($referencedData) : $referencedData;

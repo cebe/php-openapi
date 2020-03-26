@@ -220,7 +220,7 @@ class Reference implements SpecObjectInterface, DocumentContextInterface
             $referencedObject = $context->resolveReferenceData($file, $jsonReference->getJsonPointer(), $referencedDocument, $this->_to);
 
             if ($jsonReference->getJsonPointer()->getPointer() === '') {
-                $newContext = new ReferenceContext($referencedObject instanceof SpecObjectInterface ? $referencedObject : null, $file);
+                $newContext = new ReferenceContext($referencedObject instanceof SpecObjectInterface ? $referencedObject : null, $file, $context->getCache());
                 if ($referencedObject instanceof DocumentContextInterface) {
                     $referencedObject->setDocumentContext($referencedObject, $jsonReference->getJsonPointer());
                 }
@@ -228,7 +228,7 @@ class Reference implements SpecObjectInterface, DocumentContextInterface
                 // resolving references recursively does not work the same if we have not referenced
                 // the whole document. We do not know the base type of the file at this point,
                 // so base document must be null.
-                $newContext = new ReferenceContext(null, $file);
+                $newContext = new ReferenceContext(null, $file, $context->getCache());
             }
             $newContext->throwException = $context->throwException;
             if ($referencedObject instanceof SpecObjectInterface) {

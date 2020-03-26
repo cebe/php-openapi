@@ -1,0 +1,11 @@
+type: object
+description: "A Cat"
+properties:
+  id:
+    type: integer
+    format: int64
+  name:
+    type: string
+    description: the cats name
+  pet:
+    $ref: '../openapi_models.yaml#/components/schemas/Pet'
