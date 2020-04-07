@@ -3,7 +3,9 @@
 use cebe\openapi\Reader;
 use cebe\openapi\spec\MediaType;
 use cebe\openapi\spec\Example;
+use cebe\openapi\spec\OpenApi;
 use cebe\openapi\spec\Reference;
+use Symfony\Component\Yaml\Yaml;
 
 /**
  * @covers \cebe\openapi\spec\MediaType
@@ -113,5 +115,55 @@ YAML
         $this->expectExceptionMessage($expectedException);
 
         new MediaType($config);
+    }
+
+    public function testUnresolvedReferencesInEncoding()
+    {
+        $yaml = Yaml::parse(<<<'YAML'
+openapi: "3.0.0"
+info:
+  version: 1.0.0
+  title: Encoding test
+paths:
+  /pets:
+    post:
+      summary: Create a pet
+      operationId: createPets
+      requestBody:
+        content:
+          multipart/form-data:
+            schema:
+              type: object
+              properties:
+                pet:
+                  $ref: '#/components/schemas/Pet'
+                petImage:
+                  type: string
+                  format: binary
+            encoding:
+              pet:
+                contentType: application/json
+              petImage:
+                contentType: image/*
+          application/json:
+            schema:
+              $ref: '#/components/schemas/Pet'
+      responses:
+        '201':
+          description: Null response
+components:
+  schemas:
+    Pet:
+      type: object
+      properties:
+        name:
+          type: string
+YAML
+);
+        $openapi = new OpenApi($yaml);
+        $result = $openapi->validate();
+
+        $this->assertEquals([], $openapi->getErrors());
+        $this->assertTrue($result);
     }
 }
