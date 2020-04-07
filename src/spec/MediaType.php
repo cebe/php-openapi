@@ -53,7 +53,13 @@ class MediaType extends SpecBaseObject
                 if ($encodingData instanceof Encoding) {
                     $encoding[$property] = $encodingData;
                 } elseif (is_array($encodingData)) {
-                    $encoding[$property] = new Encoding($encodingData, $this->schema->properties[$property] ?? null);
+                    // Don't pass the schema if it's still an unresolved reference.
+                    if (this->schema->properties[$property] instanceof Reference) {
+                        $encoding[$property] = new Encoding($encodingData);
+                    }
+                    else {
+                        $encoding[$property] = new Encoding($encodingData, $this->schema->properties[$property] ?? null);
+                    }
                 } else {
                     $givenType = gettype($encodingData);
                     if ($givenType === 'object') {
