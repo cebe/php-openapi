@@ -89,7 +89,7 @@ Read OpenAPI Description from YAML:
 use cebe\openapi\Reader;
 
 // realpath is needed for resolving references with relative Paths or URLs
-$openapi = Reader::readFromYamlFile(realpath('openapi.json'));
+$openapi = Reader::readFromYamlFile(realpath('openapi.yaml'));
 // you may also specify the URL to your API Description file
 $openapi = Reader::readFromYamlFile('https://raw.githubusercontent.com/OAI/OpenAPI-Specification/3.0.2/examples/v3.0/petstore-expanded.yaml');
 ```
