@@ -1,6 +1,6 @@
 TESTCASE=
-PHPARGS=-dmemory_limit=64M
-#PHPARGS=-dmemory_limit=64M -dzend_extension=xdebug.so -dxdebug.remote_enable=1
+PHPARGS=-dmemory_limit=512M
+#PHPARGS=-dmemory_limit=512M -dzend_extension=xdebug.so -dxdebug.remote_enable=1
 
 all:
 
