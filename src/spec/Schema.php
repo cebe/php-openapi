@@ -45,7 +45,7 @@ use cebe\openapi\SpecBaseObject;
  * @property Schema[]|Reference[] $oneOf
  * @property Schema[]|Reference[] $anyOf
  * @property Schema|Reference|null $not
- * @property Schema|Reference|null $items
+ * @property Schema|Reference|Schema[]|Reference[]|null $items
  * @property Schema[]|Reference[] $properties
  * @property Schema|Reference|bool $additionalProperties
  * @property string $description
@@ -94,7 +94,7 @@ class Schema extends SpecBaseObject
             'oneOf' => [Schema::class],
             'anyOf' => [Schema::class],
             'not' => Schema::class,
-            'items' => Schema::class,
+            //'items' => Schema::class,
             'properties' => [Type::STRING, Schema::class],
             //'additionalProperties' => 'boolean' | ['string', Schema::class], handled in constructor
             'description' => Type::STRING,
@@ -124,6 +124,7 @@ class Schema extends SpecBaseObject
             'allOf' => null,
             'oneOf' => null,
             'anyOf' => null,
+            'items' => null,
         ];
     }
 
@@ -143,6 +144,18 @@ class Schema extends SpecBaseObject
                     $givenType = get_class($data['additionalProperties']);
                 }
                 throw new TypeErrorException(sprintf('Schema::$additionalProperties MUST be either boolean or a Schema/Reference object, "%s" given', $givenType));
+            }
+        } elseif (isset($data['items'])) {
+            // if `items` is an array and it has all numeric keys,
+            // we loop all the items and create an array of Schemas
+            if (\is_array($data['items']) && \count(\array_filter(\array_keys($data['items']), 'is_string')) === 0) {
+                $subschemas = [];
+                foreach ($data['items'] as $item) {
+                    $subschemas[] = $this->instantiate(Schema::class, $item);
+                }
+                $data['items'] = $subschemas;
+            } else {
+                $data['items'] = $this->instantiate(Schema::class, $data['items']);
             }
         }
         parent::__construct($data);

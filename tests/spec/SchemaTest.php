@@ -355,4 +355,34 @@ JSON;
         $this->assertEquals('string', $person->properties['name']->type);
         $this->assertEquals('string', $person->properties['$ref']->type);
     }
+
+    public function testArraysCanHaveFixedElements()
+    {
+        $json = <<<'JSON'
+{
+  "type": "array",
+  "items": [
+    {
+      "type": "string"
+    },
+    {
+      "type": "integer"
+    },
+    {
+      "type": "boolean"
+    }
+  ]
+}
+JSON;
+        $schema = Reader::readFromJson($json, Schema::class);
+        $this->assertNotInstanceOf(Schema::class, $schema->items);
+        $this->assertCount(3, $schema->items);
+
+        $this->assertInstanceOf(Schema::class, $schema->items[0]);
+        $this->assertEquals('string', $schema->items[0]->type);
+        $this->assertInstanceOf(Schema::class, $schema->items[1]);
+        $this->assertEquals('integer', $schema->items[1]->type);
+        $this->assertInstanceOf(Schema::class, $schema->items[2]);
+        $this->assertEquals('boolean', $schema->items[2]->type);
+    }
 }
