@@ -26,9 +26,9 @@ use cebe\openapi\SpecBaseObject;
  * @property string $title
  * @property int|float $multipleOf
  * @property int|float $maximum
- * @property int|float $exclusiveMaximum
+ * @property bool $exclusiveMaximum
  * @property int|float $minimum
- * @property int|float $exclusiveMinimum
+ * @property bool $exclusiveMinimum
  * @property int $maxLength
  * @property int $minLength
  * @property string $pattern (This string SHOULD be a valid regular expression, according to the [ECMA 262 regular expression dialect](https://www.ecma-international.org/ecma-262/5.1/#sec-7.8.5))
