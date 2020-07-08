@@ -19,10 +19,25 @@ use Symfony\Component\Yaml\Yaml;
 class ReferenceContext
 {
     /**
+     * only resolve external references.
+     * The result will be a single API description file with references
+     * inside of the file structure.
+     */
+    const RESOLVE_MODE_INLINE = 'inline';
+    /**
+     * resolve all references, except recursive ones.
+     */
+    const RESOLVE_MODE_ALL = 'all';
+
+    /**
      * @var bool whether to throw UnresolvableReferenceException in case a reference can not
      * be resolved. If `false` errors are added to the Reference Objects error list instead.
      */
     public $throwException = true;
+    /**
+     * @var string
+     */
+    public $mode = self::RESOLVE_MODE_ALL;
     /**
      * @var SpecObjectInterface
      */
@@ -49,6 +64,9 @@ class ReferenceContext
         $this->_baseSpec = $base;
         $this->_uri = $this->normalizeUri($uri);
         $this->_cache = $cache ?? new ReferenceContextCache();
+        if ($cache === null) {
+            $this->_cache->set($uri, null, $base);
+        }
     }
 
     public function getCache(): ReferenceContextCache
@@ -61,6 +79,7 @@ class ReferenceContext
      */
     private function normalizeUri($uri)
     {
+        // TODO remove dots
         if (strpos($uri, '://') !== false) {
             return $uri;
         }
@@ -101,39 +120,53 @@ class ReferenceContext
         if (strncmp($baseUri, 'file://', 7) === 0) {
             if (isset($parts['path'][0]) && $parts['path'][0] === '/') {
                 // absolute path
-                return 'file://' . $parts['path'];
-            }
-            // convert absolute path on windows to a file:// URI. This is probably incomplete but should work with the majority of paths.
-            if (stripos(PHP_OS, 'WIN') === 0 && strncmp(substr($uri, 1), ':\\', 2) === 0) {
-                return "file:///" . strtr($uri, [' ' => '%20', '\\' => '/']);
-            }
-
-            if (isset($parts['path'])) {
+                $absoluteUri = 'file://' . $this->reduceDots($parts['path']);
+            } elseif (stripos(PHP_OS, 'WIN') === 0 && strncmp(substr($uri, 1), ':\\', 2) === 0) {
+                // convert absolute path on windows to a file:// URI. This is probably incomplete but should work with the majority of paths.
+                $absoluteUri = "file:///" . strtr($uri, [' ' => '%20', '\\' => '/']);
+            } elseif (isset($parts['path'])) {
                 // relative path
-                return $this->dirname($baseUri) . '/' . $parts['path'];
+                $absoluteUri = $this->reduceDots($this->dirname($baseUri) . '/' . $parts['path']);
+            } else {
+                throw new UnresolvableReferenceException("Invalid URI: '$uri'");
             }
-
-            throw new UnresolvableReferenceException("Invalid URI: '$uri'");
-        }
-
-        $baseParts = parse_url($baseUri);
-        $absoluteUri = implode('', [
-            $baseParts['scheme'],
-            '://',
-            isset($baseParts['username']) ? $baseParts['username'] . (
-                isset($baseParts['password']) ? ':' . $baseParts['password'] : ''
-            ) . '@' : '',
-            $baseParts['host'] ?? '',
-            isset($baseParts['port']) ? ':' . $baseParts['port'] : '',
-        ]);
-        if (isset($parts['path'][0]) && $parts['path'][0] === '/') {
-            $absoluteUri .= $parts['path'];
-        } elseif (isset($parts['path'])) {
-            $absoluteUri .= rtrim($this->dirname($baseParts['path'] ?? ''), '/') . '/' . $parts['path'];
+        } else {
+            $baseParts = parse_url($baseUri);
+            $absoluteUri = implode('', [
+                $baseParts['scheme'],
+                '://',
+                isset($baseParts['username']) ? $baseParts['username'] . (
+                    isset($baseParts['password']) ? ':' . $baseParts['password'] : ''
+                    ) . '@' : '',
+                $baseParts['host'] ?? '',
+                isset($baseParts['port']) ? ':' . $baseParts['port'] : '',
+            ]);
+            if (isset($parts['path'][0]) && $parts['path'][0] === '/') {
+                $absoluteUri .= $this->reduceDots($parts['path']);
+            } elseif (isset($parts['path'])) {
+                $absoluteUri .= $this->reduceDots(rtrim($this->dirname($baseParts['path'] ?? ''), '/') . '/' . $parts['path']);
+            }
         }
         return $absoluteUri
             . (isset($parts['query']) ? '?' . $parts['query'] : '')
             . (isset($parts['fragment']) ? '#' . $parts['fragment'] : '');
+    }
+
+    private function reduceDots($uri)
+    {
+        $parts = explode('/', $uri);
+        $c = count($parts);
+        for($i = 0; $i < $c; $i++) {
+            if ($parts[$i] === '.') {
+                unset($parts[$i]);
+                continue;
+            }
+            if ($i > 0 && $parts[$i] === '..' && $parts[$i-1] !== '..') {
+                unset($parts[$i-1]);
+                unset($parts[$i]);
+            }
+        }
+        return implode('/', $parts);
     }
 
     /**
@@ -206,7 +239,9 @@ class ReferenceContext
 
         // transitive reference
         if (isset($referencedData['$ref'])) {
-            return (new Reference($referencedData, $toType))->resolve(new ReferenceContext(null, $uri, $this->_cache));
+            $subContext = new ReferenceContext(null, $uri, $this->_cache);
+            $subContext->mode = $this->mode;
+            return (new Reference($referencedData, $toType))->resolve($subContext);
         }
         /** @var SpecObjectInterface|array $referencedObject */
         $referencedObject = $toType !== null ? new $toType($referencedData) : $referencedData;

@@ -13,9 +13,10 @@ namespace cebe\openapi;
 class ReferenceContextCache
 {
     private $_cache = [];
+//    private $_isbase = [];
 
 
-    public function set($ref, $type, $data)
+    public function set($ref, $type, $data)//, $isbase = false)
     {
         $this->_cache[$ref][$type ?? ''] = $data;
 
@@ -23,7 +24,16 @@ class ReferenceContextCache
         if ($type !== null && !isset($this->_cache[$ref][''])) {
             $this->_cache[$ref][''] = $data;
         }
+
+//        if ($isbase) {
+//            $this->_isbase[$ref] = true;
+//        }
     }
+
+//    public function isBase($ref)
+//    {
+//        return $this->_isbase[$ref] ?? false;
+//    }
 
     public function get($ref, $type)
     {

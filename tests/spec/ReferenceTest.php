@@ -419,7 +419,7 @@ YAML;
 
     public function testResolveRelativePath()
     {
-        $openapi = Reader::readFromYamlFile(__DIR__ . '/data/reference/openapi_models.yaml');
+        $openapi = Reader::readFromYamlFile(__DIR__ . '/data/reference/openapi_models.yaml', OpenApi::class, \cebe\openapi\ReferenceContext::RESOLVE_MODE_INLINE);
 
         $yaml = \cebe\openapi\Writer::writeToYaml($openapi);
 
@@ -444,7 +444,7 @@ components:
           type: integer
           format: int64
         cat:
-          \$ref: '#/components/schemas/Cat' 
+          \$ref: '#/components/schemas/Cat'
       description: 'A Pet'
     Cat:
       type: object
@@ -455,9 +455,11 @@ components:
         name:
           type: string
           description: 'the cats name'
+        pet:
+          \$ref: '#/components/schemas/Pet'
       description: 'A Cat'
 
 YAML
-            , $yaml);
+            , $yaml, $yaml);
     }
 }

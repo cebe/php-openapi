@@ -32,7 +32,7 @@ class ReferenceContextTest extends \PHPUnit\Framework\TestCase
             [
                 'https://example.com/api/openapi.yaml', // base URI
                 '../definitions.yaml', // referenced URI
-                'https://example.com/api/../definitions.yaml', // expected result
+                'https://example.com/definitions.yaml', // expected result
             ],
             [
                 '/var/www/openapi.yaml', // base URI

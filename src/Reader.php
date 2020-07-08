@@ -57,9 +57,11 @@ class Reader
      * @param string $baseType the base Type to instantiate. This must be an instance of [[SpecObjectInterface]].
      * The default is [[OpenApi]] which is the base type of a OpenAPI specification file.
      * You may choose a different type if you instantiate objects from sub sections of a specification.
-     * @param bool $resolveReferences whether to automatically resolve references in the specification.
+     * @param bool|string $resolveReferences whether to automatically resolve references in the specification.
      * If `true`, all [[Reference]] objects will be replaced with their referenced spec objects by calling
      * [[SpecObjectInterface::resolveReferences()]].
+     * Since version 1.5.0 this can be a string indicating the reference resolving mode:
+     * - TODO inline vs all
      * @return SpecObjectInterface|OpenApi the OpenApi object instance.
      * The type of the returned object depends on the `$baseType` argument.
      * @throws TypeErrorException in case invalid spec data is supplied.
@@ -75,8 +77,12 @@ class Reader
             throw $e;
         }
         $spec = static::readFromJson($fileContent, $baseType);
-        $spec->setReferenceContext(new ReferenceContext($spec, $fileName));
-        if ($resolveReferences) {
+        $context = new ReferenceContext($spec, $fileName);
+        $spec->setReferenceContext($context);
+        if ($resolveReferences !== false) {
+            if (is_string($resolveReferences)) {
+                $context->mode = $resolveReferences;
+            }
             $spec->resolveReferences();
         }
         return $spec;
@@ -90,9 +96,11 @@ class Reader
      * @param string $baseType the base Type to instantiate. This must be an instance of [[SpecObjectInterface]].
      * The default is [[OpenApi]] which is the base type of a OpenAPI specification file.
      * You may choose a different type if you instantiate objects from sub sections of a specification.
-     * @param bool $resolveReferences whether to automatically resolve references in the specification.
+     * @param bool|string $resolveReferences whether to automatically resolve references in the specification.
      * If `true`, all [[Reference]] objects will be replaced with their referenced spec objects by calling
      * [[SpecObjectInterface::resolveReferences()]].
+     * Since version 1.5.0 this can be a string indicating the reference resolving mode:
+     * - TODO inline vs all
      * @return SpecObjectInterface|OpenApi the OpenApi object instance.
      * The type of the returned object depends on the `$baseType` argument.
      * @throws TypeErrorException in case invalid spec data is supplied.
@@ -108,8 +116,12 @@ class Reader
             throw $e;
         }
         $spec = static::readFromYaml($fileContent, $baseType);
-        $spec->setReferenceContext(new ReferenceContext($spec, $fileName));
-        if ($resolveReferences) {
+        $context = new ReferenceContext($spec, $fileName);
+        $spec->setReferenceContext($context);
+        if ($resolveReferences !== false) {
+            if (is_string($resolveReferences)) {
+                $context->mode = $resolveReferences;
+            }
             $spec->resolveReferences();
         }
         return $spec;
