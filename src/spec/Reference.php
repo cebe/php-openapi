@@ -58,7 +58,6 @@ class Reference implements SpecObjectInterface, DocumentContextInterface
             );
         }
         if (!is_string($data['$ref'])) {
-            print_r($data);
             throw new TypeErrorException(
                 'Unable to instantiate Reference Object, value of $ref must be a string.'
             );
