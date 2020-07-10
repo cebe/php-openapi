@@ -10,6 +10,7 @@ namespace cebe\openapi;
 use cebe\openapi\exceptions\IOException;
 use cebe\openapi\exceptions\TypeErrorException;
 use cebe\openapi\exceptions\UnresolvableReferenceException;
+use cebe\openapi\json\JsonPointer;
 use cebe\openapi\spec\OpenApi;
 use Symfony\Component\Yaml\Yaml;
 
@@ -83,6 +84,7 @@ class Reader
             if (is_string($resolveReferences)) {
                 $context->mode = $resolveReferences;
             }
+            $spec->setDocumentContext($spec, new JsonPointer(''));
             $spec->resolveReferences();
         }
         return $spec;
@@ -122,6 +124,7 @@ class Reader
             if (is_string($resolveReferences)) {
                 $context->mode = $resolveReferences;
             }
+            $spec->setDocumentContext($spec, new JsonPointer(''));
             $spec->resolveReferences();
         }
         return $spec;

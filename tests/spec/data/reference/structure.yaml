@@ -1,0 +1,9 @@
+openapi: 3.0.0
+info:
+  title: Ref Example
+  version: 1.0.0
+paths:
+  '/pet':
+    $ref: 'structure/paths.yml#/~1pet'
+  '/cat':
+    $ref: 'structure/paths.yml#/~1cat'

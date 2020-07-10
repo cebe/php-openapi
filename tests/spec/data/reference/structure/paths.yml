@@ -1,0 +1,5 @@
+/pet:
+  get:
+   $ref: 'paths/pet.yml#/get'
+/cat:
+  $ref: 'paths/cat.yml'

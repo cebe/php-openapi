@@ -64,8 +64,8 @@ class ReferenceContext
         $this->_baseSpec = $base;
         $this->_uri = $this->normalizeUri($uri);
         $this->_cache = $cache ?? new ReferenceContextCache();
-        if ($cache === null) {
-            $this->_cache->set($uri, null, $base);
+        if ($cache === null && $base !== null) {
+            $this->_cache->set($this->_uri, null, $base);
         }
     }
 
@@ -79,17 +79,72 @@ class ReferenceContext
      */
     private function normalizeUri($uri)
     {
-        // TODO remove dots
         if (strpos($uri, '://') !== false) {
-            return $uri;
+            $parts = parse_url($uri);
+            if (isset($parts['path'])) {
+                $parts['path'] = $this->reduceDots($parts['path']);
+            }
+            return $this->buildUri($parts);
         }
         if (strncmp($uri, '/', 1) === 0) {
+            $uri = $this->reduceDots($uri);
             return "file://$uri";
         }
         if (stripos(PHP_OS, 'WIN') === 0 && strncmp(substr($uri, 1), ':\\', 2) === 0) {
+            $uri = $this->reduceDots($uri);
             return "file:///" . strtr($uri, [' ' => '%20', '\\' => '/']);
         }
         throw new UnresolvableReferenceException('Can not resolve references for a specification given as a relative path.');
+    }
+
+    private function buildUri($parts)
+    {
+        $scheme   = !empty($parts['scheme']) ? $parts['scheme'] . '://' : '';
+        $host     = $parts['host'] ?? '';
+        $port     = !empty($parts['port']) ? ':' . $parts['port'] : '';
+        $user     = $parts['user'] ?? '';
+        $pass     = !empty($parts['pass']) ? ':' . $parts['pass']  : '';
+        $pass     = ($user || $pass) ? "$pass@" : '';
+        $path     = $parts['path'] ?? '';
+        $query    = !empty($parts['query']) ? '?' . $parts['query'] : '';
+        $fragment = !empty($parts['fragment']) ? '#' . $parts['fragment'] : '';
+        return "$scheme$user$pass$host$port$path$query$fragment";
+    }
+
+    private function reduceDots($path)
+    {
+        $parts = explode('/', ltrim($path, '/'));
+        $c = count($parts);
+        for($i = 0; $i < $c; $i++) {
+            if ($parts[$i] === '.') {
+                unset($parts[$i]);
+                continue;
+            }
+            if ($i > 0 && $parts[$i] === '..' && $parts[$i-1] !== '..') {
+                unset($parts[$i-1]);
+                unset($parts[$i]);
+            }
+        }
+        return '/'.implode('/', $parts);
+    }
+
+    /**
+     * Returns parent directory's path.
+     * This method is similar to `dirname()` except that it will treat
+     * both \ and / as directory separators, independent of the operating system.
+     *
+     * @param string $path A path string.
+     * @return string the parent directory's path.
+     * @see http://www.php.net/manual/en/function.dirname.php
+     * @see https://github.com/yiisoft/yii2/blob/e1f6761dfd9eba1ff1260cd37b04936aaa4959b5/framework/helpers/BaseStringHelper.php#L75-L92
+     */
+    private function dirname($path)
+    {
+        $pos = mb_strrpos(str_replace('\\', '/', $path), '/');
+        if ($pos !== false) {
+            return mb_substr($path, 0, $pos);
+        }
+        return '';
     }
 
     public function getBaseSpec(): ?SpecObjectInterface
@@ -111,81 +166,36 @@ class ReferenceContext
     public function resolveRelativeUri(string $uri): string
     {
         $parts = parse_url($uri);
+        // absolute URI, no need to combine with baseURI
         if (isset($parts['scheme'])) {
-            // absolute URL
-            return $uri;
+            if (isset($parts['path'])) {
+                $parts['path'] = $this->reduceDots($parts['path']);
+            }
+            return $this->buildUri($parts);
+        }
+
+        // convert absolute path on windows to a file:// URI. This is probably incomplete but should work with the majority of paths.
+        if (stripos(PHP_OS, 'WIN') === 0 && strncmp(substr($uri, 1), ':\\', 2) === 0) {
+            // convert absolute path on windows to a file:// URI. This is probably incomplete but should work with the majority of paths.
+            $absoluteUri = "file:///" . strtr($uri, [' ' => '%20', '\\' => '/']);
+            return $absoluteUri
+                . (isset($parts['fragment']) ? '#' . $parts['fragment'] : '');
         }
 
         $baseUri = $this->getUri();
-        if (strncmp($baseUri, 'file://', 7) === 0) {
-            if (isset($parts['path'][0]) && $parts['path'][0] === '/') {
-                // absolute path
-                $absoluteUri = 'file://' . $this->reduceDots($parts['path']);
-            } elseif (stripos(PHP_OS, 'WIN') === 0 && strncmp(substr($uri, 1), ':\\', 2) === 0) {
-                // convert absolute path on windows to a file:// URI. This is probably incomplete but should work with the majority of paths.
-                $absoluteUri = "file:///" . strtr($uri, [' ' => '%20', '\\' => '/']);
-            } elseif (isset($parts['path'])) {
-                // relative path
-                $absoluteUri = $this->reduceDots($this->dirname($baseUri) . '/' . $parts['path']);
-            } else {
-                throw new UnresolvableReferenceException("Invalid URI: '$uri'");
-            }
+        $baseParts = parse_url($baseUri);
+        if (isset($parts['path'][0]) && $parts['path'][0] === '/') {
+            // absolute path
+            $baseParts['path'] = $this->reduceDots($parts['path']);
+        } elseif (isset($parts['path'])) {
+            // relative path
+            $baseParts['path'] = $this->reduceDots(rtrim($this->dirname($baseParts['path'] ?? ''), '/') . '/' . $parts['path']);
         } else {
-            $baseParts = parse_url($baseUri);
-            $absoluteUri = implode('', [
-                $baseParts['scheme'],
-                '://',
-                isset($baseParts['username']) ? $baseParts['username'] . (
-                    isset($baseParts['password']) ? ':' . $baseParts['password'] : ''
-                    ) . '@' : '',
-                $baseParts['host'] ?? '',
-                isset($baseParts['port']) ? ':' . $baseParts['port'] : '',
-            ]);
-            if (isset($parts['path'][0]) && $parts['path'][0] === '/') {
-                $absoluteUri .= $this->reduceDots($parts['path']);
-            } elseif (isset($parts['path'])) {
-                $absoluteUri .= $this->reduceDots(rtrim($this->dirname($baseParts['path'] ?? ''), '/') . '/' . $parts['path']);
-            }
+            throw new UnresolvableReferenceException("Invalid URI: '$uri'");
         }
-        return $absoluteUri
-            . (isset($parts['query']) ? '?' . $parts['query'] : '')
-            . (isset($parts['fragment']) ? '#' . $parts['fragment'] : '');
-    }
-
-    private function reduceDots($uri)
-    {
-        $parts = explode('/', $uri);
-        $c = count($parts);
-        for($i = 0; $i < $c; $i++) {
-            if ($parts[$i] === '.') {
-                unset($parts[$i]);
-                continue;
-            }
-            if ($i > 0 && $parts[$i] === '..' && $parts[$i-1] !== '..') {
-                unset($parts[$i-1]);
-                unset($parts[$i]);
-            }
-        }
-        return implode('/', $parts);
-    }
-
-    /**
-     * Returns parent directory's path.
-     * This method is similar to `dirname()` except that it will treat
-     * both \ and / as directory separators, independent of the operating system.
-     *
-     * @param string $path A path string.
-     * @return string the parent directory's path.
-     * @see http://www.php.net/manual/en/function.dirname.php
-     * @see https://github.com/yiisoft/yii2/blob/e1f6761dfd9eba1ff1260cd37b04936aaa4959b5/framework/helpers/BaseStringHelper.php#L75-L92
-     */
-    private function dirname($path)
-    {
-        $pos = mb_strrpos(str_replace('\\', '/', $path), '/');
-        if ($pos !== false) {
-            return mb_substr($path, 0, $pos);
-        }
-        return '';
+        $baseParts['query'] = $parts['query'] ?? null;
+        $baseParts['fragment'] = $parts['fragment'] ?? null;
+        return $this->buildUri($baseParts);
     }
 
     /**
@@ -239,12 +249,12 @@ class ReferenceContext
 
         // transitive reference
         if (isset($referencedData['$ref'])) {
-            $subContext = new ReferenceContext(null, $uri, $this->_cache);
-            $subContext->mode = $this->mode;
-            return (new Reference($referencedData, $toType))->resolve($subContext);
+            /** @var Reference $referencedObject */
+            return new Reference($referencedData, $toType);
+        } else {
+            /** @var SpecObjectInterface|array $referencedObject */
+            $referencedObject = $toType !== null ? new $toType($referencedData) : $referencedData;
         }
-        /** @var SpecObjectInterface|array $referencedObject */
-        $referencedObject = $toType !== null ? new $toType($referencedData) : $referencedData;
 
         $this->_cache->set($ref, $toType, $referencedObject);
 
