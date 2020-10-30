@@ -4,21 +4,21 @@ matrix:
   include:
     # linux tests
     - php: '7.1'
-      env: YAML=^3.0
+      env: YAML=^3.4
     - php: '7.1'
       env: YAML=~4.3.0
     - php: '7.2'
-      env: YAML=^3.0
+      env: YAML=^3.4
     - php: '7.2'
       env: YAML=~4.3.0
     - php: '7.3'
-      env: YAML=^3.0
+      env: YAML=^3.4
     - php: '7.3'
       env: YAML=~4.3.0
     - php: '7.3'
       env: YAML=^5.0
     - php: '7.4'
-      env: YAML=^3.0
+      env: YAML=^3.4
     - php: '7.4'
       env: YAML=~4.3.0
     - php: '7.4'
