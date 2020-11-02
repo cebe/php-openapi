@@ -51,7 +51,7 @@ matrix:
     - php: nightly
 
 install:
-  - make install
+  - if [[ $TRAVIS_PHP_VERSION = "nightly" ]]; then composer install --prefer-dist --no-interaction --ignore-platform-reqs; else make install; fi
   - composer require symfony/yaml:"${YAML}" --prefer-dist --no-interaction
 script:
   - make lint
