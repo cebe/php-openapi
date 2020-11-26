@@ -46,7 +46,13 @@ YAML
         $this->assertTrue($result);
 
         $this->assertInstanceOf(Reference::class, $mediaType->schema);
-        $this->assertInternalType('array', $mediaType->examples);
+
+        if (method_exists($this, 'assertIsArray')) {
+            $this->assertIsArray($mediaType->examples);
+        } else {
+            $this->assertInternalType('array', $mediaType->examples);
+        }
+
         $this->assertCount(3, $mediaType->examples);
         $this->assertArrayHasKey('cat', $mediaType->examples);
         $this->assertArrayHasKey('dog', $mediaType->examples);

@@ -8,8 +8,8 @@ endif
 
 all:
 
-check-style:
-	vendor/bin/php-cs-fixer fix src/ --diff --dry-run
+check-style: php-cs-fixer.phar
+	PHP_CS_FIXER_IGNORE_ENV=1 ./php-cs-fixer.phar fix src/ --diff --dry-run
 
 fix-style:
 	vendor/bin/indent --tabs composer.json
@@ -42,6 +42,8 @@ schemas/openapi-v3.0.json: vendor/oai/openapi-specification/schemas/v3.0/schema.
 schemas/openapi-v3.0.yaml: vendor/oai/openapi-specification/schemas/v3.0/schema.yaml
 	cp $< $@
 
+php-cs-fixer.phar:
+	wget https://github.com/FriendsOfPHP/PHP-CS-Fixer/releases/download/v2.16.7/php-cs-fixer.phar && chmod +x php-cs-fixer.phar
 
 # find spec classes that are not mentioned in tests with @covers yet
 coverage: .php-openapi-covA .php-openapi-covB
