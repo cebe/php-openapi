@@ -197,7 +197,6 @@ class Reference implements SpecObjectInterface, DocumentContextInterface
             // resolve in external document
             $file = $context->resolveRelativeUri($jsonReference->getDocumentUri());
             try {
-                // TODO cache here?
                 $referencedDocument = $context->fetchReferencedFile($file);
             } catch (\Throwable $e) {
                 $exception = new UnresolvableReferenceException(
