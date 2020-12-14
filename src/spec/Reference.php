@@ -168,6 +168,11 @@ class Reference implements SpecObjectInterface, DocumentContextInterface
         }
         try {
             if ($jsonReference->getDocumentUri() === '') {
+
+                if ($context->mode === ReferenceContext::RESOLVE_MODE_INLINE) {
+                    return $this;
+                }
+
                 // resolve in current document
                 $baseSpec = $context->getBaseSpec();
                 if ($baseSpec !== null) {
@@ -176,21 +181,7 @@ class Reference implements SpecObjectInterface, DocumentContextInterface
                     $referencedObject = $jsonReference->getJsonPointer()->evaluate($baseSpec);
                     // transitive reference
                     if ($referencedObject instanceof Reference) {
-                        if ($referencedObject->_to === null) {
-                            $referencedObject->_to = $this->_to;
-                        }
-                        $referencedObject->setContext($context);
-
-                        if ($referencedObject === $this) { // catch recursion
-                            throw new UnresolvableReferenceException('Cyclic reference detected on a Reference Object.');
-                        }
-
-                        $transitiveRefResult = $referencedObject->resolve();
-
-                        if ($transitiveRefResult === $this) { // catch recursion
-                            throw new UnresolvableReferenceException('Cyclic reference detected on a Reference Object.');
-                        }
-                        return $transitiveRefResult;
+                        $referencedObject = $this->resolveTransitiveReference($referencedObject, $context);
                     }
                     if ($referencedObject instanceof SpecObjectInterface) {
                         $referencedObject->setReferenceContext($context);
@@ -205,35 +196,38 @@ class Reference implements SpecObjectInterface, DocumentContextInterface
 
             // resolve in external document
             $file = $context->resolveRelativeUri($jsonReference->getDocumentUri());
-            // TODO could be a good idea to cache loaded files in current context to avoid loading the same files over and over again
-            $referencedDocument = $this->fetchReferencedFile($file);
-            $referencedData = $jsonReference->getJsonPointer()->evaluate($referencedDocument);
+            try {
+                $referencedDocument = $context->fetchReferencedFile($file);
+            } catch (\Throwable $e) {
+                $exception = new UnresolvableReferenceException(
+                    "Failed to resolve Reference '$this->_ref' to $this->_to Object: " . $e->getMessage(),
+                    $e->getCode(),
+                    $e
+                );
+                $exception->context = $this->getDocumentPosition();
+                throw $exception;
+            }
 
-            if ($referencedData === null) {
-                return null;
+            $referencedDocument = $this->adjustRelativeReferences($referencedDocument, $file, null, $context);
+            $referencedObject = $context->resolveReferenceData($file, $jsonReference->getJsonPointer(), $referencedDocument, $this->_to);
+
+            if ($referencedObject instanceof DocumentContextInterface) {
+                if ($referencedObject->getDocumentPosition() === null && $this->getDocumentPosition() !== null) {
+                    $referencedObject->setDocumentContext($context->getBaseSpec(), $this->getDocumentPosition());
+                }
             }
 
             // transitive reference
-            if (isset($referencedData['$ref'])) {
-                return (new Reference($referencedData, $this->_to))->resolve(new ReferenceContext(null, $file));
-            }
-            /** @var SpecObjectInterface|array $referencedObject */
-            $referencedObject = $this->_to !== null ? new $this->_to($referencedData) : $referencedData;
-
-            if ($jsonReference->getJsonPointer()->getPointer() === '') {
-                $newContext = new ReferenceContext($referencedObject instanceof SpecObjectInterface ? $referencedObject : null, $file);
-                if ($referencedObject instanceof DocumentContextInterface) {
-                    $referencedObject->setDocumentContext($referencedObject, $jsonReference->getJsonPointer());
+            if ($referencedObject instanceof Reference) {
+                if ($context->mode === ReferenceContext::RESOLVE_MODE_INLINE && strncmp($referencedObject->getReference(), '#', 1) === 0) {
+                    $referencedObject->setContext($context);
+                } else {
+                    return $this->resolveTransitiveReference($referencedObject, $context);
                 }
             } else {
-                // resolving references recursively does not work the same if we have not referenced
-                // the whole document. We do not know the base type of the file at this point,
-                // so base document must be null.
-                $newContext = new ReferenceContext(null, $file);
-            }
-            $newContext->throwException = $context->throwException;
-            if ($referencedObject instanceof SpecObjectInterface) {
-                $referencedObject->setReferenceContext($newContext);
+                if ($referencedObject instanceof SpecObjectInterface) {
+                    $referencedObject->setReferenceContext($context);
+                }
             }
 
             return $referencedObject;
@@ -258,33 +252,52 @@ class Reference implements SpecObjectInterface, DocumentContextInterface
         }
     }
 
-    /**
-     * @throws UnresolvableReferenceException
-     */
-    private function fetchReferencedFile($uri)
+    private function resolveTransitiveReference(Reference $referencedObject, ReferenceContext $context)
     {
-        try {
-            $content = file_get_contents($uri);
-            if ($content === false) {
-                $e = new IOException("Failed to read file: '$uri'");
-                $e->fileName = $uri;
-                throw $e;
-            }
-            // TODO lazy content detection, should probably be improved
-            if (strpos(ltrim($content), '{') === 0) {
-                return json_decode($content, true);
-            } else {
-                return Yaml::parse($content);
-            }
-        } catch (\Throwable $e) {
-            $exception = new UnresolvableReferenceException(
-                "Failed to resolve Reference '$this->_ref' to $this->_to Object: " . $e->getMessage(),
-                $e->getCode(),
-                $e
-            );
-            $exception->context = $this->getDocumentPosition();
-            throw $exception;
+        if ($referencedObject->_to === null) {
+            $referencedObject->_to = $this->_to;
         }
+        $referencedObject->setContext($context);
+
+        if ($referencedObject === $this) { // catch recursion
+            throw new UnresolvableReferenceException('Cyclic reference detected on a Reference Object.');
+        }
+
+        $transitiveRefResult = $referencedObject->resolve();
+
+        if ($transitiveRefResult === $this) { // catch recursion
+            throw new UnresolvableReferenceException('Cyclic reference detected on a Reference Object.');
+        }
+        return $transitiveRefResult;
+    }
+
+    // adjust relative refernces inside of the file to match the context of the base file
+    private function adjustRelativeReferences($referencedDocument, $basePath, $baseDocument = null, $oContext = null)
+    {
+        $context = new ReferenceContext(null, $basePath);
+        if ($baseDocument === null) {
+            $baseDocument = $referencedDocument;
+        }
+
+        foreach($referencedDocument as $key => $value) {
+            if ($key === '$ref' && is_string($value)) {
+                if (isset($value[0]) && $value[0] === '#') {
+                    // direcly inline references in the same document,
+                    // these are not going to be valid in the new context anymore
+                    return (new JsonPointer(substr($value, 1)))->evaluate($baseDocument);
+                }
+                $referencedDocument[$key] = $context->resolveRelativeUri($value);
+                $parts = explode('#', $referencedDocument[$key], 2);
+                if ($parts[0] === $oContext->getUri()) {
+                    $referencedDocument[$key] = '#' . ($parts[1] ?? '');
+                }
+                continue;
+            }
+            if (is_array($value)) {
+                $referencedDocument[$key] = $this->adjustRelativeReferences($value, $basePath, $baseDocument, $oContext);
+            }
+        }
+        return $referencedDocument;
     }
 
     /**

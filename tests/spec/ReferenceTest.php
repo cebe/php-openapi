@@ -416,4 +416,142 @@ YAML;
 
         $openapi->resolveReferences(new \cebe\openapi\ReferenceContext($openapi, 'file:///tmp/openapi.yaml'));
     }
+
+    public function testTransitiveReferenceOverTwoFiles()
+    {
+        $openapi = Reader::readFromYamlFile(__DIR__ . '/data/reference/structure.yaml', OpenApi::class, \cebe\openapi\ReferenceContext::RESOLVE_MODE_INLINE);
+
+        $yaml = \cebe\openapi\Writer::writeToYaml($openapi);
+
+        $this->assertEquals(
+<<<YAML
+openapi: 3.0.0
+info:
+  title: 'Ref Example'
+  version: 1.0.0
+paths:
+  /pet:
+    get:
+      responses:
+        200:
+          description: 'return a pet'
+  /cat:
+    get:
+      responses:
+        200:
+          description: 'return a cat'
+
+YAML
+            , $yaml, $yaml);
+    }
+
+    public function testResolveRelativePathInline()
+    {
+        $openapi = Reader::readFromYamlFile(__DIR__ . '/data/reference/openapi_models.yaml', OpenApi::class, \cebe\openapi\ReferenceContext::RESOLVE_MODE_INLINE);
+
+        $yaml = \cebe\openapi\Writer::writeToYaml($openapi);
+
+        $this->assertEquals(
+<<<YAML
+openapi: 3.0.3
+info:
+  title: 'Link Example'
+  version: 1.0.0
+paths:
+  /pet:
+    get:
+      responses:
+        200:
+          description: 'return a pet'
+components:
+  schemas:
+    Pet:
+      type: object
+      properties:
+        id:
+          type: integer
+          format: int64
+        cat:
+          \$ref: '#/components/schemas/Cat'
+      description: 'A Pet'
+    Cat:
+      type: object
+      properties:
+        id:
+          type: integer
+          format: int64
+        name:
+          type: string
+          description: 'the cats name'
+        pet:
+          \$ref: '#/components/schemas/Pet'
+      description: 'A Cat'
+
+YAML
+            , $yaml, $yaml);
+    }
+
+    public function testResolveRelativePathAll()
+    {
+        $openapi = Reader::readFromYamlFile(__DIR__ . '/data/reference/openapi_models.yaml', OpenApi::class, \cebe\openapi\ReferenceContext::RESOLVE_MODE_ALL);
+
+        $yaml = \cebe\openapi\Writer::writeToYaml($openapi);
+
+        $this->assertEquals(
+<<<YAML
+openapi: 3.0.3
+info:
+  title: 'Link Example'
+  version: 1.0.0
+paths:
+  /pet:
+    get:
+      responses:
+        200:
+          description: 'return a pet'
+components:
+  schemas:
+    Pet:
+      type: object
+      properties:
+        id:
+          type: integer
+          format: int64
+        cat:
+          type: object
+          properties:
+            id:
+              type: integer
+              format: int64
+            name:
+              type: string
+              description: 'the cats name'
+            pet:
+              \$ref: '#/components/schemas/Pet'
+          description: 'A Cat'
+      description: 'A Pet'
+    Cat:
+      type: object
+      properties:
+        id:
+          type: integer
+          format: int64
+        name:
+          type: string
+          description: 'the cats name'
+        pet:
+          type: object
+          properties:
+            id:
+              type: integer
+              format: int64
+            cat:
+              \$ref: '#/components/schemas/Cat'
+          description: 'A Pet'
+      description: 'A Cat'
+
+YAML
+            , $yaml, $yaml);
+    }
+
 }

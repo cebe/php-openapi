@@ -109,6 +109,9 @@ switch ($command) {
         $openApi = read_input($inputFile, $inputFormat);
         $referenceContext = new ReferenceContext($openApi, $inputFile ? realpath($inputFile) : '');
         $referenceContext->throwException = false;
+        // TODO apply reference context mode
+//        $referenceContext->mode = ReferenceContext::RESOLVE_MODE_ALL;
+//        $referenceContext->mode = ReferenceContext::RESOLVE_MODE_INLINE;
         $openApi->resolveReferences($referenceContext);
 
         $openApi->setDocumentContext($openApi, new \cebe\openapi\json\JsonPointer(''));
@@ -186,6 +189,11 @@ switch ($command) {
 
         $openApi = read_input($inputFile, $inputFormat);
         try {
+            // TODO apply reference context mode
+//            $referenceContext->mode = ReferenceContext::RESOLVE_MODE_ALL;
+//            $referenceContext->mode = ReferenceContext::RESOLVE_MODE_INLINE;
+            // set document context for correctly converting recursive references
+            $openApi->setDocumentContext($openApi, new \cebe\openapi\json\JsonPointer(''));
             $openApi->resolveReferences();
         } catch (\cebe\openapi\exceptions\UnresolvableReferenceException $e) {
             error("[\e[33m{$e->context}\e[0m] " . $e->getMessage());

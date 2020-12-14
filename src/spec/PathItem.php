@@ -91,6 +91,12 @@ class PathItem extends SpecBaseObject
         if ($this->_ref instanceof Reference) {
             $data->{'$ref'} = $this->_ref->getReference();
         }
+        if (isset($data->servers) && empty($data->servers)) {
+            unset($data->servers);
+        }
+        if (isset($data->parameters) && empty($data->parameters)) {
+            unset($data->parameters);
+        }
         return $data;
     }
 

@@ -161,8 +161,13 @@ JSON
         $this->assertInstanceOf(Operation::class, $ReferencedBarPath->get);
         $this->assertEquals('getBar', $ReferencedBarPath->get->operationId);
 
-        $this->assertInstanceOf(Reference::class, $ReferencedBarPath->get->responses['200']);
-        $this->assertInstanceOf(Reference::class, $ReferencedBarPath->get->responses['404']);
+        $this->assertInstanceOf(Reference::class, $reference200 = $ReferencedBarPath->get->responses['200']);
+        $this->assertInstanceOf(Response::class, $ReferencedBarPath->get->responses['404']);
+        $this->assertEquals('non-existing resource', $ReferencedBarPath->get->responses['404']->description);
+
+        $path200 = $reference200->resolve();
+        $this->assertInstanceOf(Response::class, $path200);
+        $this->assertEquals('A bar', $path200->description);
 
         /** @var $openapi OpenApi */
         $openapi = Reader::readFromYamlFile($file, \cebe\openapi\spec\OpenApi::class, true);
