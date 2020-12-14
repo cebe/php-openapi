@@ -63,7 +63,7 @@ class Reader
      * [[SpecObjectInterface::resolveReferences()]].
      * Since version 1.5.0 this can be a string indicating the reference resolving mode:
      * - `inline` only resolve references to external files.
-     * - `all` resolve all references exceot recursive references.
+     * - `all` resolve all references except recursive references.
      * @return SpecObjectInterface|OpenApi the OpenApi object instance.
      * The type of the returned object depends on the `$baseType` argument.
      * @throws TypeErrorException in case invalid spec data is supplied.
@@ -104,7 +104,7 @@ class Reader
      * [[SpecObjectInterface::resolveReferences()]].
      * Since version 1.5.0 this can be a string indicating the reference resolving mode:
      * - `inline` only resolve references to external files.
-     * - `all` resolve all references exceot recursive references.
+     * - `all` resolve all references except recursive references.
      * @return SpecObjectInterface|OpenApi the OpenApi object instance.
      * The type of the returned object depends on the `$baseType` argument.
      * @throws TypeErrorException in case invalid spec data is supplied.
