@@ -62,7 +62,8 @@ class Reader
      * If `true`, all [[Reference]] objects will be replaced with their referenced spec objects by calling
      * [[SpecObjectInterface::resolveReferences()]].
      * Since version 1.5.0 this can be a string indicating the reference resolving mode:
-     * - TODO inline vs all
+     * - `inline` only resolve references to external files.
+     * - `all` resolve all references exceot recursive references.
      * @return SpecObjectInterface|OpenApi the OpenApi object instance.
      * The type of the returned object depends on the `$baseType` argument.
      * @throws TypeErrorException in case invalid spec data is supplied.
@@ -102,7 +103,8 @@ class Reader
      * If `true`, all [[Reference]] objects will be replaced with their referenced spec objects by calling
      * [[SpecObjectInterface::resolveReferences()]].
      * Since version 1.5.0 this can be a string indicating the reference resolving mode:
-     * - TODO inline vs all
+     * - `inline` only resolve references to external files.
+     * - `all` resolve all references exceot recursive references.
      * @return SpecObjectInterface|OpenApi the OpenApi object instance.
      * The type of the returned object depends on the `$baseType` argument.
      * @throws TypeErrorException in case invalid spec data is supplied.
