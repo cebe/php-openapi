@@ -208,6 +208,10 @@ class ReferenceContext
      */
     public function fetchReferencedFile($uri)
     {
+        if ($this->_cache->has('FILE_CONTENT://' . $uri, 'FILE_CONTENT')) {
+            return $this->_cache->get('FILE_CONTENT://' . $uri, 'FILE_CONTENT');
+        }
+
         $content = file_get_contents($uri);
         if ($content === false) {
             $e = new IOException("Failed to read file: '$uri'");
@@ -216,10 +220,12 @@ class ReferenceContext
         }
         // TODO lazy content detection, should be improved
         if (strpos(ltrim($content), '{') === 0) {
-            return json_decode($content, true);
+            $parsedContent = json_decode($content, true);
         } else {
-            return Yaml::parse($content);
+            $parsedContent = Yaml::parse($content);
         }
+        $this->_cache->set('FILE_CONTENT://' . $uri, 'FILE_CONTENT', $parsedContent);
+        return $parsedContent;
     }
 
     /**
