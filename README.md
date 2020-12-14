@@ -26,6 +26,7 @@ do awesome work:
 - [cebe/yii2-openapi](https://github.com/cebe/yii2-openapi) Code Generator for REST API from OpenAPI 3 Descriptions, includes fake data generator.
 - [cebe/yii2-app-api](https://github.com/cebe/yii2-app-api) Yii framework application template for developing API-first applications.
 - [league/openapi-psr7-validator](https://github.com/thephpleague/openapi-psr7-validator) validates PSR-7 messages (HTTP request/response) against OpenAPI descriptions.
+- [dsuurlant/response2schema](https://github.com/dsuurlant/response2schema) a quick and easy tool for generating OpenAPI schemas based on example data.
 - ... ([add yours](https://github.com/cebe/php-openapi/edit/master/README.md#L24))
 
 ## Usage
@@ -89,7 +90,7 @@ Read OpenAPI Description from YAML:
 use cebe\openapi\Reader;
 
 // realpath is needed for resolving references with relative Paths or URLs
-$openapi = Reader::readFromYamlFile(realpath('openapi.json'));
+$openapi = Reader::readFromYamlFile(realpath('openapi.yaml'));
 // you may also specify the URL to your API Description file
 $openapi = Reader::readFromYamlFile('https://raw.githubusercontent.com/OAI/OpenAPI-Specification/3.0.2/examples/v3.0/petstore-expanded.yaml');
 ```
