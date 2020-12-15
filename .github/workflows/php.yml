@@ -10,13 +10,25 @@ jobs:
   build:
 
     strategy:
-      fail-fast: true
+      fail-fast: false
       matrix:
 #        os: [ubuntu-latest, macos-latest, windows-latest]
         os: [ubuntu-latest]
         php: ['7.1', '7.2', '7.3', '7.4', '8.0']
         yaml: ['^5.0', '^4.3', '^3.4']
-
+        exclude:
+          # Symfony YAML does not run on PHP 7.1
+          - php: '7.1'
+            yaml: '^5.0'
+        include: 
+          - php: '7.4'
+            os: windows-latest
+            yaml: '^5.0'
+          - php: '7.4'
+            os: macos-latest
+            yaml: '^5.0'
+            
+            
     runs-on: ${{ matrix.os }}
     env:
       YAML:  ${{ matrix.yaml }}
