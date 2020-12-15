@@ -17,7 +17,7 @@ fix-style:
 	vendor/bin/php-cs-fixer fix src/ --diff
 
 install:
-	composer install --prefer-dist --no-interaction
+	composer install --prefer-dist --no-interaction --no-progress --no-suggest
 	yarn install
 
 test:
