@@ -21,14 +21,14 @@ jobs:
         exclude:
           # Symfony YAML does not run on PHP 7.1
           - php: '7.1'
-            yaml: '^5.0'
+            yaml: '^5.1.8'
         include:
           - php: '7.4'
             os: windows-latest
-            yaml: '^5.0'
+            yaml: '^5.1.8'
           - php: '7.4'
             os: macos-latest
-            yaml: '^5.0'
+            yaml: '^5.1.8'
 
 
     runs-on: ${{ matrix.os }}
@@ -72,19 +72,25 @@ jobs:
 
       - name: Install dependencies (Windows)
         if: matrix.os == 'windows-latest'
-        run: make install
+        run: |
+          make install
+          composer require symfony/yaml:^5.1.8 --prefer-dist --no-interaction --ansi
 
       - name: Validate test data
+        if: matrix.os == 'ubuntu-latest'
         run: make lint
 
       - name: PHP Stan analysis
+        if: matrix.os == 'ubuntu-latest'
         run: make stan
 
       - name: PHPUnit tests
         run: make test
 
       - name: Check code style
+        if: matrix.os == 'ubuntu-latest'
         run: make check-style
 
       - name: Code coverage
+        if: matrix.os == 'ubuntu-latest'
         run: make coverage
