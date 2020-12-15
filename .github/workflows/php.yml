@@ -17,18 +17,18 @@ jobs:
         php: ['7.1', '7.2', '7.3', '7.4', '8.0']
         # max 4.4.16, see https://github.com/symfony/symfony/issues/39521
         # max 5.1.8, see https://github.com/symfony/symfony/issues/39521
-        yaml: ['^5.1.8', '4.4.16', '^3.4']
+        yaml: ['5.1.8', '4.4.16', '^3.4']
         exclude:
           # Symfony YAML does not run on PHP 7.1
           - php: '7.1'
-            yaml: '^5.1.8'
+            yaml: '5.1.8'
         include:
           - php: '7.4'
             os: windows-latest
-            yaml: '^5.1.8'
+            yaml: '5.1.8'
           - php: '7.4'
             os: macos-latest
-            yaml: '^5.1.8'
+            yaml: '5.1.8'
 
 
     runs-on: ${{ matrix.os }}
@@ -74,7 +74,7 @@ jobs:
         if: matrix.os == 'windows-latest'
         run: |
           make install
-          composer require symfony/yaml:^5.1.8 --prefer-dist --no-interaction --ansi
+          composer require symfony/yaml:5.1.8 --prefer-dist --no-interaction --ansi
 
       - name: Validate test data
         if: matrix.os == 'ubuntu-latest'
