@@ -1,6 +1,6 @@
 {
 	"name": "cebe/php-openapi",
-	"description": "READ OpenAPI yaml files and make the content accessable in PHP objects.",
+	"description": "Read and write OpenAPI yaml/json files and make the content accessable in PHP objects.",
 	"keywords": ["openapi"],
 	"homepage": "https://github.com/cebe/php-openapi#readme",
 	"type": "library",
