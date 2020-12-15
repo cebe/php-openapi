@@ -6,7 +6,7 @@ It also provides a CLI tool for validating and converting OpenAPI 3.0.x Descript
 
 [![Latest Stable Version](https://poser.pugx.org/cebe/php-openapi/v/stable)](https://packagist.org/packages/cebe/php-openapi)
 [![Total Downloads](https://poser.pugx.org/cebe/php-openapi/downloads)](https://packagist.org/packages/cebe/php-openapi)
-[![Build Status](https://travis-ci.org/cebe/php-openapi.svg?branch=master)](https://travis-ci.org/cebe/php-openapi)
+[![Build Status](https://github.com/cebe/php-openapi/workflows/PHP%20Composer/badge.svg)](https://github.com/cebe/php-openapi/actions)
 [![License](https://poser.pugx.org/cebe/php-openapi/license)](https://packagist.org/packages/cebe/php-openapi)
 
 
@@ -16,7 +16,7 @@ It also provides a CLI tool for validating and converting OpenAPI 3.0.x Descript
 
 ## Requirements
 
-- PHP 7.1 or higher
+- PHP 7.1 or higher (works fine with PHP 8)
 
 ## Used by
 
