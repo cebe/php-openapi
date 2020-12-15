@@ -22,12 +22,25 @@ use cebe\openapi\SpecObjectInterface;
  */
 class Callback implements SpecObjectInterface, DocumentContextInterface
 {
+    /**
+     * @var string|null
+     */
     private $_url;
+    /**
+     * @var PathItem
+     */
     private $_pathItem;
-
+    /**
+     * @var array
+     */
     private $_errors = [];
-
+    /**
+     * @var SpecObjectInterface|null
+     */
     private $_baseDocument;
+    /**
+     * @var JsonPointer|null
+     */
     private $_jsonPointer;
 
 

@@ -85,7 +85,9 @@ class Reader
             if (is_string($resolveReferences)) {
                 $context->mode = $resolveReferences;
             }
-            $spec->setDocumentContext($spec, new JsonPointer(''));
+            if ($spec instanceof DocumentContextInterface) {
+                $spec->setDocumentContext($spec, new JsonPointer(''));
+            }
             $spec->resolveReferences();
         }
         return $spec;
@@ -126,7 +128,9 @@ class Reader
             if (is_string($resolveReferences)) {
                 $context->mode = $resolveReferences;
             }
-            $spec->setDocumentContext($spec, new JsonPointer(''));
+            if ($spec instanceof DocumentContextInterface) {
+                $spec->setDocumentContext($spec, new JsonPointer(''));
+            }
             $spec->resolveReferences();
         }
         return $spec;

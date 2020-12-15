@@ -29,14 +29,33 @@ use Symfony\Component\Yaml\Yaml;
  */
 class Reference implements SpecObjectInterface, DocumentContextInterface
 {
+    /**
+     * @var string
+     */
     private $_to;
+    /**
+     * @var string
+     */
     private $_ref;
+    /**
+     * @var JsonReference|null
+     */
     private $_jsonReference;
+    /**
+     * @var ReferenceContext
+     */
     private $_context;
-
+    /**
+     * @var SpecObjectInterface|null
+     */
     private $_baseDocument;
+    /**
+     * @var JsonPointer|null
+     */
     private $_jsonPointer;
-
+    /**
+     * @var array
+     */
     private $_errors = [];
 
     /**

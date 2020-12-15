@@ -24,7 +24,7 @@ matrix:
     - php: '7.4'
       env: YAML=^5.0
     - php: nightly
-      env: YAML=~4.3.0
+      env: YAML=~4.4.0
     # windows tests
     # https://travis-ci.community/t/where-to-contribute-php-support-for-windows/304
     - os: windows
@@ -57,6 +57,6 @@ script:
   - make lint
   - make stan
   - make test
-  - if [[ $TRAVIS_PHP_VERSION = "7.3" || $TRAVIS_PHP_VERSION = "nightly" ]]; then true; else make check-style; fi
+  - make check-style
   - make coverage
 

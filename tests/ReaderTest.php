@@ -112,7 +112,13 @@ YAML
         $openapi = \cebe\openapi\Reader::readFromYamlFile($openApiFile);
 
         $inlineYamlExample = $openapi->paths['/']->get->responses['200']->content['application/json']->example;
-        $this->assertInternalType('array', $inlineYamlExample);
+
+        if (method_exists($this, 'assertIsArray')) {
+            $this->assertIsArray($inlineYamlExample);
+        } else {
+            $this->assertInternalType('array', $inlineYamlExample);
+        }
+
         $expectedArray = json_decode(<<<JSON
 {
   "total": 2,

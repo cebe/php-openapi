@@ -52,7 +52,12 @@ class OpenApiTest extends \PHPUnit\Framework\TestCase
 
 
         // servers
-        $this->assertInternalType('array', $openapi->servers);
+        if (method_exists($this, 'assertIsArray')) {
+            $this->assertIsArray($openapi->servers);
+        } else {
+            $this->assertInternalType('array', $openapi->servers);
+        }
+
         $this->assertCount(1, $openapi->servers);
         foreach ($openapi->servers as $server) {
             $this->assertInstanceOf(\cebe\openapi\spec\Server::class, $server);
