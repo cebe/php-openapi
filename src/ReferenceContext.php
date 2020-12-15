@@ -238,7 +238,7 @@ class ReferenceContext
      * @param JsonPointer $pointer
      * @param array $data
      * @param string|null $toType
-     * @return SpecObjectInterface|array
+     * @return SpecObjectInterface|array|null
      */
     public function resolveReferenceData($uri, JsonPointer $pointer, $data, $toType)
     {
@@ -255,7 +255,6 @@ class ReferenceContext
 
         // transitive reference
         if (isset($referencedData['$ref'])) {
-            /** @var Reference $referencedObject */
             return new Reference($referencedData, $toType);
         } else {
             /** @var SpecObjectInterface|array $referencedObject */

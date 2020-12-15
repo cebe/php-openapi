@@ -34,10 +34,17 @@ class Paths implements SpecObjectInterface, DocumentContextInterface, ArrayAcces
      * @var (PathItem|null)[]
      */
     private $_paths = [];
-
+    /**
+     * @var array
+     */
     private $_errors = [];
-
+    /**
+     * @var SpecObjectInterface|null
+     */
     private $_baseDocument;
+    /**
+     * @var JsonPointer|null
+     */
     private $_jsonPointer;
 
 
