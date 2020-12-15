@@ -187,7 +187,6 @@ class Reference implements SpecObjectInterface, DocumentContextInterface
         }
         try {
             if ($jsonReference->getDocumentUri() === '') {
-
                 if ($context->mode === ReferenceContext::RESOLVE_MODE_INLINE) {
                     return $this;
                 }
@@ -298,7 +297,7 @@ class Reference implements SpecObjectInterface, DocumentContextInterface
             $baseDocument = $referencedDocument;
         }
 
-        foreach($referencedDocument as $key => $value) {
+        foreach ($referencedDocument as $key => $value) {
             if ($key === '$ref' && is_string($value)) {
                 if (isset($value[0]) && $value[0] === '#') {
                     // direcly inline references in the same document,

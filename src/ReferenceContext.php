@@ -115,7 +115,7 @@ class ReferenceContext
     {
         $parts = explode('/', ltrim($path, '/'));
         $c = count($parts);
-        for($i = 0; $i < $c; $i++) {
+        for ($i = 0; $i < $c; $i++) {
             if ($parts[$i] === '.') {
                 unset($parts[$i]);
                 continue;
@@ -265,5 +265,4 @@ class ReferenceContext
 
         return $referencedObject;
     }
-
 }
