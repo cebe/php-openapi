@@ -91,7 +91,7 @@
 				"source": {
 					"url": "https://github.com/Nexmo/api-specification",
 					"type": "git",
-					"reference": "master"
+					"reference": "voice-2.0.0"
 				}
 			}
 		}

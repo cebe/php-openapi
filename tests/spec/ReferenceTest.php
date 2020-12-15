@@ -433,12 +433,12 @@ paths:
   /pet:
     get:
       responses:
-        200:
+        '200':
           description: 'return a pet'
   /cat:
     get:
       responses:
-        200:
+        '200':
           description: 'return a cat'
 
 YAML
@@ -461,7 +461,7 @@ paths:
   /pet:
     get:
       responses:
-        200:
+        '200':
           description: 'return a pet'
 components:
   schemas:
@@ -507,7 +507,7 @@ paths:
   /pet:
     get:
       responses:
-        200:
+        '200':
           description: 'return a pet'
 components:
   schemas:
