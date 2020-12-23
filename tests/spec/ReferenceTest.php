@@ -423,8 +423,7 @@ YAML;
 
         $yaml = \cebe\openapi\Writer::writeToYaml($openapi);
 
-        $this->assertEquals(
-<<<YAML
+        $expected = <<<YAML
 openapi: 3.0.0
 info:
   title: 'Ref Example'
@@ -441,8 +440,14 @@ paths:
         '200':
           description: 'return a cat'
 
-YAML
-            , $yaml, $yaml);
+YAML;
+        if (PHP_VERSION_ID < 70200) {
+            // PHP <7.2 returns numeric properties in yaml maps as integer, since 7.2 these are string
+            // probably related to https://www.php.net/manual/de/migration72.incompatible.php#migration72.incompatible.object-array-casts
+            $this->assertEquals(str_replace("'200':", "200:", $expected), $yaml, $yaml);
+        } else {
+            $this->assertEquals($expected, $yaml, $yaml);
+        }
     }
 
     public function testResolveRelativePathInline()
@@ -451,8 +456,7 @@ YAML
 
         $yaml = \cebe\openapi\Writer::writeToYaml($openapi);
 
-        $this->assertEquals(
-<<<YAML
+        $expected = <<<YAML
 openapi: 3.0.3
 info:
   title: 'Link Example'
@@ -487,8 +491,14 @@ components:
           \$ref: '#/components/schemas/Pet'
       description: 'A Cat'
 
-YAML
-            , $yaml, $yaml);
+YAML;
+        if (PHP_VERSION_ID < 70200) {
+            // PHP <7.2 returns numeric properties in yaml maps as integer, since 7.2 these are string
+            // probably related to https://www.php.net/manual/de/migration72.incompatible.php#migration72.incompatible.object-array-casts
+            $this->assertEquals(str_replace("'200':", "200:", $expected), $yaml, $yaml);
+        } else {
+            $this->assertEquals($expected, $yaml, $yaml);
+        }
     }
 
     public function testResolveRelativePathAll()
@@ -497,8 +507,7 @@ YAML
 
         $yaml = \cebe\openapi\Writer::writeToYaml($openapi);
 
-        $this->assertEquals(
-<<<YAML
+        $expected = <<<YAML
 openapi: 3.0.3
 info:
   title: 'Link Example'
@@ -550,8 +559,14 @@ components:
           description: 'A Pet'
       description: 'A Cat'
 
-YAML
-            , $yaml, $yaml);
+YAML;
+        if (PHP_VERSION_ID < 70200) {
+            // PHP <7.2 returns numeric properties in yaml maps as integer, since 7.2 these are string
+            // probably related to https://www.php.net/manual/de/migration72.incompatible.php#migration72.incompatible.object-array-casts
+            $this->assertEquals(str_replace("'200':", "200:", $expected), $yaml, $yaml);
+        } else {
+            $this->assertEquals($expected, $yaml, $yaml);
+        }
     }
 
 }
