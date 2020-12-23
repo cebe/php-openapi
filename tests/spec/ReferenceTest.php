@@ -141,6 +141,7 @@ YAML
         $file = __DIR__ . '/data/reference/base.yaml';
         if (stripos(PHP_OS, 'WIN') === 0) {
             $yaml = str_replace('##ABSOLUTEPATH##', 'file:///' . strtr(dirname($file), [' ' => '%20', '\\' => '/']), file_get_contents($file));
+            throw new \Exception($yaml);
         } else {
             $yaml = str_replace('##ABSOLUTEPATH##', 'file://' . dirname($file), file_get_contents($file));
         }
@@ -441,6 +442,8 @@ paths:
           description: 'return a cat'
 
 YAML;
+        // remove line endings to make string equal on windows
+        $expected = preg_replace('~\R~', "\n", $expected);
         if (PHP_VERSION_ID < 70200) {
             // PHP <7.2 returns numeric properties in yaml maps as integer, since 7.2 these are string
             // probably related to https://www.php.net/manual/de/migration72.incompatible.php#migration72.incompatible.object-array-casts
@@ -492,6 +495,8 @@ components:
       description: 'A Cat'
 
 YAML;
+        // remove line endings to make string equal on windows
+        $expected = preg_replace('~\R~', "\n", $expected);
         if (PHP_VERSION_ID < 70200) {
             // PHP <7.2 returns numeric properties in yaml maps as integer, since 7.2 these are string
             // probably related to https://www.php.net/manual/de/migration72.incompatible.php#migration72.incompatible.object-array-casts
@@ -560,6 +565,8 @@ components:
       description: 'A Cat'
 
 YAML;
+        // remove line endings to make string equal on windows
+        $expected = preg_replace('~\R~', "\n", $expected);
         if (PHP_VERSION_ID < 70200) {
             // PHP <7.2 returns numeric properties in yaml maps as integer, since 7.2 these are string
             // probably related to https://www.php.net/manual/de/migration72.incompatible.php#migration72.incompatible.object-array-casts
