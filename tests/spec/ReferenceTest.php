@@ -136,15 +136,20 @@ YAML
         $this->assertSame($openapi->components->examples['frog-example'], $refExample);
     }
 
+    private function createFileUri($file)
+    {
+        if (stripos(PHP_OS, 'WIN') === 0) {
+            return 'file:///' . strtr($file, [' ' => '%20', '\\' => '/']);
+        } else {
+            return 'file://' . $file;
+        }
+    }
+
     public function testResolveFile()
     {
         $file = __DIR__ . '/data/reference/base.yaml';
-        if (stripos(PHP_OS, 'WIN') === 0) {
-            $yaml = str_replace('##ABSOLUTEPATH##', 'file:///' . strtr(dirname($file), [' ' => '%20', '\\' => '/']), file_get_contents($file));
-            throw new \Exception($yaml);
-        } else {
-            $yaml = str_replace('##ABSOLUTEPATH##', 'file://' . dirname($file), file_get_contents($file));
-        }
+        $yaml = str_replace('##ABSOLUTEPATH##', $this->createFileUri(dirname($file)), file_get_contents($file));
+
         /** @var $openapi OpenApi */
         $openapi = Reader::readFromYaml($yaml);
 
@@ -296,7 +301,7 @@ components:
 
 YAML;
         $openapi = Reader::readFromYaml($schema);
-        $openapi->resolveReferences(new \cebe\openapi\ReferenceContext($openapi, 'file://' . __DIR__ . '/data/reference/definitions.yaml'));
+        $openapi->resolveReferences(new \cebe\openapi\ReferenceContext($openapi, $this->createFileUri(__DIR__ . '/data/reference/definitions.yaml')));
 
         $this->assertTrue(isset($openapi->components->schemas['Pet']));
         $this->assertEquals(['One', 'Two'], $openapi->components->schemas['Pet']->properties['typeA']->enum);
@@ -377,7 +382,7 @@ components:
 YAML;
 
         $openapi = Reader::readFromYaml($schema);
-        $openapi->resolveReferences(new \cebe\openapi\ReferenceContext($openapi, 'file://' . __DIR__ . '/data/reference/definitions.yaml'));
+        $openapi->resolveReferences(new \cebe\openapi\ReferenceContext($openapi, $this->createFileUri(__DIR__ . '/data/reference/definitions.yaml')));
 
         $this->assertTrue(isset($openapi->components->schemas['Dog']));
         $this->assertEquals('object', $openapi->components->schemas['Dog']->type);
