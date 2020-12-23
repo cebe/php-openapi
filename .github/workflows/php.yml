@@ -90,7 +90,7 @@ jobs:
 
       - name: PHPUnit tests (Windows)
         if: matrix.os == 'windows-latest'
-        run: vendor/phpunit/phpunit/phpunit --colors=always
+        run: vendor/bin/phpunit --colors=always
 
       - name: Check code style
         if: matrix.os == 'ubuntu-latest'
