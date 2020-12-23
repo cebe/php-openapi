@@ -17,11 +17,11 @@ fix-style: php-cs-fixer.phar
 	./php-cs-fixer.phar fix src/ --diff
 
 install:
-	composer install --prefer-dist --no-interaction --no-progress --no-suggest --ansi
+	composer install --prefer-dist --no-interaction --no-progress --ansi
 	yarn install
 
 test:
-	php $(PHPARGS) $(XPHPARGS) vendor/bin/phpunit --verbose --color $(TESTCASE)
+	php $(PHPARGS) $(XPHPARGS) vendor/bin/phpunit --verbose --colors=always $(TESTCASE)
 	php $(PHPARGS) $(XPHPARGS) bin/php-openapi validate tests/spec/data/recursion.json
 	php $(PHPARGS) $(XPHPARGS) bin/php-openapi validate tests/spec/data/recursion2.yaml
 

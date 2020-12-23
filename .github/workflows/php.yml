@@ -46,11 +46,11 @@ jobs:
           coverage: pcov
           tools: composer:v2
 
-      - name: Determine composer cache directory on Linux
+      - name: Determine composer cache directory (Linux/MacOS)
         if: matrix.os != 'windows-latest'
         run: echo "COMPOSER_CACHE_DIR=$(composer config cache-dir)" >> $GITHUB_ENV
 
-      - name: Determine composer cache directory on Windows
+      - name: Determine composer cache directory (Windows)
         if: matrix.os == 'windows-latest'
         run: echo "COMPOSER_CACHE_DIR=~\AppData\Local\Composer" | Out-File -FilePath $env:GITHUB_ENV -Encoding utf8 -Append
 
@@ -64,7 +64,7 @@ jobs:
       - name: Validate composer.json and composer.lock
         run: composer validate --ansi
 
-      - name: Install dependencies (Linux)
+      - name: Install dependencies (Linux/MacOS)
         if: matrix.os != 'windows-latest'
         run: |
           make install
@@ -73,7 +73,7 @@ jobs:
       - name: Install dependencies (Windows)
         if: matrix.os == 'windows-latest'
         run: |
-          make install
+          composer install --prefer-dist --no-interaction --no-progress --ansi
           composer require symfony/yaml:5.1.8 --prefer-dist --no-interaction --ansi
 
       - name: Validate test data
@@ -84,8 +84,13 @@ jobs:
         if: matrix.os == 'ubuntu-latest'
         run: make stan
 
-      - name: PHPUnit tests
+      - name: PHPUnit tests (Linux/MacOS)
+        if: matrix.os != 'windows-latest'
         run: make test
+
+      - name: PHPUnit tests (Windows)
+        if: matrix.os == 'windows-latest'
+        run: vendor/phpunit/phpunit/phpunit --colors=always
 
       - name: Check code style
         if: matrix.os == 'ubuntu-latest'
