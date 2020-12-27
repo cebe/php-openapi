@@ -92,7 +92,7 @@ class ReferenceContext
         }
         if (stripos(PHP_OS, 'WIN') === 0 && strncmp(substr($uri, 1), ':\\', 2) === 0) {
             $uri = $this->reduceDots($uri);
-            return "file:///" . strtr($uri, [' ' => '%20', '\\' => '/']);
+            return "file://" . strtr($uri, [' ' => '%20', '\\' => '/']);
         }
         throw new UnresolvableReferenceException('Can not resolve references for a specification given as a relative path.');
     }
