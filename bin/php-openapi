@@ -33,6 +33,7 @@ $inputFormat = null;
 $outputFile = null;
 $outputFormat = null;
 $silentMode = false;
+$referenceMode = ReferenceContext::RESOLVE_MODE_ALL;
 foreach($argv as $k => $arg) {
     if ($k == 0) {
         continue;
@@ -53,6 +54,15 @@ foreach($argv as $k => $arg) {
                 } else {
                     error("Conflicting arguments: only one of --read-json or --read-yaml is allowed!", "usage");
                 }
+            break;
+            case '--resolve-none':
+                $referenceMode = false;
+            break;
+            case '--resolve-external':
+                $referenceMode = ReferenceContext::RESOLVE_MODE_INLINE;
+            break;
+            case '--resolve-all':
+                $referenceMode = ReferenceContext::RESOLVE_MODE_ALL;
             break;
             case '--write-yaml':
                 if ($outputFormat === null) {
@@ -89,6 +99,11 @@ foreach($argv as $k => $arg) {
     } else {
         if ($command === null) {
             $command = $arg;
+            // inline is an alias for "convert --resolve-external"
+            if ($command === 'inline') {
+                $command = 'convert';
+                $referenceMode = ReferenceContext::RESOLVE_MODE_INLINE;
+            }
         } elseif ($inputFile === null) {
             $inputFile = $arg;
         } elseif ($outputFile === null) {
@@ -109,9 +124,7 @@ switch ($command) {
         $openApi = read_input($inputFile, $inputFormat);
         $referenceContext = new ReferenceContext($openApi, $inputFile ? realpath($inputFile) : '');
         $referenceContext->throwException = false;
-        // TODO apply reference context mode
-//        $referenceContext->mode = ReferenceContext::RESOLVE_MODE_ALL;
-//        $referenceContext->mode = ReferenceContext::RESOLVE_MODE_INLINE;
+        $referenceContext->mode = ReferenceContext::RESOLVE_MODE_INLINE;
         $openApi->resolveReferences($referenceContext);
 
         $openApi->setDocumentContext($openApi, new \cebe\openapi\json\JsonPointer(''));
@@ -189,12 +202,13 @@ switch ($command) {
 
         $openApi = read_input($inputFile, $inputFormat);
         try {
-            // TODO apply reference context mode
-//            $referenceContext->mode = ReferenceContext::RESOLVE_MODE_ALL;
-//            $referenceContext->mode = ReferenceContext::RESOLVE_MODE_INLINE;
             // set document context for correctly converting recursive references
             $openApi->setDocumentContext($openApi, new \cebe\openapi\json\JsonPointer(''));
-            $openApi->resolveReferences();
+            if ($referenceMode) {
+                $referenceContext = new ReferenceContext($openApi, $inputFile ? realpath($inputFile) : '');
+                $referenceContext->mode = $referenceMode;
+                $openApi->resolveReferences($referenceContext);
+            }
         } catch (\cebe\openapi\exceptions\UnresolvableReferenceException $e) {
             error("[\e[33m{$e->context}\e[0m] " . $e->getMessage());
         }
@@ -310,13 +324,25 @@ Usage:
                Exits with code 2 on validation errors, 1 on other errors and 0 on success.
 
     \Bconvert\C    Convert a JSON or YAML input file to JSON or YAML output file.
-               References are being resolved so the output will be a single API Description file.
 
                If no input file is specified input will be read from STDIN.
                If no output file is specified output will be written to STDOUT.
                The tool will try to auto-detect the content type of the input and output file, but may fail
                to do so, you may specify \Y--read-yaml\C or \Y--read-json\C to force the input file type.
                and \Y--write-yaml\C or \Y--write-json\C to force the output file type.
+
+               By default all references are resolved (replaced with the object refered to). You can control
+               handling of references with the following arguments:
+
+               \Y--resolve-none\C      Do not resolve references.
+               \Y--resolve-external\C  Only resolve references that point to external files.
+                                   This process is often referred to as "inlining".
+               \Y--resolve-all\C       Resolve all references (default).
+                                   Recursive pointers will stay references.
+
+    \Binline\C     Convert a JSON or YAML input file to JSON or YAML output file and
+               resolve all external references. The output will be a single API Description file.
+               This is a shortcut for calling \Bconvert\C \Y--resolve-external\C.
 
     \Bhelp\C       Shows this usage information.
 

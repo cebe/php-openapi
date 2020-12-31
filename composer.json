@@ -27,7 +27,7 @@
 		"cebe/indent": "*",
 		"phpunit/phpunit": "^6.5 || ^7.5 || ^8.5 || ^9.4",
 
-		"oai/openapi-specification": "3.0.2",
+		"oai/openapi-specification": "3.0.3",
 		"mermade/openapi3-examples": "1.0.0",
 		"apis-guru/openapi-directory": "1.0.0",
 		"nexmo/api-specification": "1.0.0",
@@ -51,11 +51,11 @@
 			"type": "package",
 			"package": {
 				"name": "oai/openapi-specification",
-				"version": "3.0.2",
+				"version": "3.0.3",
 				"source": {
 					"url": "https://github.com/OAI/OpenAPI-Specification",
 					"type": "git",
-					"reference": "3.0.2"
+					"reference": "3.0.3"
 				}
 			}
 		},
