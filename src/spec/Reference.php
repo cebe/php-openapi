@@ -298,7 +298,7 @@ class Reference implements SpecObjectInterface, DocumentContextInterface
         }
 
         foreach ($referencedDocument as $key => $value) {
-            if ($key === '$ref' && is_string($value)) {
+          if (($key === '$ref' || $key === 'externalValue') && is_string($value)) {
                 if (isset($value[0]) && $value[0] === '#') {
                     // direcly inline references in the same document,
                     // these are not going to be valid in the new context anymore
