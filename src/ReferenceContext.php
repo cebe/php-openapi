@@ -115,14 +115,16 @@ class ReferenceContext
     {
         $parts = explode('/', ltrim($path, '/'));
         $c = count($parts);
+        $parentOffset = 1;
         for ($i = 0; $i < $c; $i++) {
             if ($parts[$i] === '.') {
                 unset($parts[$i]);
                 continue;
             }
-            if ($i > 0 && $parts[$i] === '..' && $parts[$i-1] !== '..') {
-                unset($parts[$i-1]);
+            if ($i > 0 && $parts[$i] === '..' && $parts[$i - $parentOffset] !== '..') {
+                unset($parts[$i - $parentOffset]);
                 unset($parts[$i]);
+                $parentOffset += 2;
             }
         }
         return '/'.implode('/', $parts);
