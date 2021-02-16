@@ -183,6 +183,10 @@ class ReferenceContextTest extends \PHPUnit\Framework\TestCase
                 '/var/www/api/../definitions.yaml#/components/Pet',
                 'file:///var/www/definitions.yaml#/components/Pet',
             ],
+            [
+                '/var/www/api/foo/../../definitions.yaml#/components/Pet',
+                'file:///var/www/definitions.yaml#/components/Pet',
+            ],
         ];
 
         return $data;
