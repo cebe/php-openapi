@@ -458,6 +458,44 @@ YAML;
         }
     }
 
+    public function testReferencedCommonParamsInReferencedPath()
+    {
+        $openapi = Reader::readFromYamlFile(__DIR__ . '/data/reference/ReferencedCommonParamsInReferencedPath.yml', OpenApi::class, \cebe\openapi\ReferenceContext::RESOLVE_MODE_INLINE);
+        $yaml = \cebe\openapi\Writer::writeToYaml($openapi);
+        $expected = <<<YAML
+openapi: 3.0.0
+info:
+  title: 'Nested reference with common path params'
+  version: 1.0.0
+paths:
+  /example:
+    get:
+      responses:
+        '200':
+          description: 'OK if common params can be references'
+    parameters:
+      -
+        name: test
+        in: header
+        description: 'Test parameter to be referenced'
+        required: true
+        schema:
+          enum:
+            - test
+          type: string
+
+YAML;
+        // remove line endings to make string equal on windows
+        $expected = preg_replace('~\R~', "\n", $expected);
+        if (PHP_VERSION_ID < 70200) {
+            // PHP <7.2 returns numeric properties in yaml maps as integer, since 7.2 these are string
+            // probably related to https://www.php.net/manual/de/migration72.incompatible.php#migration72.incompatible.object-array-casts
+            $this->assertEquals(str_replace("'200':", "200:", $expected), $yaml, $yaml);
+        } else {
+            $this->assertEquals($expected, $yaml, $yaml);
+        }
+    }
+
     public function testResolveRelativePathInline()
     {
         $openapi = Reader::readFromYamlFile(__DIR__ . '/data/reference/openapi_models.yaml', OpenApi::class, \cebe\openapi\ReferenceContext::RESOLVE_MODE_INLINE);
