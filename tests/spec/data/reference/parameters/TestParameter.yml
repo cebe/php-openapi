@@ -1,0 +1,7 @@
+name: test
+in: header
+description: Test parameter to be referenced
+required: true
+schema:
+  type: string
+  enum: [ 'test' ]

@@ -1,0 +1,7 @@
+openapi: 3.0.0
+info:
+  title: Nested reference with common path params
+  version: 1.0.0
+paths:
+  /example:
+    $ref: 'paths/ReferencesCommonParams.yml'
