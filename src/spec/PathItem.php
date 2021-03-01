@@ -180,7 +180,7 @@ class PathItem extends SpecBaseObject
                     foreach ($this->$attribute as $k => $item) {
                         if ($item instanceof Reference) {
                             $referencedObject = $item->resolve();
-                            $this->$attribute[$k] = $referencedObject;
+                            $this->$attribute = [$k => $referencedObject] + $this->$attribute;
                             if (!$referencedObject instanceof Reference && $referencedObject !== null) {
                                 $referencedObject->resolveReferences();
                             }
