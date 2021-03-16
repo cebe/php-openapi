@@ -313,13 +313,13 @@ Usage:
   The following commands are available:
 
     \Bvalidate\C   Validate the API Description in the specified \Ginput file\C against the OpenAPI v3.0 schema.
-               Note: the validation is performed in two steps. The results is composed of
+               Note: the validation is performed in two steps. The results are composed of
                 (1) structural errors found while reading the API Description file, and
                 (2) violations of the OpenAPI v3.0 schema.
 
                If no input file is specified input will be read from STDIN.
                The tool will try to auto-detect the content type of the input, but may fail
-               to do so, you may specify \Y--read-yaml\C or \Y--read-json\C to force the file type.
+               to do so. You may specify \Y--read-yaml\C or \Y--read-json\C to force the file type.
 
                Exits with code 2 on validation errors, 1 on other errors and 0 on success.
 
@@ -328,10 +328,10 @@ Usage:
                If no input file is specified input will be read from STDIN.
                If no output file is specified output will be written to STDOUT.
                The tool will try to auto-detect the content type of the input and output file, but may fail
-               to do so, you may specify \Y--read-yaml\C or \Y--read-json\C to force the input file type.
+               to do so. You may specify \Y--read-yaml\C or \Y--read-json\C to force the input file type.
                and \Y--write-yaml\C or \Y--write-json\C to force the output file type.
 
-               By default all references are resolved (replaced with the object refered to). You can control
+               By default all references are resolved (replaced with the object referred to). You can control
                handling of references with the following arguments:
 
                \Y--resolve-none\C      Do not resolve references.

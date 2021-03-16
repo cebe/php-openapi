@@ -44,13 +44,13 @@ do awesome work:
       The following commands are available:
 
         validate   Validate the API Description in the specified input file against the OpenAPI v3.0 schema.
-                   Note: the validation is performed in two steps. The results is composed of
+                   Note: the validation is performed in two steps. The results are composed of
                     (1) structural errors found while reading the API Description file, and
                     (2) violations of the OpenAPI v3.0 schema.
 
                    If no input file is specified input will be read from STDIN.
                    The tool will try to auto-detect the content type of the input, but may fail
-                   to do so, you may specify --read-yaml or --read-json to force the file type.
+                   to do so. You may specify --read-yaml or --read-json to force the file type.
 
                    Exits with code 2 on validation errors, 1 on other errors and 0 on success.
 
@@ -59,10 +59,10 @@ do awesome work:
                    If no input file is specified input will be read from STDIN.
                    If no output file is specified output will be written to STDOUT.
                    The tool will try to auto-detect the content type of the input and output file, but may fail
-                   to do so, you may specify --read-yaml or --read-json to force the input file type.
+                   to do so. You may specify --read-yaml or --read-json to force the input file type.
                    and --write-yaml or --write-json to force the output file type.
 
-                   By default all references are resolved (replaced with the object refered to). You can control
+                   By default all references are resolved (replaced with the object referred to). You can control
                    handling of references with the following arguments:
 
                    --resolve-none      Do not resolve references.
