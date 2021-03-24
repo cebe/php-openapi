@@ -302,7 +302,8 @@ class Reference implements SpecObjectInterface, DocumentContextInterface
                 if (isset($value[0]) && $value[0] === '#') {
                     // direcly inline references in the same document,
                     // these are not going to be valid in the new context anymore
-                    return (new JsonPointer(substr($value, 1)))->evaluate($baseDocument);
+                    $inlineDocument = (new JsonPointer(substr($value, 1)))->evaluate($baseDocument);
+                    return $this->adjustRelativeReferences($inlineDocument, $basePath, $baseDocument, $oContext);
                 }
                 $referencedDocument[$key] = $context->resolveRelativeUri($value);
                 $parts = explode('#', $referencedDocument[$key], 2);

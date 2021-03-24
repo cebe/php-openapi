@@ -1,0 +1,33 @@
+{
+  "openapi": "3.0.2",
+  "info": {
+    "title": "",
+    "version": ""
+  },
+  "paths": {},
+  "components": {
+    "schemas": {
+      "ListOfComponents": {
+        "description": "",
+        "type": "object",
+        "properties": {
+          "list": {
+            "$ref": "#/components/schemas/SingleComponent"
+          }
+        }
+      },
+      "SingleComponent": {
+        "description": "",
+        "type": "object",
+        "properties": {
+          "childs": {
+            "type": "array",
+            "items": {
+              "$ref": "./ChildComponent.json#/components/schemas/ChildComponent"
+            }
+          }
+        }
+      }
+    }
+  }
+}

@@ -220,6 +220,17 @@ YAML
         $this->assertEquals('integer', $parameter->schema->type);
     }
 
+    public function testResolveFileInSubdirWithMultipleRelativePaths()
+    {
+        $file = __DIR__ . '/data/reference/InlineRelativeResolve/sub/dir/Pathfile.json';
+        /** @var $openapi OpenApi */
+        $openapi = Reader::readFromJsonFile($file, OpenApi::class, true);
+
+        $result = $openapi->validate();
+        $this->assertEmpty($openapi->getErrors());
+        $this->assertTrue($result);
+    }
+
     public function testResolveFileHttp()
     {
         $file = 'https://raw.githubusercontent.com/cebe/php-openapi/290389bbd337cf4d70ecedfd3a3d886715e19552/tests/spec/data/reference/base.yaml';
