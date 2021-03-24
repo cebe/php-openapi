@@ -67,7 +67,7 @@
 				"source": {
 					"url": "https://github.com/Mermade/openapi3-examples",
 					"type": "git",
-					"reference": "master"
+					"reference": "3e8740c4994310a5d6a35d9b19e405862326f149"
 				}
 			}
 		},
