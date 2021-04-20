@@ -1,0 +1,33 @@
+{
+    "openapi": "3.0.2",
+    "info": {
+        "title": "",
+        "version": ""
+    },
+    "paths": {
+        "/pathexample": {
+            "get": {
+                "responses": {
+                    "200": {
+                        "content": {
+                            "application/json": {
+                                "schema": {
+                                    "type": "object",
+                                    "properties": {
+                                        "propertiesWithRefs": {
+                                            "type": "array",
+                                            "items": {
+                                                "$ref": "../../Schemas/Components.json#/components/schemas/ListOfComponents"
+                                            }
+                                        }
+                                    }
+                                }
+                            }
+                        },
+                        "description": "Example with inline ChildComponents with relative files"
+                    }
+                }
+            }
+        }
+    }
+}
