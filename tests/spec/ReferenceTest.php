@@ -508,7 +508,7 @@ paths:
   /something:
     get:
       responses:
-        200:
+        '200':
           description: 'OK if common params can be references'
     parameters:
       -

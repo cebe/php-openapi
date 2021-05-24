@@ -3,6 +3,10 @@ openapi: 3.0.2
 info:
   title: My API
   version: 1.0.0
+x-extension-1: Extension1
+x-extension-2: Extension2
+X-EXTENSION: Invalid because of Uppercase X-
+xyz-extension: invalid extension
 paths:
   /foo:
     $ref: 'path-items.yaml#/~1foo'

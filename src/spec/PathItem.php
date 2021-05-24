@@ -190,6 +190,12 @@ class PathItem extends SpecBaseObject
                     }
                 }
             }
+
+            if ($pathItem instanceof SpecBaseObject) {
+                foreach ($pathItem->getExtensions() as $extensionKey => $extension) {
+                    $this->{$extensionKey} = $extension;
+                }
+            }
         }
         parent::resolveReferences($context);
     }

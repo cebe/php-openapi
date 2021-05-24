@@ -137,7 +137,7 @@ JSON
     public function testPathItemReference()
     {
         $file = __DIR__ . '/data/paths/openapi.yaml';
-        /** @var $openapi OpenApi */
+        /** @var $openapi \cebe\openapi\spec\OpenApi */
         $openapi = Reader::readFromYamlFile($file, \cebe\openapi\spec\OpenApi::class, false);
 
         $result = $openapi->validate();
@@ -147,6 +147,10 @@ JSON
         $this->assertInstanceOf(Paths::class, $openapi->paths);
         $this->assertInstanceOf(PathItem::class, $fooPath = $openapi->paths['/foo']);
         $this->assertInstanceOf(PathItem::class, $barPath = $openapi->paths['/bar']);
+        $this->assertSame([
+            'x-extension-1' => 'Extension1',
+            'x-extension-2' => 'Extension2'
+        ], $openapi->getExtensions());
 
         $this->assertEmpty($fooPath->getOperations());
         $this->assertEmpty($barPath->getOperations());
