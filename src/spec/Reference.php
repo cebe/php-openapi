@@ -338,7 +338,7 @@ class Reference implements SpecObjectInterface, DocumentContextInterface
     private function makeRelativePath($base, $path)
     {
         if (strpos($path, dirname($base)) === 0) {
-            return '.' . DIRECTORY_SEPARATOR . substr($path, strlen(dirname($base) . DIRECTORY_SEPARATOR));
+            return './' . substr($path, strlen(dirname($base) . '/'));
         }
 
         return $path;
