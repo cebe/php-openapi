@@ -484,6 +484,16 @@ paths:
       responses:
         '200':
           description: 'OK if common params can be references'
+      request:
+        content:
+          application/json:
+            examples:
+              user:
+                summary: 'User Example'
+                externalValue: ./paths/examples/user-example.json
+              userex:
+                summary: 'External User Example'
+                externalValue: 'https://api.example.com/examples/user-example.json'
     parameters:
       -
         name: test

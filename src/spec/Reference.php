@@ -289,7 +289,9 @@ class Reference implements SpecObjectInterface, DocumentContextInterface
         return $transitiveRefResult;
     }
 
-    // adjust relative refernces inside of the file to match the context of the base file
+    /**
+     * Adjust relative references inside of the file to match the context of the base file
+     */
     private function adjustRelativeReferences($referencedDocument, $basePath, $baseDocument = null, $oContext = null)
     {
         $context = new ReferenceContext(null, $basePath);
@@ -298,6 +300,7 @@ class Reference implements SpecObjectInterface, DocumentContextInterface
         }
 
         foreach ($referencedDocument as $key => $value) {
+            // adjust reference URLs
             if ($key === '$ref' && is_string($value)) {
                 if (isset($value[0]) && $value[0] === '#') {
                     // direcly inline references in the same document,
@@ -309,7 +312,15 @@ class Reference implements SpecObjectInterface, DocumentContextInterface
                 $parts = explode('#', $referencedDocument[$key], 2);
                 if ($parts[0] === $oContext->getUri()) {
                     $referencedDocument[$key] = '#' . ($parts[1] ?? '');
+                } else {
+                    $referencedDocument[$key] = $this->makeRelativePath($oContext->getUri(), $referencedDocument[$key]);
                 }
+                continue;
+            }
+            // adjust URLs for 'externalValue' references in Example Objects
+            // https://spec.openapis.org/oas/v3.0.3#example-object
+            if ($key === 'externalValue' && is_string($value)) {
+                $referencedDocument[$key] = $this->makeRelativePath($oContext->getUri(), $context->resolveRelativeUri($value));
                 continue;
             }
             if (is_array($value)) {
@@ -317,6 +328,20 @@ class Reference implements SpecObjectInterface, DocumentContextInterface
             }
         }
         return $referencedDocument;
+    }
+
+    /**
+     * If $path can be expressed relative to $base, make it a relative path, otherwise $path is returned.
+     * @param string $base
+     * @param string $path
+     */
+    private function makeRelativePath($base, $path)
+    {
+        if (strpos($path, dirname($base)) === 0) {
+            return '.' . DIRECTORY_SEPARATOR . substr($path, strlen(dirname($base) . DIRECTORY_SEPARATOR));
+        }
+
+        return $path;
     }
 
     /**
