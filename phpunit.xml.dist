@@ -1,5 +1,8 @@
 <?xml version="1.0" encoding="utf-8"?>
-<phpunit bootstrap="./tests/bootstrap.php"
+<phpunit
+    xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+    xsi:noNamespaceSchemaLocation="https://schema.phpunit.de/9.4/phpunit.xsd"
+    bootstrap="./tests/bootstrap.php"
 		colors="true"
 		convertErrorsToExceptions="true"
 		convertNoticesToExceptions="true"
@@ -10,13 +13,18 @@
 				<directory suffix="Test.php">./tests</directory>
 			</testsuite>
 		</testsuites>
-		<filter>
-			<whitelist>
+        <filter><!-- compatibility with PHPUnit < 9 -->
+            <whitelist>
+                <directory>./src</directory>
+            </whitelist>
+        </filter>
+		<coverage>
+			<include>
 				<directory>./src</directory>
-			</whitelist>
-			<blacklist>
+			</include>
+			<exclude>
 				<directory>./vendor</directory>
 				<directory>./tests</directory>
-			</blacklist>
-		</filter>
+			</exclude>
+		</coverage>
 </phpunit>
