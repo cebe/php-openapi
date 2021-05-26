@@ -504,6 +504,23 @@ paths:
           enum:
             - test
           type: string
+    x-something: something
+  /something:
+    get:
+      responses:
+        '200':
+          description: 'OK if common params can be references'
+    parameters:
+      -
+        name: test
+        in: header
+        description: 'Test parameter to be referenced'
+        required: true
+        schema:
+          enum:
+            - test
+          type: string
+    x-something: something
 
 YAML;
         // remove line endings to make string equal on windows

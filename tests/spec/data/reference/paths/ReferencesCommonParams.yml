@@ -1,6 +1,7 @@
 parameters:
   - $ref: '../parameters/TestParameter.yml'
 
+x-something: something
 get:
   responses:
     200:

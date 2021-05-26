@@ -5,3 +5,11 @@ info:
 paths:
   /example:
     $ref: 'paths/ReferencesCommonParams.yml'
+  /something:
+    parameters:
+      - $ref: './parameters/TestParameter.yml'
+    x-something: something
+    get:
+      responses:
+        200:
+          description: OK if common params can be references

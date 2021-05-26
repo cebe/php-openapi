@@ -484,4 +484,22 @@ abstract class SpecBaseObject implements SpecObjectInterface, DocumentContextInt
     {
         return $this->_jsonPointer;
     }
+
+    /**
+     * Returns extension properties with `x-` prefix.
+     * @see https://github.com/OAI/OpenAPI-Specification/blob/3.0.2/versions/3.0.2.md#specificationExtensions
+     * @return array<string, mixed>
+     * @since 1.5.3
+     */
+    public function getExtensions(): array
+    {
+        $extensions = [];
+        foreach ($this->_properties as $propertyKey => $extension) {
+            if (strpos($propertyKey, 'x-') !== 0) {
+                continue;
+            }
+            $extensions[$propertyKey] = $extension;
+        }
+        return $extensions;
+    }
 }
