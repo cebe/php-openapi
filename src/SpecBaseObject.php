@@ -494,7 +494,7 @@ abstract class SpecBaseObject implements SpecObjectInterface, DocumentContextInt
     {
         $extensions = [];
         foreach ($this->_properties as $propertyKey => $extension) {
-            if (mb_strpos($propertyKey, 'x-') !== 0) {
+            if (strpos($propertyKey, 'x-') !== 0) {
                 continue;
             }
             $extensions[$propertyKey] = $extension;
