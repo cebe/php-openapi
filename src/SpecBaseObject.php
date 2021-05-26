@@ -486,8 +486,8 @@ abstract class SpecBaseObject implements SpecObjectInterface, DocumentContextInt
     }
 
     /**
-     * Handle extension properties with `x-` prefix.
-     * See https://github.com/OAI/OpenAPI-Specification/blob/3.0.2/versions/3.0.2.md#specificationExtensions
+     * Returns extension properties with `x-` prefix.
+     * @see https://github.com/OAI/OpenAPI-Specification/blob/3.0.2/versions/3.0.2.md#specificationExtensions
      * @return array<string, mixed>
      */
     public function getExtensions(): array
