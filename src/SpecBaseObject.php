@@ -327,6 +327,11 @@ abstract class SpecBaseObject implements SpecObjectInterface, DocumentContextInt
 
     public function __get($name)
     {
+        /* Access extension properties like `x-foo-bar` as `x_foo_bar` */
+        if ( substr( $name, 0, 2) == 'x_' ) {
+            $name = str_replace( '_', '-', $name );
+        }
+
         if (isset($this->_properties[$name])) {
             return $this->_properties[$name];
         }
@@ -347,11 +352,21 @@ abstract class SpecBaseObject implements SpecObjectInterface, DocumentContextInt
 
     public function __set($name, $value)
     {
+        /* see __get() */
+        if ( substr( $name, 0, 2) == 'x_' ) {
+            $name = str_replace( '_', '-', $name );
+        }
+
         $this->_properties[$name] = $value;
     }
 
     public function __isset($name)
     {
+        /* see __get() */
+        if ( substr( $name, 0, 2) == 'x_' ) {
+            $name = str_replace( '_', '-', $name );
+        }
+
         if (isset($this->_properties[$name]) || isset($this->attributeDefaults()[$name]) || isset($this->attributes()[$name])) {
             return $this->__get($name) !== null;
         }
@@ -361,6 +376,11 @@ abstract class SpecBaseObject implements SpecObjectInterface, DocumentContextInt
 
     public function __unset($name)
     {
+        /* see __get() */
+        if ( substr( $name, 0, 2) == 'x_' ) {
+            $name = str_replace( '_', '-', $name );
+        }
+
         unset($this->_properties[$name]);
     }
 
