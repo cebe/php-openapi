@@ -40,7 +40,7 @@ use cebe\openapi\SpecBaseObject;
  * @property string[] $required list of required properties
  * @property array $enum
  *
- * @property string $type
+ * @property string|string[] $type
  * @property Schema[]|Reference[] $allOf
  * @property Schema[]|Reference[] $oneOf
  * @property Schema[]|Reference[] $anyOf
