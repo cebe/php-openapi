@@ -302,12 +302,22 @@ abstract class SpecBaseObject implements SpecObjectInterface, DocumentContextInt
         return isset($this->_properties[$name]) || isset($this->attributes()[$name]);
     }
 
-    protected function requireProperties(array $names)
+    protected function requireProperties(array $names, array $atLeastOne = [])
     {
         foreach ($names as $name) {
             if (!isset($this->_properties[$name])) {
                 $this->addError(" is missing required property: $name", get_class($this));
             }
+        }
+
+        if (count($atLeastOne) > 0) {
+            foreach ($atLeastOne as $name) {
+                if (array_key_exists($name, $this->_properties)) {
+                    return;
+                }
+            }
+
+            $this->addError(" is missing at least one of the following required properties: " . implode(', ', $atLeastOne), get_class($this));
         }
     }
 
