@@ -75,7 +75,7 @@ class OpenApi extends SpecBaseObject
     public function performValidation()
     {
         $this->requireProperties(['openapi', 'info', 'paths']);
-        if (!empty($this->openapi) && !preg_match('/^3\.0\.\d+(-rc\d)?$/i', $this->openapi)) {
+        if (!empty($this->openapi) && !preg_match('/^3\.(0|1)\.\d+(-rc\d)?$/i', $this->openapi)) {
             $this->addError('Unsupported openapi version: ' . $this->openapi);
         }
     }
