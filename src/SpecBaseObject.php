@@ -191,14 +191,19 @@ abstract class SpecBaseObject implements SpecObjectInterface, DocumentContextInt
                 $data[$k] = $v->getSerializableData();
             } elseif (is_array($v)) {
                 $toObject = false;
-                $j = 0;
-                foreach ($v as $i => $d) {
-                    if ($j++ !== $i) {
-                        $toObject = true;
+                if (!empty($v)) {
+                    $j = 0;
+                    foreach ($v as $i => $d) {
+                        if ($j++ !== $i) {
+                            $toObject = true;
+                        }
+                        if ($d instanceof SpecObjectInterface) {
+                            $data[$k][$i] = $d->getSerializableData();
+                        }
                     }
-                    if ($d instanceof SpecObjectInterface) {
-                        $data[$k][$i] = $d->getSerializableData();
-                    }
+                } elseif (isset($this->attributes()[$k]) && is_array($this->attributes()[$k]) && 2 === count($this->attributes()[$k])) {
+                    // An empty Map, which is an empty array in PHP but needs to be an empty object in output.
+                    $toObject = true;
                 }
                 if ($toObject) {
                     $data[$k] = (object) $data[$k];
