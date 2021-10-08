@@ -24,11 +24,13 @@ test:
 	php $(PHPARGS) $(XPHPARGS) vendor/bin/phpunit --verbose --colors=always $(TESTCASE)
 	php $(PHPARGS) $(XPHPARGS) bin/php-openapi validate tests/spec/data/recursion.json
 	php $(PHPARGS) $(XPHPARGS) bin/php-openapi validate tests/spec/data/recursion2.yaml
+	php $(PHPARGS) $(XPHPARGS) bin/php-openapi validate tests/spec/data/empty-maps.json
 
 lint:
 	php $(PHPARGS) $(XPHPARGS) bin/php-openapi validate tests/spec/data/reference/playlist.json
 	php $(PHPARGS) $(XPHPARGS) bin/php-openapi validate tests/spec/data/recursion.json
 	php $(PHPARGS) $(XPHPARGS) bin/php-openapi validate tests/spec/data/recursion2.yaml
+	php $(PHPARGS) $(XPHPARGS) bin/php-openapi validate tests/spec/data/empty-maps.json
 	node_modules/.bin/speccy lint tests/spec/data/reference/playlist.json
 	node_modules/.bin/speccy lint tests/spec/data/recursion.json
 
