@@ -261,7 +261,7 @@ paths: []
 YAML;
         $openapi = Reader::readFromYaml($yaml);
         $this->assertTrue($openapi->validate(), print_r($openapi->getErrors(), true));
-        $this->assertEquals('3.0.x', $openapi->getMajorVersion());
+        $this->assertEquals('3.0', $openapi->getMajorVersion());
 
         $yaml = <<<YAML
 openapi: 3.1.0
@@ -272,7 +272,7 @@ paths: []
 YAML;
         $openapi = Reader::readFromYaml($yaml);
         $this->assertTrue($openapi->validate(), print_r($openapi->getErrors(), true));
-        $this->assertEquals('3.1.x', $openapi->getMajorVersion());
+        $this->assertEquals('3.1', $openapi->getMajorVersion());
 
 
     }

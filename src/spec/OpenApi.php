@@ -27,8 +27,8 @@ use cebe\openapi\SpecBaseObject;
  */
 class OpenApi extends SpecBaseObject
 {
-    const VERSION_3_0 = '3.0.x';
-    const VERSION_3_1 = '3.1.x';
+    const VERSION_3_0 = '3.0';
+    const VERSION_3_1 = '3.1';
     const VERSION_UNSUPPORTED = 'unsupported';
 
     /**
@@ -93,8 +93,8 @@ class OpenApi extends SpecBaseObject
      * Returns the OpenAPI major version of the loaded OpenAPI description.
      * @return string This returns a value of one of the `VERSION_*`-constants. Currently supported versions are:
      *
-     * - `VERSION_3_0 = '3.0.x'`
-     * - `VERSION_3_1 = '3.1.x'`
+     * - `VERSION_3_0 = '3.0'`
+     * - `VERSION_3_1 = '3.1'`
      *
      * For unsupported version, this function will return `VERSION_UNSUPPORTED = 'unsupported'`
      */
