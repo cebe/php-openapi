@@ -16,7 +16,7 @@ use cebe\openapi\SpecBaseObject;
  *
  * @property string $description
  * @property Header[]|Reference[] $headers
- * @property MediaType[]|Reference[] $content
+ * @property MediaType[] $content
  * @property Link[]|Reference[] $links
  */
 class Response extends SpecBaseObject
