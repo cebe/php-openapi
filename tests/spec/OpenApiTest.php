@@ -29,7 +29,7 @@ class OpenApiTest extends \PHPUnit\Framework\TestCase
 
     public function testReadPetStore()
     {
-        $openApiFile = __DIR__ . '/../../vendor/oai/openapi-specification/examples/v3.0/petstore.yaml';
+        $openApiFile = __DIR__ . '/../../vendor/oai/openapi-specification-3.0/examples/v3.0/petstore.yaml';
 
         $yaml = Yaml::parse(file_get_contents($openApiFile));
         $openapi = new OpenApi($yaml);
@@ -94,12 +94,12 @@ class OpenApiTest extends \PHPUnit\Framework\TestCase
         // examples from https://github.com/OAI/OpenAPI-Specification/tree/master/examples/v3.0
         $oaiExamples = [
             // TODO symfony/yaml can not read this file!?
-//            __DIR__ . '/../../vendor/oai/openapi-specification/examples/v3.0/api-with-examples.yaml',
-            __DIR__ . '/../../vendor/oai/openapi-specification/examples/v3.0/callback-example.yaml',
-            __DIR__ . '/../../vendor/oai/openapi-specification/examples/v3.0/link-example.yaml',
-            __DIR__ . '/../../vendor/oai/openapi-specification/examples/v3.0/petstore.yaml',
-            __DIR__ . '/../../vendor/oai/openapi-specification/examples/v3.0/petstore-expanded.yaml',
-            __DIR__ . '/../../vendor/oai/openapi-specification/examples/v3.0/uspto.yaml',
+//            __DIR__ . '/../../vendor/oai/openapi-specification-3.0/examples/v3.0/api-with-examples.yaml',
+            __DIR__ . '/../../vendor/oai/openapi-specification-3.0/examples/v3.0/callback-example.yaml',
+            __DIR__ . '/../../vendor/oai/openapi-specification-3.0/examples/v3.0/link-example.yaml',
+            __DIR__ . '/../../vendor/oai/openapi-specification-3.0/examples/v3.0/petstore.yaml',
+            __DIR__ . '/../../vendor/oai/openapi-specification-3.0/examples/v3.0/petstore-expanded.yaml',
+            __DIR__ . '/../../vendor/oai/openapi-specification-3.0/examples/v3.0/uspto.yaml',
         ];
 
         // examples from https://github.com/Mermade/openapi3-examples

@@ -108,7 +108,7 @@ YAML
             }
         }
 
-        $openApiFile = __DIR__ . '/../vendor/oai/openapi-specification/examples/v3.0/uspto.yaml';
+        $openApiFile = __DIR__ . '/../vendor/oai/openapi-specification-3.0/examples/v3.0/uspto.yaml';
         $openapi = \cebe\openapi\Reader::readFromYamlFile($openApiFile);
 
         $inlineYamlExample = $openapi->paths['/']->get->responses['200']->content['application/json']->example;
