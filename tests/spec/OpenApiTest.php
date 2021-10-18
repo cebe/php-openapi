@@ -1,6 +1,7 @@
 <?php
 
 use cebe\openapi\spec\OpenApi;
+use cebe\openapi\Reader;
 use Symfony\Component\Yaml\Yaml;
 
 /**
@@ -246,6 +247,33 @@ class OpenApiTest extends \PHPUnit\Framework\TestCase
         if ($openapi->externalDocs !== null) {
             $this->assertInstanceOf(\cebe\openapi\spec\ExternalDocumentation::class, $openapi->externalDocs);
         }
+
+    }
+
+    public function testVersions()
+    {
+        $yaml = <<<YAML
+openapi: 3.0.2
+info:
+  title: Test API
+  version: 1
+paths: []
+YAML;
+        $openapi = Reader::readFromYaml($yaml);
+        $this->assertTrue($openapi->validate(), print_r($openapi->getErrors(), true));
+        $this->assertEquals('3.0.x', $openapi->getMajorVersion());
+
+        $yaml = <<<YAML
+openapi: 3.1.0
+info:
+  title: Test API
+  version: 1
+paths: []
+YAML;
+        $openapi = Reader::readFromYaml($yaml);
+        $this->assertTrue($openapi->validate(), print_r($openapi->getErrors(), true));
+        $this->assertEquals('3.1.x', $openapi->getMajorVersion());
+
 
     }
 }

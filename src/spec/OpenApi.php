@@ -27,6 +27,15 @@ use cebe\openapi\SpecBaseObject;
  */
 class OpenApi extends SpecBaseObject
 {
+    const VERSION_3_0 = '3.0.x';
+    const VERSION_3_1 = '3.1.x';
+    const VERSION_UNSUPPORTED = 'unsupported';
+
+    /**
+     * Pattern used to validate OpenAPI versions.
+     */
+    const PATTERN_VERSION = '/^(3\.(0|1))\.\d+(-rc\d)?$/i';
+
     /**
      * @return array array of attributes available in this object.
      */
@@ -75,8 +84,31 @@ class OpenApi extends SpecBaseObject
     public function performValidation()
     {
         $this->requireProperties(['openapi', 'info', 'paths']);
-        if (!empty($this->openapi) && !preg_match('/^3\.0\.\d+(-rc\d)?$/i', $this->openapi)) {
+        if (!empty($this->openapi) && !preg_match(static::PATTERN_VERSION, $this->openapi)) {
             $this->addError('Unsupported openapi version: ' . $this->openapi);
         }
+    }
+
+    /**
+     * Returns the OpenAPI major version of the loaded OpenAPI description.
+     * @return string This returns a value of one of the `VERSION_*`-constants. Currently supported versions are:
+     *
+     * - `VERSION_3_0 = '3.0.x'`
+     * - `VERSION_3_1 = '3.1.x'`
+     *
+     * For unsupported version, this function will return `VERSION_UNSUPPORTED = 'unsupported'`
+     */
+    public function getMajorVersion()
+    {
+        if (preg_match(static::PATTERN_VERSION, $this->openapi, $matches)) {
+            switch ($matches[1]) {
+                case '3.0':
+                    return static::VERSION_3_0;
+                case '3.1':
+                    return static::VERSION_3_1;
+            }
+        }
+
+        return self::VERSION_UNSUPPORTED;
     }
 }
