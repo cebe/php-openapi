@@ -104,43 +104,47 @@ class OpenApiTest extends \PHPUnit\Framework\TestCase
 
         // examples from https://github.com/Mermade/openapi3-examples
         $mermadeExamples = [
-            __DIR__ . '/../../vendor/mermade/openapi3-examples/pass/externalPathItemRef.yaml',
-            __DIR__ . '/../../vendor/mermade/openapi3-examples/pass/deprecated.yaml',
-            __DIR__ . '/../../vendor/mermade/openapi3-examples/pass/swagger2openapi/openapi.json',
-            __DIR__ . '/../../vendor/mermade/openapi3-examples/pass/gluecon/example1_from_._Different_parameters.md.yaml',
-            __DIR__ . '/../../vendor/mermade/openapi3-examples/pass/gluecon/example1_from_._Fixed_file.md.yaml',
-            __DIR__ . '/../../vendor/mermade/openapi3-examples/pass/gluecon/example1_from_._Different_parameters.md.yaml',
-            __DIR__ . '/../../vendor/mermade/openapi3-examples/pass/gluecon/example1_from_._Fixed_file.md.yaml',
-            __DIR__ . '/../../vendor/mermade/openapi3-examples/pass/gluecon/example1_from_._Fixed_multipart.md.yaml',
-            __DIR__ . '/../../vendor/mermade/openapi3-examples/pass/gluecon/example1_from_._Improved_examples.md.yaml',
-            __DIR__ . '/../../vendor/mermade/openapi3-examples/pass/gluecon/example1_from_._Improved_pathdescriptions.md.yaml',
-            __DIR__ . '/../../vendor/mermade/openapi3-examples/pass/gluecon/example1_from_._Improved_securityschemes.md.yaml',
-            __DIR__ . '/../../vendor/mermade/openapi3-examples/pass/gluecon/example1_from_._Improved_serverseverywhere.md.yaml',
-            __DIR__ . '/../../vendor/mermade/openapi3-examples/pass/gluecon/example1_from_._New_callbacks.md.yaml',
-            __DIR__ . '/../../vendor/mermade/openapi3-examples/pass/gluecon/example1_from_._New_links.md.yaml',
-            __DIR__ . '/../../vendor/mermade/openapi3-examples/pass/gluecon/example2_from_._Different_parameters.md.yaml',
-            __DIR__ . '/../../vendor/mermade/openapi3-examples/pass/gluecon/example2_from_._Different_requestbody.md.yaml',
-            __DIR__ . '/../../vendor/mermade/openapi3-examples/pass/gluecon/example2_from_._Different_servers.md.yaml',
-            __DIR__ . '/../../vendor/mermade/openapi3-examples/pass/gluecon/example2_from_._Fixed_multipart.md.yaml',
-            __DIR__ . '/../../vendor/mermade/openapi3-examples/pass/gluecon/example2_from_._Improved_securityschemes.md.yaml',
-            __DIR__ . '/../../vendor/mermade/openapi3-examples/pass/gluecon/example2_from_._New_callbacks.md.yaml',
-            __DIR__ . '/../../vendor/mermade/openapi3-examples/pass/gluecon/example2_from_._New_links.md.yaml',
-            __DIR__ . '/../../vendor/mermade/openapi3-examples/pass/gluecon/example3_from_._Different_parameters.md.yaml',
-            __DIR__ . '/../../vendor/mermade/openapi3-examples/pass/gluecon/example3_from_._Different_servers.md.yaml',
-            __DIR__ . '/../../vendor/mermade/openapi3-examples/pass/gluecon/example4_from_._Different_parameters.md.yaml',
-            __DIR__ . '/../../vendor/mermade/openapi3-examples/pass/gluecon/example5_from_._Different_parameters.md.yaml',
+            __DIR__ . '/../../vendor/mermade/openapi3-examples/3.0/pass/externalPathItemRef.yaml',
+            __DIR__ . '/../../vendor/mermade/openapi3-examples/3.0/pass/deprecated.yaml',
+            __DIR__ . '/../../vendor/mermade/openapi3-examples/3.0/pass/swagger2openapi/openapi.json',
+            __DIR__ . '/../../vendor/mermade/openapi3-examples/3.0/pass/gluecon/example1_from_._Different_parameters.md.yaml',
+            __DIR__ . '/../../vendor/mermade/openapi3-examples/3.0/pass/gluecon/example1_from_._Fixed_file.md.yaml',
+            __DIR__ . '/../../vendor/mermade/openapi3-examples/3.0/pass/gluecon/example1_from_._Fixed_multipart.md.yaml',
+            __DIR__ . '/../../vendor/mermade/openapi3-examples/3.0/pass/gluecon/example1_from_._Improved_examples.md.yaml',
+            __DIR__ . '/../../vendor/mermade/openapi3-examples/3.0/pass/gluecon/example1_from_._Improved_pathdescriptions.md.yaml',
+            __DIR__ . '/../../vendor/mermade/openapi3-examples/3.0/pass/gluecon/example1_from_._Improved_securityschemes.md.yaml',
+            __DIR__ . '/../../vendor/mermade/openapi3-examples/3.0/pass/gluecon/example1_from_._Improved_serverseverywhere.md.yaml',
+            __DIR__ . '/../../vendor/mermade/openapi3-examples/3.0/pass/gluecon/example1_from_._New_callbacks.md.yaml',
+            __DIR__ . '/../../vendor/mermade/openapi3-examples/3.0/pass/gluecon/example1_from_._New_links.md.yaml',
+            __DIR__ . '/../../vendor/mermade/openapi3-examples/3.0/pass/gluecon/example2_from_._Different_parameters.md.yaml',
+            __DIR__ . '/../../vendor/mermade/openapi3-examples/3.0/pass/gluecon/example2_from_._Different_requestbody.md.yaml',
+            __DIR__ . '/../../vendor/mermade/openapi3-examples/3.0/pass/gluecon/example2_from_._Different_servers.md.yaml',
+            __DIR__ . '/../../vendor/mermade/openapi3-examples/3.0/pass/gluecon/example2_from_._Fixed_multipart.md.yaml',
+            __DIR__ . '/../../vendor/mermade/openapi3-examples/3.0/pass/gluecon/example2_from_._Improved_securityschemes.md.yaml',
+            __DIR__ . '/../../vendor/mermade/openapi3-examples/3.0/pass/gluecon/example2_from_._New_callbacks.md.yaml',
+            __DIR__ . '/../../vendor/mermade/openapi3-examples/3.0/pass/gluecon/example2_from_._New_links.md.yaml',
+            __DIR__ . '/../../vendor/mermade/openapi3-examples/3.0/pass/gluecon/example3_from_._Different_parameters.md.yaml',
+            __DIR__ . '/../../vendor/mermade/openapi3-examples/3.0/pass/gluecon/example3_from_._Different_servers.md.yaml',
+            __DIR__ . '/../../vendor/mermade/openapi3-examples/3.0/pass/gluecon/example4_from_._Different_parameters.md.yaml',
+            __DIR__ . '/../../vendor/mermade/openapi3-examples/3.0/pass/gluecon/example5_from_._Different_parameters.md.yaml',
             // TODO symfony/yaml can not read this file!?
-//            __DIR__ . '/../../vendor/mermade/openapi3-examples/pass/OAI/api-with-examples.yaml',
-            __DIR__ . '/../../vendor/mermade/openapi3-examples/pass/OAI/petstore-expanded.yaml',
-            __DIR__ . '/../../vendor/mermade/openapi3-examples/pass/OAI/petstore.yaml',
-            __DIR__ . '/../../vendor/mermade/openapi3-examples/pass/OAI/uber.yaml',
+//            __DIR__ . '/../../vendor/mermade/openapi3-examples/3.0/pass/OAI/api-with-examples.yaml',
+            __DIR__ . '/../../vendor/mermade/openapi3-examples/3.0/pass/OAI/petstore-expanded.yaml',
+            __DIR__ . '/../../vendor/mermade/openapi3-examples/3.0/pass/OAI/petstore.yaml',
+            __DIR__ . '/../../vendor/mermade/openapi3-examples/3.0/pass/OAI/uber.yaml',
 
-            __DIR__ . '/../../vendor/mermade/openapi3-examples/malicious/rapid7-html.json',
-            __DIR__ . '/../../vendor/mermade/openapi3-examples/malicious/rapid7-java.json',
-            __DIR__ . '/../../vendor/mermade/openapi3-examples/malicious/rapid7-js.json',
-            __DIR__ . '/../../vendor/mermade/openapi3-examples/malicious/rapid7-php.json',
-            __DIR__ . '/../../vendor/mermade/openapi3-examples/malicious/rapid7-ruby.json',
-//            __DIR__ . '/../../vendor/mermade/openapi3-examples/malicious/yamlbomb.yaml',
+            __DIR__ . '/../../vendor/mermade/openapi3-examples/3.0/malicious/rapid7-html.json',
+            __DIR__ . '/../../vendor/mermade/openapi3-examples/3.0/malicious/rapid7-java.json',
+            __DIR__ . '/../../vendor/mermade/openapi3-examples/3.0/malicious/rapid7-js.json',
+            __DIR__ . '/../../vendor/mermade/openapi3-examples/3.0/malicious/rapid7-php.json',
+            __DIR__ . '/../../vendor/mermade/openapi3-examples/3.0/malicious/rapid7-ruby.json',
+//            __DIR__ . '/../../vendor/mermade/openapi3-examples/3.0/malicious/yamlbomb.yaml',
+
+            // OpenAPI 3.1 examples
+            __DIR__ . '/../../vendor/mermade/openapi3-examples/3.1/pass/minimal_comp.yaml',
+            __DIR__ . '/../../vendor/mermade/openapi3-examples/3.1/pass/minimal_hooks.yaml',
+            __DIR__ . '/../../vendor/mermade/openapi3-examples/3.1/pass/minimal_paths.yaml',
+            __DIR__ . '/../../vendor/mermade/openapi3-examples/3.1/pass/path_var_empty_pathitem.yaml',
         ];
 
         // examples from https://github.com/APIs-guru/openapi-directory/tree/openapi3.0.0/APIs
@@ -177,9 +181,9 @@ class OpenApiTest extends \PHPUnit\Framework\TestCase
             $nexmoExamples
         );
         foreach($all as $path) {
-            yield [
-                substr($path, strlen(__DIR__ . '/../../vendor/')),
-                basename(dirname($path, 2)) . DIRECTORY_SEPARATOR . basename(dirname($path, 1)) . DIRECTORY_SEPARATOR . basename($path)
+            $pathWithoutVendorPrefix = substr($path, strlen(__DIR__ . '/../../vendor/'));
+            yield $pathWithoutVendorPrefix => [
+                $pathWithoutVendorPrefix
             ];
         }
     }
@@ -219,7 +223,7 @@ class OpenApiTest extends \PHPUnit\Framework\TestCase
         $this->assertTrue($result);
 
         // openapi
-        $this->assertStringStartsWith('3.0.', $openapi->openapi);
+        $this->assertNotSame(OpenApi::VERSION_UNSUPPORTED, $openapi->getMajorVersion());
 
         // info
         $this->assertInstanceOf(\cebe\openapi\spec\Info::class, $openapi->info);
