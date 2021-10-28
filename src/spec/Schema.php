@@ -124,6 +124,10 @@ class Schema extends SpecBaseObject
             'allOf' => null,
             'oneOf' => null,
             'anyOf' => null,
+            // nullable is only relevant, when a type is specified
+            // return null as default when there is no type
+            // return false as default when there is a type
+            'nullable' => $this->hasProperty('type') ? false : null,
         ];
     }
 
