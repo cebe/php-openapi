@@ -43,6 +43,29 @@ JSON
         $this->assertFalse($schema->deprecated);
     }
 
+    public function testNullable()
+    {
+        /** @var $schema Schema */
+        $schema = Reader::readFromJson('{"type": "string"}', Schema::class);
+        $this->assertEquals(Type::STRING, $schema->type);
+        $this->assertFalse($schema->nullable);
+
+        /** @var $schema Schema */
+        $schema = Reader::readFromJson('{"type": "string", "nullable": false}', Schema::class);
+        $this->assertEquals(Type::STRING, $schema->type);
+        $this->assertFalse($schema->nullable);
+
+        /** @var $schema Schema */
+        $schema = Reader::readFromJson('{"type": "string", "nullable": true}', Schema::class);
+        $this->assertEquals(Type::STRING, $schema->type);
+        $this->assertTrue($schema->nullable);
+
+        // nullable is undefined if no type is given
+        $schema = Reader::readFromJson('{"oneOf": [{"type": "string"}, {"type": "integer"}]}', Schema::class);
+        $this->assertNull($schema->type);
+        $this->assertNull($schema->nullable);
+    }
+
     public function testReadObject()
     {
         /** @var $schema Schema */
