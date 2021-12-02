@@ -9,10 +9,11 @@ It also provides a CLI tool for validating and converting OpenAPI 3.0.x Descript
 [![Build Status](https://github.com/cebe/php-openapi/workflows/PHP%20Composer/badge.svg)](https://github.com/cebe/php-openapi/actions)
 [![License](https://poser.pugx.org/cebe/php-openapi/license)](https://packagist.org/packages/cebe/php-openapi)
 
-
 ## Install
 
-    composer require cebe/php-openapi
+```bash
+composer require cebe/php-openapi
+```
 
 ## Requirements
 
@@ -33,58 +34,59 @@ do awesome work:
 
 ### CLI Tool
 
-    $ vendor/bin/php-openapi help
-    PHP OpenAPI 3 tool
-    ------------------
-    by Carsten Brandt <mail@cebe.cc>
+```
+$ vendor/bin/php-openapi help
+PHP OpenAPI 3 tool
+------------------
+by Carsten Brandt <mail@cebe.cc>
 
-    Usage:
-      php-openapi <command> [<options>] [input.yml|input.json] [output.yml|output.json]
+Usage:
+  php-openapi <command> [<options>] [input.yml|input.json] [output.yml|output.json]
 
-      The following commands are available:
+  The following commands are available:
 
-        validate   Validate the API Description in the specified input file against the OpenAPI v3.0 schema.
-                   Note: the validation is performed in two steps. The results are composed of
-                    (1) structural errors found while reading the API Description file, and
-                    (2) violations of the OpenAPI v3.0 schema.
+    validate   Validate the API Description in the specified input file against the OpenAPI v3.0 schema.
+               Note: the validation is performed in two steps. The results are composed of
+                (1) structural errors found while reading the API Description file, and
+                (2) violations of the OpenAPI v3.0 schema.
 
-                   If no input file is specified input will be read from STDIN.
-                   The tool will try to auto-detect the content type of the input, but may fail
-                   to do so. You may specify --read-yaml or --read-json to force the file type.
+               If no input file is specified input will be read from STDIN.
+               The tool will try to auto-detect the content type of the input, but may fail
+               to do so. You may specify --read-yaml or --read-json to force the file type.
 
-                   Exits with code 2 on validation errors, 1 on other errors and 0 on success.
+               Exits with code 2 on validation errors, 1 on other errors and 0 on success.
 
-        convert    Convert a JSON or YAML input file to JSON or YAML output file.
+    convert    Convert a JSON or YAML input file to JSON or YAML output file.
 
-                   If no input file is specified input will be read from STDIN.
-                   If no output file is specified output will be written to STDOUT.
-                   The tool will try to auto-detect the content type of the input and output file, but may fail
-                   to do so. You may specify --read-yaml or --read-json to force the input file type.
-                   and --write-yaml or --write-json to force the output file type.
+               If no input file is specified input will be read from STDIN.
+               If no output file is specified output will be written to STDOUT.
+               The tool will try to auto-detect the content type of the input and output file, but may fail
+               to do so. You may specify --read-yaml or --read-json to force the input file type.
+               and --write-yaml or --write-json to force the output file type.
 
-                   By default all references are resolved (replaced with the object referred to). You can control
-                   handling of references with the following arguments:
+               By default all references are resolved (replaced with the object referred to). You can control
+               handling of references with the following arguments:
 
-                   --resolve-none      Do not resolve references.
-                   --resolve-external  Only resolve references that point to external files.
-                                       This process is often referred to as "inlining".
-                   --resolve-all       Resolve all references (default).
-                                       Recursive pointers will stay references.
+               --resolve-none      Do not resolve references.
+               --resolve-external  Only resolve references that point to external files.
+                                   This process is often referred to as "inlining".
+               --resolve-all       Resolve all references (default).
+                                   Recursive pointers will stay references.
 
-        inline     Convert a JSON or YAML input file to JSON or YAML output file and
-                   resolve all external references. The output will be a single API Description file.
-                   This is a shortcut for calling convert --resolve-external.
+    inline     Convert a JSON or YAML input file to JSON or YAML output file and
+               resolve all external references. The output will be a single API Description file.
+               This is a shortcut for calling convert --resolve-external.
 
-        help       Shows this usage information.
+    help       Shows this usage information.
 
-      Options:
+  Options:
 
-        --read-json   force reading input as JSON. Auto-detect if not specified.
-        --read-yaml   force reading input as YAML. Auto-detect if not specified.
-        --write-json  force writing output as JSON. Auto-detect if not specified.
-        --write-yaml  force writing output as YAML. Auto-detect if not specified.
-        -s, --silent  silent mode. Will hide all success/information messages and only print errors.
-
+    --read-json   force reading input as JSON. Auto-detect if not specified.
+    --read-yaml   force reading input as YAML. Auto-detect if not specified.
+    --write-json  force writing output as JSON. Auto-detect if not specified.
+    --write-yaml  force writing output as YAML. Auto-detect if not specified.
+    -s, --silent  silent mode. Will hide all success/information messages and only print errors.
+```
 
 ### Reading API Description Files
 
