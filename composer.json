@@ -25,7 +25,7 @@
 	},
 	"require-dev": {
 		"cebe/indent": "*",
-		"phpunit/phpunit": "^6.5 || ^7.5 || ^8.5 || ^9.4",
+		"phpunit/phpunit": "^6.5 || ^7.5 || ^8.5.14 || ^9.4",
 		"oai/openapi-specification": "3.0.3",
 		"mermade/openapi3-examples": "1.0.0",
 		"apis-guru/openapi-directory": "1.0.0",
