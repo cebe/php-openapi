@@ -8,6 +8,7 @@
 namespace cebe\openapi\json;
 
 use JsonSerializable;
+use stdClass;
 
 /**
  * Represents a JSON Reference (IETF draft-pbryan-zyp-json-ref-03)
@@ -126,7 +127,7 @@ final class JsonReference implements JsonSerializable
      * @return mixed data which can be serialized by <b>json_encode</b>,
      * which is a value of any type other than a resource.
      */
-    public function jsonSerialize()
+    public function jsonSerialize(): stdClass
     {
         return (object)['$ref' => $this->getReference()];
     }
