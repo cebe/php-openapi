@@ -89,25 +89,8 @@ YAML
         $this->assertEquals("1.0.0", $openapi->info->version);
     }
 
-    /**
-     * @see https://github.com/symfony/symfony/issues/34805
-     */
     public function testSymfonyYamlBugHunt()
     {
-        // skip test on symfony/yaml 5.0 due to bug https://github.com/symfony/symfony/issues/34805
-        $installed = json_decode(file_get_contents(__DIR__ . '/../vendor/composer/installed.json'), true);
-        // Check for composer 2.0 structure
-        if (array_key_exists('packages', $installed)) {
-            $installed = $installed['packages'];
-        }
-        foreach($installed as $pkg) {
-            if ($pkg['name'] === 'symfony/yaml' && version_compare($pkg['version'], 'v4.4', '>=')) {
-                $this->markTestSkipped(
-                    'This test is incompatible with symfony/yaml 4.4 and 5.0, see symfony bug https://github.com/symfony/symfony/issues/34805'
-                );
-            }
-        }
-
         $openApiFile = __DIR__ . '/../vendor/oai/openapi-specification/examples/v3.0/uspto.yaml';
         $openapi = \cebe\openapi\Reader::readFromYamlFile($openApiFile);
 
