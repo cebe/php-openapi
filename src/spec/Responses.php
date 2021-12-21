@@ -181,7 +181,6 @@ class Responses implements SpecObjectInterface, DocumentContextInterface, ArrayA
      * Offset to retrieve
      * @link http://php.net/manual/en/arrayaccess.offsetget.php
      * @param mixed $offset The offset to retrieve.
-     * @return mixed Can return all value types.
      */
     public function offsetGet($offset): ?SpecObjectInterface
     {
