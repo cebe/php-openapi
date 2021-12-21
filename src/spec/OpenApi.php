@@ -20,6 +20,7 @@ use cebe\openapi\SpecBaseObject;
  * @property Server[] $servers
  * @property Paths|PathItem[] $paths
  * @property Components|null $components
+ * @property PathItem[]|null $webhooks
  * @property SecurityRequirement[] $security
  * @property Tag[] $tags
  * @property ExternalDocumentation|null $externalDocs
@@ -46,6 +47,7 @@ class OpenApi extends SpecBaseObject
             'info' => Info::class,
             'servers' => [Server::class],
             'paths' => Paths::class,
+            'webhooks' => [PathItem::class],
             'components' => Components::class,
             'security' => [SecurityRequirement::class],
             'tags' => [Tag::class],
@@ -83,7 +85,12 @@ class OpenApi extends SpecBaseObject
      */
     public function performValidation()
     {
-        $this->requireProperties(['openapi', 'info', 'paths']);
+        if ($this->getMajorVersion() === static::VERSION_3_0) {
+            $this->requireProperties(['openapi', 'info', 'paths']);
+        } else {
+            $this->requireProperties(['openapi', 'info'], ['paths', 'webhooks', 'components']);
+        }
+
         if (!empty($this->openapi) && !preg_match(static::PATTERN_VERSION, $this->openapi)) {
             $this->addError('Unsupported openapi version: ' . $this->openapi);
         }

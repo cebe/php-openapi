@@ -40,7 +40,7 @@ use cebe\openapi\SpecBaseObject;
  * @property string[] $required list of required properties
  * @property array $enum
  *
- * @property string $type
+ * @property string|string[] $type type can only be `string` in OpenAPI 3.0, but can be an array of strings since OpenAPI 3.1
  * @property Schema[]|Reference[] $allOf
  * @property Schema[]|Reference[] $oneOf
  * @property Schema[]|Reference[] $anyOf

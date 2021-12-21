@@ -17,7 +17,7 @@ class OpenApiTest extends \PHPUnit\Framework\TestCase
         $this->assertEquals([
             'OpenApi is missing required property: openapi',
             'OpenApi is missing required property: info',
-            'OpenApi is missing required property: paths',
+            'OpenApi is missing at least one of the following required properties: paths, webhooks, components',
         ], $openapi->getErrors());
 
         // check default value of servers
@@ -232,8 +232,13 @@ class OpenApiTest extends \PHPUnit\Framework\TestCase
         $this->assertAllInstanceOf(\cebe\openapi\spec\Server::class, $openapi->servers);
 
         // paths
-        if ($openapi->components !== null) {
+        if ($openapi->paths !== null) {
             $this->assertInstanceOf(\cebe\openapi\spec\Paths::class, $openapi->paths);
+        }
+
+        // webhooks
+        if ($openapi->webhooks !== null) {
+            $this->assertAllInstanceOf(\cebe\openapi\spec\PathItem::class, $openapi->webhooks);
         }
 
         // components
