@@ -1,4 +1,4 @@
-name: PHP Composer
+name: Tests
 
 on:
   push:
@@ -7,35 +7,32 @@ on:
     branches: [ master ]
 
 jobs:
-  build:
-
+  phpunit:
+    name: Tests
+    runs-on: ubuntu-latest
     strategy:
       fail-fast: false
       matrix:
-#        os: [ubuntu-latest, macos-latest, windows-latest]
-        os: [ubuntu-latest]
-        php: ['7.1', '7.2', '7.3', '7.4', '8.0']
-        # max 4.4.16, see https://github.com/symfony/symfony/issues/39521
-        # max 5.1.8, see https://github.com/symfony/symfony/issues/39521
-        yaml: ['5.2.9', '5.1.11', '4.4.24', '^3.4']
+        php:
+          - "7.1"
+          - "7.2"
+          - "7.3"
+          - "7.4"
+          - "8.0"
+        dependencies:
+          - "lowest"
+          - "highest"
+        symfony-yaml: ['^3.4', '^4', '^5']
         exclude:
-          # Symfony YAML does not run on PHP 7.1
+          # symfony/yaml v5 does not run on PHP 7.1
           - php: '7.1'
-            yaml: '5.1.11'
-          - php: '7.1'
-            yaml: '5.2.9'
-        include:
-          - php: '7.4'
-            os: windows-latest
-            yaml: '5.2.9'
-          - php: '7.4'
-            os: macos-latest
-            yaml: '5.2.9'
+            symfony-yaml: '^5'
+          # symfony/yaml v3.4 is not compatible with PHP 8.0 but has no upper-bound, so it installs on it
+          - php: '8.0'
+            symfony-yaml: '^3.4'
 
-
-    runs-on: ${{ matrix.os }}
     env:
-      YAML:  ${{ matrix.yaml }}
+      SYMFONY_YAML:  ${{ matrix.symfony-yaml }}
 
     steps:
       - uses: actions/checkout@v2
@@ -44,60 +41,23 @@ jobs:
         uses: shivammathur/setup-php@v2
         with:
           php-version: ${{ matrix.php }}
-          ini-values: date.timezone='UTC'
           coverage: pcov
           tools: composer:v2
 
-      - name: Determine composer cache directory (Linux/MacOS)
-        if: matrix.os != 'windows-latest'
-        run: echo "COMPOSER_CACHE_DIR=$(composer config cache-dir)" >> $GITHUB_ENV
+      - name: Require specific symfony/yaml version
+        run: |
+          composer require symfony/yaml:"${SYMFONY_YAML}" --prefer-dist --no-interaction --ansi --no-install
 
-      - name: Determine composer cache directory (Windows)
-        if: matrix.os == 'windows-latest'
-        run: echo "COMPOSER_CACHE_DIR=~\AppData\Local\Composer" | Out-File -FilePath $env:GITHUB_ENV -Encoding utf8 -Append
-
-      - name: Cache dependencies installed with composer
-        uses: actions/cache@v2
+      - name: "Install dependencies with Composer"
+        uses: "ramsey/composer-install@v2"
         with:
-          path: ${{ env.COMPOSER_CACHE_DIR }}
-          key: php${{ matrix.php }}-os${{ matrix.os }}-yaml${{ matrix.yaml }}-composer-${{ hashFiles('**/composer.json') }}
-
-
-      - name: Validate composer.json and composer.lock
-        run: composer validate --ansi
-
-      - name: Install dependencies (Linux/MacOS)
-        if: matrix.os != 'windows-latest'
-        run: |
-          make install
-          composer require symfony/yaml:"${YAML}" --prefer-dist --no-interaction --ansi
-
-      - name: Install dependencies (Windows)
-        if: matrix.os == 'windows-latest'
-        run: |
-          composer install --prefer-dist --no-interaction --no-progress --ansi
-          composer require symfony/yaml:5.1.8 --prefer-dist --no-interaction --ansi
+          dependency-versions: "${{ matrix.dependencies }}"
 
       - name: Validate test data
-        if: matrix.os == 'ubuntu-latest'
         run: make lint
 
-      - name: PHP Stan analysis
-        if: matrix.os == 'ubuntu-latest'
-        run: make stan
-
-      - name: PHPUnit tests (Linux/MacOS)
-        if: matrix.os != 'windows-latest'
+      - name: PHPUnit tests
         run: make test
 
-      - name: PHPUnit tests (Windows)
-        if: matrix.os == 'windows-latest'
-        run: vendor/bin/phpunit --colors=always
-
-      - name: Check code style
-        if: matrix.os == 'ubuntu-latest'
-        run: make check-style
-
       - name: Code coverage
-        if: matrix.os == 'ubuntu-latest'
         run: make coverage

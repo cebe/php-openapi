@@ -25,7 +25,7 @@ test:
 	php $(PHPARGS) $(XPHPARGS) bin/php-openapi validate tests/spec/data/recursion.json
 	php $(PHPARGS) $(XPHPARGS) bin/php-openapi validate tests/spec/data/recursion2.yaml
 
-lint:
+lint: install
 	php $(PHPARGS) $(XPHPARGS) bin/php-openapi validate tests/spec/data/reference/playlist.json
 	php $(PHPARGS) $(XPHPARGS) bin/php-openapi validate tests/spec/data/recursion.json
 	php $(PHPARGS) $(XPHPARGS) bin/php-openapi validate tests/spec/data/recursion2.yaml
