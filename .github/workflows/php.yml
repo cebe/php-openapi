@@ -14,7 +14,7 @@ jobs:
       matrix:
 #        os: [ubuntu-latest, macos-latest, windows-latest]
         os: [ubuntu-latest]
-        php: ['7.1', '7.2', '7.3', '7.4', '8.0']
+        php: ['7.1', '7.2', '7.3', '7.4', '8.0', '8.1']
         # max 4.4.16, see https://github.com/symfony/symfony/issues/39521
         # max 5.1.8, see https://github.com/symfony/symfony/issues/39521
         yaml: ['5.2.9', '5.1.11', '4.4.24', '^3.4']
@@ -70,13 +70,13 @@ jobs:
         if: matrix.os != 'windows-latest'
         run: |
           make install
-          composer require symfony/yaml:"${YAML}" --prefer-dist --no-interaction --ansi
+          composer require symfony/yaml:"${{ matrix.yaml }}" --prefer-dist --no-interaction --ansi
 
       - name: Install dependencies (Windows)
         if: matrix.os == 'windows-latest'
         run: |
           composer install --prefer-dist --no-interaction --no-progress --ansi
-          composer require symfony/yaml:5.1.8 --prefer-dist --no-interaction --ansi
+          composer require symfony/yaml:${{ matrix.yaml }} --prefer-dist --no-interaction --ansi
 
       - name: Validate test data
         if: matrix.os == 'ubuntu-latest'
