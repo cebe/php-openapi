@@ -173,7 +173,7 @@ class Responses implements SpecObjectInterface, DocumentContextInterface, ArrayA
      * @return boolean true on success or false on failure.
      * The return value will be casted to boolean if non-boolean was returned.
      */
-    public function offsetExists($offset)
+    public function offsetExists($offset): bool
     {
         return $this->hasResponse($offset);
     }
@@ -184,6 +184,7 @@ class Responses implements SpecObjectInterface, DocumentContextInterface, ArrayA
      * @param mixed $offset The offset to retrieve.
      * @return mixed Can return all value types.
      */
+    #[\ReturnTypeWillChange]
     public function offsetGet($offset)
     {
         return $this->getResponse($offset);
@@ -195,7 +196,7 @@ class Responses implements SpecObjectInterface, DocumentContextInterface, ArrayA
      * @param mixed $offset The offset to assign the value to.
      * @param mixed $value The value to set.
      */
-    public function offsetSet($offset, $value)
+    public function offsetSet($offset, $value): void
     {
         $this->addResponse($offset, $value);
     }
@@ -205,7 +206,7 @@ class Responses implements SpecObjectInterface, DocumentContextInterface, ArrayA
      * @link http://php.net/manual/en/arrayaccess.offsetunset.php
      * @param mixed $offset The offset to unset.
      */
-    public function offsetUnset($offset)
+    public function offsetUnset($offset): void
     {
         $this->removeResponse($offset);
     }
@@ -216,7 +217,7 @@ class Responses implements SpecObjectInterface, DocumentContextInterface, ArrayA
      * @return int The custom count as an integer.
      * The return value is cast to an integer.
      */
-    public function count()
+    public function count(): int
     {
         return count($this->_responses);
     }
@@ -226,7 +227,7 @@ class Responses implements SpecObjectInterface, DocumentContextInterface, ArrayA
      * @link http://php.net/manual/en/iteratoraggregate.getiterator.php
      * @return Traversable An instance of an object implementing <b>Iterator</b> or <b>Traversable</b>
      */
-    public function getIterator()
+    public function getIterator(): Traversable
     {
         return new ArrayIterator($this->_responses);
     }
