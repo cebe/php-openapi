@@ -23,45 +23,48 @@ class Reader
 {
     /**
      * Populate OpenAPI spec object from JSON data.
-     * @phpstan-template T of SpecObjectInterface
-     * @phpstan-param class-string<T> $baseType
-     * @phpstan-return T
+     * @phpstan-template BT1 of SpecObjectInterface
+     * @phpstan-template BT2 of DocumentContextInterface
+     * @phpstan-param class-string<BT1|BT2> $baseType
+     * @phpstan-return BT1|BT2
      * @param string $json the JSON string to decode.
      * @param string $baseType the base Type to instantiate. This must be an instance of [[SpecObjectInterface]].
      * The default is [[OpenApi]] which is the base type of a OpenAPI specification file.
      * You may choose a different type if you instantiate objects from sub sections of a specification.
-     * @return SpecObjectInterface|OpenApi the OpenApi object instance.
+     * @return SpecObjectInterface|DocumentContextInterface|OpenApi the OpenApi object instance.
      * The type of the returned object depends on the `$baseType` argument.
      * @throws TypeErrorException in case invalid spec data is supplied.
      */
-    public static function readFromJson(string $json, string $baseType = OpenApi::class): SpecObjectInterface
+    public static function readFromJson(string $json, string $baseType = OpenApi::class)
     {
         return new $baseType(json_decode($json, true));
     }
 
     /**
      * Populate OpenAPI spec object from YAML data.
-     * @phpstan-template T of SpecObjectInterface
-     * @phpstan-param class-string<T> $baseType
-     * @phpstan-return T
+     * @phpstan-template BT1 of SpecObjectInterface
+     * @phpstan-template BT2 of DocumentContextInterface
+     * @phpstan-param class-string<BT1|BT2> $baseType
+     * @phpstan-return BT1|BT2
      * @param string $yaml the YAML string to decode.
      * @param string $baseType the base Type to instantiate. This must be an instance of [[SpecObjectInterface]].
      * The default is [[OpenApi]] which is the base type of a OpenAPI specification file.
      * You may choose a different type if you instantiate objects from sub sections of a specification.
-     * @return SpecObjectInterface|OpenApi the OpenApi object instance.
+     * @return SpecObjectInterface|DocumentContextInterface|OpenApi the OpenApi object instance.
      * The type of the returned object depends on the `$baseType` argument.
      * @throws TypeErrorException in case invalid spec data is supplied.
      */
-    public static function readFromYaml(string $yaml, string $baseType = OpenApi::class): SpecObjectInterface
+    public static function readFromYaml(string $yaml, string $baseType = OpenApi::class)
     {
         return new $baseType(Yaml::parse($yaml));
     }
 
     /**
      * Populate OpenAPI spec object from a JSON file.
-     * @phpstan-template T of SpecObjectInterface
-     * @phpstan-param class-string<T> $baseType
-     * @phpstan-return T
+     * @phpstan-template BT1 of SpecObjectInterface
+     * @phpstan-template BT2 of DocumentContextInterface
+     * @phpstan-param class-string<BT1|BT2> $baseType
+     * @phpstan-return BT1|BT2
      * @param string $fileName the file name of the file to be read.
      * If `$resolveReferences` is true (the default), this should be an absolute URL, a `file://` URI or
      * an absolute path to allow resolving relative path references.
@@ -74,14 +77,14 @@ class Reader
      * Since version 1.5.0 this can be a string indicating the reference resolving mode:
      * - `inline` only resolve references to external files.
      * - `all` resolve all references except recursive references.
-     * @return SpecObjectInterface|OpenApi the OpenApi object instance.
+     * @return SpecObjectInterface|DocumentContextInterface|OpenApi the OpenApi object instance.
      * The type of the returned object depends on the `$baseType` argument.
      * @throws TypeErrorException in case invalid spec data is supplied.
      * @throws UnresolvableReferenceException in case references could not be resolved.
      * @throws IOException when the file is not readable.
      * @throws InvalidJsonPointerSyntaxException in case an invalid JSON pointer string is passed to the spec references.
      */
-    public static function readFromJsonFile(string $fileName, string $baseType = OpenApi::class, $resolveReferences = true): SpecObjectInterface
+    public static function readFromJsonFile(string $fileName, string $baseType = OpenApi::class, $resolveReferences = true)
     {
         $fileContent = file_get_contents($fileName);
         if ($fileContent === false) {
@@ -106,9 +109,10 @@ class Reader
 
     /**
      * Populate OpenAPI spec object from YAML file.
-     * @phpstan-template T of SpecObjectInterface
-     * @phpstan-param class-string<T> $baseType
-     * @phpstan-return T
+     * @phpstan-template BT1 of SpecObjectInterface
+     * @phpstan-template BT2 of DocumentContextInterface
+     * @phpstan-param class-string<BT1|BT2> $baseType
+     * @phpstan-return BT1|BT2
      * @param string $fileName the file name of the file to be read.
      * If `$resolveReferences` is true (the default), this should be an absolute URL, a `file://` URI or
      * an absolute path to allow resolving relative path references.
@@ -121,13 +125,13 @@ class Reader
      * Since version 1.5.0 this can be a string indicating the reference resolving mode:
      * - `inline` only resolve references to external files.
      * - `all` resolve all references except recursive references.
-     * @return SpecObjectInterface|OpenApi the OpenApi object instance.
+     * @return SpecObjectInterface|DocumentContextInterface|OpenApi the OpenApi object instance.
      * The type of the returned object depends on the `$baseType` argument.
      * @throws TypeErrorException in case invalid spec data is supplied.
      * @throws UnresolvableReferenceException in case references could not be resolved.
      * @throws IOException when the file is not readable.
      */
-    public static function readFromYamlFile(string $fileName, string $baseType = OpenApi::class, $resolveReferences = true): SpecObjectInterface
+    public static function readFromYamlFile(string $fileName, string $baseType = OpenApi::class, $resolveReferences = true)
     {
         $fileContent = file_get_contents($fileName);
         if ($fileContent === false) {
