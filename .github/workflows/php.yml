@@ -9,10 +9,10 @@ on:
 jobs:
   phpunit:
     name: Tests
-    runs-on: ubuntu-latest
     strategy:
       fail-fast: false
       matrix:
+        os: [ubuntu-latest]
         php:
           - "7.1"
           - "7.2"
@@ -23,6 +23,15 @@ jobs:
           - "lowest"
           - "highest"
         symfony-yaml: ['^3.4', '^4', '^5']
+        include:
+          - os: "windows-latest"
+            php: "8.0"
+            dependencies: "highest"
+            symfony-yaml: '5.4.2'
+          - os: "macos-latest"
+            php: "8.0"
+            dependencies: "highest"
+            symfony-yaml: '^5'
         exclude:
           # symfony/yaml v5 does not run on PHP 7.1
           - php: '7.1'
@@ -31,8 +40,7 @@ jobs:
           - php: '8.0'
             symfony-yaml: '^3.4'
 
-    env:
-      SYMFONY_YAML:  ${{ matrix.symfony-yaml }}
+    runs-on: ${{ matrix.os }}
 
     steps:
       - uses: actions/checkout@v2
@@ -45,8 +53,7 @@ jobs:
           tools: composer:v2
 
       - name: Require specific symfony/yaml version
-        run: |
-          composer require symfony/yaml:"${SYMFONY_YAML}" --prefer-dist --no-interaction --ansi --no-install
+        run: "composer require symfony/yaml:'${{ matrix.symfony-yaml }}' --prefer-dist --no-interaction --ansi --no-install"
 
       - name: "Install dependencies with Composer"
         uses: "ramsey/composer-install@v2"
