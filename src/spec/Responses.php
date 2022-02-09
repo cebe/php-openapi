@@ -242,10 +242,10 @@ class Responses implements SpecObjectInterface, DocumentContextInterface, ArrayA
                 /** @var Response|Reference|null $referencedObject */
                 $referencedObject = $response->resolve($context);
                 $this->_responses[$key] = $referencedObject;
-                if (!$referencedObject instanceof Reference && $referencedObject !== null) {
+                if (!$referencedObject instanceof Reference && $referencedObject instanceof SpecObjectInterface) {
                     $referencedObject->resolveReferences();
                 }
-            } else {
+            } elseif ($response instanceof SpecObjectInterface) {
                 $response->resolveReferences($context);
             }
         }

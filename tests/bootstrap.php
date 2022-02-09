@@ -9,3 +9,5 @@ if (PHP_MAJOR_VERSION == 7 && PHP_MINOR_VERSION == 4) {
 }
 
 require __DIR__ . '/../vendor/autoload.php';
+
+date_default_timezone_set('UTC');

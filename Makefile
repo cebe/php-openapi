@@ -6,34 +6,61 @@ ifeq ($(XDEBUG),1)
 XPHPARGS=-dzend_extension=xdebug.so -dxdebug.remote_enable=1 -dxdebug.remote_autostart=1
 endif
 
+# Run make with IN_DOCKER=1 to run yarn and php commands in a docker container
+DOCKER_PHP=
+DOCKER_NODE=
+IN_DOCKER=0
+ifeq ($(IN_DOCKER),1)
+DOCKER_PHP=docker-compose run --rm php
+DOCKER_NODE=docker-compose run --rm -w /app node
+endif
+
 all:
+	@echo "the following commands are available:"
+	@echo ""
+	@echo "make check-style              # check code style"
+	@echo "make fix-style                # fix code style"
+	@echo "make install                  # install dependencies"
+	@echo "make test                     # run PHPUnit tests"
+	@echo "make lint                     # check validity of test data"
+	@echo "make stan                     # check code with PHPStan"
+	@echo ""
+	@echo "You may add the IN_DOCKER parameter to run a command inside of docker container and not directly."
+	@echo "make IN_DOCKER=1 ..."
+
 
 check-style: php-cs-fixer.phar
 	PHP_CS_FIXER_IGNORE_ENV=1 ./php-cs-fixer.phar fix src/ --diff --dry-run
 
 fix-style: php-cs-fixer.phar
-	vendor/bin/indent --tabs composer.json
-	vendor/bin/indent --spaces .php_cs.dist
-	./php-cs-fixer.phar fix src/ --diff
+	$(DOCKER_PHP) vendor/bin/indent --tabs composer.json
+	$(DOCKER_PHP) vendor/bin/indent --spaces .php_cs.dist
+	$(DOCKER_PHP) ./php-cs-fixer.phar fix src/ --diff
 
-install:
-	composer install --prefer-dist --no-interaction --no-progress --ansi
-	yarn install
+install: composer.lock yarn.lock
+	$(DOCKER_PHP) composer install --prefer-dist --no-interaction --no-progress --ansi
+	$(DOCKER_NODE) yarn install
 
-test:
-	php $(PHPARGS) $(XPHPARGS) vendor/bin/phpunit --verbose --colors=always $(TESTCASE)
-	php $(PHPARGS) $(XPHPARGS) bin/php-openapi validate tests/spec/data/recursion.json
-	php $(PHPARGS) $(XPHPARGS) bin/php-openapi validate tests/spec/data/recursion2.yaml
+test: unit test-recursion.json test-recursion2.yaml test-recursion3_index.yaml test-empty-maps.json
 
-lint:
-	php $(PHPARGS) $(XPHPARGS) bin/php-openapi validate tests/spec/data/reference/playlist.json
-	php $(PHPARGS) $(XPHPARGS) bin/php-openapi validate tests/spec/data/recursion.json
-	php $(PHPARGS) $(XPHPARGS) bin/php-openapi validate tests/spec/data/recursion2.yaml
-	node_modules/.bin/speccy lint tests/spec/data/reference/playlist.json
-	node_modules/.bin/speccy lint tests/spec/data/recursion.json
+unit:
+	$(DOCKER_PHP) php $(PHPARGS) $(XPHPARGS) vendor/bin/phpunit --verbose --colors=always $(TESTCASE)
+
+# test specific JSON files in tests/spec/data/
+# e.g. test-recursion will run validation on tests/spec/data/recursion.json
+test-%: tests/spec/data/%
+	$(DOCKER_PHP) php $(PHPARGS) $(XPHPARGS) bin/php-openapi validate $<
+
+lint: install
+	$(DOCKER_PHP) php $(PHPARGS) $(XPHPARGS) bin/php-openapi validate tests/spec/data/reference/playlist.json
+	$(DOCKER_PHP) php $(PHPARGS) $(XPHPARGS) bin/php-openapi validate tests/spec/data/recursion.json
+	$(DOCKER_PHP) php $(PHPARGS) $(XPHPARGS) bin/php-openapi validate tests/spec/data/recursion2.yaml
+	$(DOCKER_PHP) php $(PHPARGS) $(XPHPARGS) bin/php-openapi validate tests/spec/data/empty-maps.json
+	$(DOCKER_NODE) yarn run speccy lint tests/spec/data/reference/playlist.json
+	$(DOCKER_NODE) yarn run speccy lint tests/spec/data/recursion.json
 
 stan:
-	php $(PHPARGS) vendor/bin/phpstan analyse -l 5 src
+	$(DOCKER_PHP) php $(PHPARGS) vendor/bin/phpstan analyse -l 5 src
 
 # copy openapi3 json schema
 schemas/openapi-v3.0.json: vendor/oai/openapi-specification-3.0/schemas/v3.0/schema.json

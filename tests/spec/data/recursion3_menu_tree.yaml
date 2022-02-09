@@ -1,0 +1,33 @@
+MenuTree:
+  type: object
+  properties:
+    name:
+      type: string
+      description: 'Name'
+      example: 'Home'
+    url:
+      type: string
+      description: Link
+      nullable: true
+      example: '/about/'
+    children:
+      type: array
+      items:
+        $ref: '#/MenuTree'
+      example: []
+UpdateMenuTreesRequest:
+  type: object
+  properties:
+    items:
+      type: array
+      items:
+        $ref: '#/MenuTree'
+UpdateMenuTreesResponse:
+  type: object
+  properties:
+    data:
+      type: array
+      items:
+        $ref: '#/MenuTree'
+  required:
+    - data

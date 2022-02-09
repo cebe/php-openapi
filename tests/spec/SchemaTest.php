@@ -43,6 +43,67 @@ JSON
         $this->assertFalse($schema->deprecated);
     }
 
+    public function testNullable()
+    {
+        /** @var $schema Schema */
+        $schema = Reader::readFromJson('{"type": "string"}', Schema::class);
+        $this->assertEquals(Type::STRING, $schema->type);
+        $this->assertFalse($schema->nullable);
+
+        /** @var $schema Schema */
+        $schema = Reader::readFromJson('{"type": "string", "nullable": false}', Schema::class);
+        $this->assertEquals(Type::STRING, $schema->type);
+        $this->assertFalse($schema->nullable);
+
+        /** @var $schema Schema */
+        $schema = Reader::readFromJson('{"type": "string", "nullable": true}', Schema::class);
+        $this->assertEquals(Type::STRING, $schema->type);
+        $this->assertTrue($schema->nullable);
+
+        // nullable is undefined if no type is given
+        $schema = Reader::readFromJson('{"oneOf": [{"type": "string"}, {"type": "integer"}]}', Schema::class);
+        $this->assertNull($schema->type);
+        $this->assertNull($schema->nullable);
+    }
+
+    public function testMinMax()
+    {
+        /** @var $schema Schema */
+        $schema = Reader::readFromJson('{"type": "integer"}', Schema::class);
+        $this->assertNull($schema->minimum);
+        $this->assertNull($schema->exclusiveMinimum);
+        $this->assertNull($schema->maximum);
+        $this->assertNull($schema->exclusiveMaximum);
+
+        /** @var $schema Schema */
+        $schema = Reader::readFromJson('{"type": "integer", "minimum": 1}', Schema::class);
+        $this->assertEquals(1, $schema->minimum);
+        $this->assertFalse($schema->exclusiveMinimum);
+        $this->assertNull($schema->maximum);
+        $this->assertNull($schema->exclusiveMaximum);
+
+        /** @var $schema Schema */
+        $schema = Reader::readFromJson('{"type": "integer", "minimum": 1, "exclusiveMinimum": true}', Schema::class);
+        $this->assertEquals(1, $schema->minimum);
+        $this->assertTrue($schema->exclusiveMinimum);
+        $this->assertNull($schema->maximum);
+        $this->assertNull($schema->exclusiveMaximum);
+
+        /** @var $schema Schema */
+        $schema = Reader::readFromJson('{"type": "integer", "maximum": 10}', Schema::class);
+        $this->assertEquals(10, $schema->maximum);
+        $this->assertFalse($schema->exclusiveMaximum);
+        $this->assertNull($schema->minimum);
+        $this->assertNull($schema->exclusiveMinimum);
+
+        /** @var $schema Schema */
+        $schema = Reader::readFromJson('{"type": "integer", "maximum": 10, "exclusiveMaximum": true}', Schema::class);
+        $this->assertEquals(10, $schema->maximum);
+        $this->assertTrue($schema->exclusiveMaximum);
+        $this->assertNull($schema->minimum);
+        $this->assertNull($schema->exclusiveMinimum);
+    }
+
     public function testReadObject()
     {
         /** @var $schema Schema */
@@ -88,6 +149,10 @@ JSON
         $this->assertFalse($schema->writeOnly);
         // deprecated Default value is false.
         $this->assertFalse($schema->deprecated);
+        // exclusiveMinimum Default value is null when no minimum is specified.
+        $this->assertNull($schema->exclusiveMinimum);
+        // exclusiveMaximum Default value is null when no maximum is specified.
+        $this->assertNull($schema->exclusiveMaximum);
     }
 
     public function testDiscriminator()
@@ -244,9 +309,9 @@ JSON;
             'title' => null,
             'multipleOf' => null,
             'maximum' => null,
-            'exclusiveMaximum' => false,
+            'exclusiveMaximum' => null,
             'minimum' => null,
-            'exclusiveMinimum' => false,
+            'exclusiveMinimum' => null,
             'maxLength' => null,
             'minLength' => null,
             'pattern' => null,
