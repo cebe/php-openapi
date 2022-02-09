@@ -192,7 +192,7 @@ class Paths implements SpecObjectInterface, DocumentContextInterface, ArrayAcces
      * @link http://php.net/manual/en/arrayaccess.offsetget.php
      * @param mixed $offset The offset to retrieve.
      */
-    public function offsetGet($offset): PathItem
+    public function offsetGet($offset): ?PathItem
     {
         return $this->getPath($offset);
     }
