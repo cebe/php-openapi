@@ -305,9 +305,23 @@ abstract class SpecBaseObject implements SpecObjectInterface, DocumentContextInt
         $this->_errors[] = end($shortName).$error;
     }
 
+    /**
+     * @param string $name property name.
+     * @return bool true when this object has a property with a non-null value or the property is defined in the OpenAPI spec.
+     * @deprecated since 1.6.0
+     */
     protected function hasProperty(string $name): bool
     {
         return isset($this->_properties[$name]) || isset($this->attributes()[$name]);
+    }
+
+    /**
+     * @param string $name property name.
+     * @return bool true, when a property has a non-null value (does not check for default values)
+     */
+    protected function hasPropertyValue(string $name): bool
+    {
+        return isset($this->_properties[$name]);
     }
 
     protected function requireProperties(array $names)

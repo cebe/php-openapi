@@ -45,11 +45,6 @@ JSON
 
     public function testNullable()
     {
-        self::markTestIncomplete(
-            'Test currently fails as it was not run when https://github.com/cebe/php-openapi/pull/132 was merged. '
-            .'See https://github.com/cebe/php-openapi/issues/142 for status'
-        );
-
         /** @var $schema Schema */
         $schema = Reader::readFromJson('{"type": "string"}', Schema::class);
         $this->assertEquals(Type::STRING, $schema->type);

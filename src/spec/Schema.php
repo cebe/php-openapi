@@ -127,7 +127,7 @@ class Schema extends SpecBaseObject
             // nullable is only relevant, when a type is specified
             // return null as default when there is no type
             // return false as default when there is a type
-            'nullable' => $this->hasProperty('type') ? false : null,
+            'nullable' => $this->hasPropertyValue('type') ? false : null,
         ];
     }
 
