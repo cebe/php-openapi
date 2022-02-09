@@ -41,7 +41,7 @@ install: composer.lock yarn.lock
 	$(DOCKER_PHP) composer install --prefer-dist --no-interaction --no-progress --ansi
 	$(DOCKER_NODE) yarn install
 
-test: unit test-recursion.json test-recursion2.yaml test-empty-maps.json
+test: unit test-recursion.json test-recursion2.yaml test-recursion3_index.yaml test-empty-maps.json
 
 unit:
 	$(DOCKER_PHP) php $(PHPARGS) $(XPHPARGS) vendor/bin/phpunit --verbose --colors=always $(TESTCASE)

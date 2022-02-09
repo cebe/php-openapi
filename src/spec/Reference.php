@@ -289,6 +289,8 @@ class Reference implements SpecObjectInterface, DocumentContextInterface
         return $transitiveRefResult;
     }
 
+    private $_recursingInsideFile = false;
+
     /**
      * Adjust relative references inside of the file to match the context of the base file
      */
@@ -306,7 +308,14 @@ class Reference implements SpecObjectInterface, DocumentContextInterface
                     // direcly inline references in the same document,
                     // these are not going to be valid in the new context anymore
                     $inlineDocument = (new JsonPointer(substr($value, 1)))->evaluate($baseDocument);
-                    return $this->adjustRelativeReferences($inlineDocument, $basePath, $baseDocument, $oContext);
+                    if ($this->_recursingInsideFile) {
+                        // keep reference when it is a recursive reference
+                        return ['$ref' => $basePath . $value];
+                    }
+                    $this->_recursingInsideFile = true;
+                    $return = $this->adjustRelativeReferences($inlineDocument, $basePath, $baseDocument, $oContext);
+                    $this->_recursingInsideFile = false;
+                    return $return;
                 }
                 $referencedDocument[$key] = $context->resolveRelativeUri($value);
                 $parts = explode('#', $referencedDocument[$key], 2);

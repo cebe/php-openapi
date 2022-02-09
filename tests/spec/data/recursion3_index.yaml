@@ -1,0 +1,31 @@
+openapi: 3.0.3
+info:
+  title: Link Example
+  version: 1.0.0
+#components:
+#  parameters:
+#    "Parameter.PetId":
+#      "$ref": "./subdir/Parameter.PetId.json"
+paths:
+  /contents/menus/{id}/trees:
+    put:
+      tags:
+        - menus
+      operationId: updateMenuTrees
+      summary: '123'
+      description: '456'
+#      parameters:
+#        - $ref: '#/components/parameters/PathId'
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: './recursion3_menu_tree.yaml#/UpdateMenuTreesRequest'
+      responses:
+        "200":
+          description: Успешный ответ
+          content:
+            application/json:
+              schema:
+                $ref: './recursion3_menu_tree.yaml#/UpdateMenuTreesResponse'
