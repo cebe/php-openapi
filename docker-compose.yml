@@ -1,0 +1,22 @@
+version: "3"
+services:
+    php:
+        build:
+            dockerfile: tests/docker/Dockerfile
+            context: .
+        volumes:
+            - ./tests/tmp/.composer:/root/.composer:rw
+            - .:/app
+        environment:
+            - TZ=UTC
+            - TIMEZONE=UTC
+            - IN_DOCKER=docker
+            - PHP_XDEBUG_ENABLED=1
+            - XDEBUG_CONFIG="remote_host=host.docker.internal"
+            - PHP_IDE_CONFIG="serverName=Docker"
+        tty: true
+    node:
+        image: node:11
+        volumes:
+#            - ./tests/tmp/.composer:/root/.composer:rw
+            - .:/app

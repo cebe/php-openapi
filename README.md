@@ -277,6 +277,16 @@ This library is currently work in progress, the following list tracks completene
   - [x] OAuth Flow Object
   - [x] Security Requirement Object
 
+# Development
+
+You may use the docker environment for local development:
+
+    docker-compose build
+    make IN_DOCKER=1 install
+    make IN_DOCKER=1 test
+    ...
+
+
 # Support
 
 **Need help with your API project?**
