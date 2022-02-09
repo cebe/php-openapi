@@ -190,15 +190,23 @@ abstract class SpecBaseObject implements SpecObjectInterface, DocumentContextInt
             if ($v instanceof SpecObjectInterface) {
                 $data[$k] = $v->getSerializableData();
             } elseif (is_array($v)) {
+                // test if php arrays should be represented as object in YAML/JSON
                 $toObject = false;
-                $j = 0;
-                foreach ($v as $i => $d) {
-                    if ($j++ !== $i) {
-                        $toObject = true;
+                if (!empty($v)) {
+                    // case 1: non-empty array should be an object if it does not contain
+                    // consecutive numeric keys
+                    $j = 0;
+                    foreach ($v as $i => $d) {
+                        if ($j++ !== $i) {
+                            $toObject = true;
+                        }
+                        if ($d instanceof SpecObjectInterface) {
+                            $data[$k][$i] = $d->getSerializableData();
+                        }
                     }
-                    if ($d instanceof SpecObjectInterface) {
-                        $data[$k][$i] = $d->getSerializableData();
-                    }
+                } elseif (isset($this->attributes()[$k]) && is_array($this->attributes()[$k]) && 2 === count($this->attributes()[$k])) {
+                    // case 2: Attribute type is an object (specified in attributes() by an array which specifies two items (key and value type)
+                    $toObject = true;
                 }
                 if ($toObject) {
                     $data[$k] = (object) $data[$k];
