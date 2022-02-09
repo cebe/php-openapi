@@ -308,7 +308,7 @@ abstract class SpecBaseObject implements SpecObjectInterface, DocumentContextInt
     /**
      * @param string $name property name.
      * @return bool true when this object has a property with a non-null value or the property is defined in the OpenAPI spec.
-     * @deprecated since 1.6.0
+     * @deprecated since 1.6.0, will be removed in 2.0.0
      */
     protected function hasProperty(string $name): bool
     {
