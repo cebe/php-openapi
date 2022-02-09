@@ -41,11 +41,15 @@ install: composer.lock yarn.lock
 	$(DOCKER_PHP) composer install --prefer-dist --no-interaction --no-progress --ansi
 	$(DOCKER_NODE) yarn install
 
-test:
+test: unit test-recursion.json test-recursion2.yaml test-empty-maps.json
+
+unit:
 	$(DOCKER_PHP) php $(PHPARGS) $(XPHPARGS) vendor/bin/phpunit --verbose --colors=always $(TESTCASE)
-	$(DOCKER_PHP) php $(PHPARGS) $(XPHPARGS) bin/php-openapi validate tests/spec/data/recursion.json
-	$(DOCKER_PHP) php $(PHPARGS) $(XPHPARGS) bin/php-openapi validate tests/spec/data/recursion2.yaml
-	$(DOCKER_PHP) php $(PHPARGS) $(XPHPARGS) bin/php-openapi validate tests/spec/data/empty-maps.json
+
+# test specific JSON files in tests/spec/data/
+# e.g. test-recursion will run validation on tests/spec/data/recursion.json
+test-%: tests/spec/data/%
+	$(DOCKER_PHP) php $(PHPARGS) $(XPHPARGS) bin/php-openapi validate $<
 
 lint: install
 	$(DOCKER_PHP) php $(PHPARGS) $(XPHPARGS) bin/php-openapi validate tests/spec/data/reference/playlist.json

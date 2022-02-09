@@ -190,8 +190,11 @@ abstract class SpecBaseObject implements SpecObjectInterface, DocumentContextInt
             if ($v instanceof SpecObjectInterface) {
                 $data[$k] = $v->getSerializableData();
             } elseif (is_array($v)) {
+                // test if php arrays should be represented as object in YAML/JSON
                 $toObject = false;
                 if (!empty($v)) {
+                    // case 1: non-empty array should be an object if it does not contain
+                    // consecutive numeric keys
                     $j = 0;
                     foreach ($v as $i => $d) {
                         if ($j++ !== $i) {
@@ -202,7 +205,7 @@ abstract class SpecBaseObject implements SpecObjectInterface, DocumentContextInt
                         }
                     }
                 } elseif (isset($this->attributes()[$k]) && is_array($this->attributes()[$k]) && 2 === count($this->attributes()[$k])) {
-                    // An empty Map, which is an empty array in PHP but needs to be an empty object in output.
+                    // case 2: Attribute type is an object (specified in attributes() by an array which specifies two items (key and value type)
                     $toObject = true;
                 }
                 if ($toObject) {
