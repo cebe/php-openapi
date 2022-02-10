@@ -318,6 +318,7 @@ abstract class SpecBaseObject implements SpecObjectInterface, DocumentContextInt
     /**
      * @param string $name property name.
      * @return bool true, when a property has a non-null value (does not check for default values)
+     * @since 1.6.0
      */
     protected function hasPropertyValue(string $name): bool
     {
@@ -511,7 +512,7 @@ abstract class SpecBaseObject implements SpecObjectInterface, DocumentContextInt
      * Returns extension properties with `x-` prefix.
      * @see https://github.com/OAI/OpenAPI-Specification/blob/3.0.2/versions/3.0.2.md#specificationExtensions
      * @return array<string, mixed>
-     * @since 1.5.3
+     * @since 1.6.0
      */
     public function getExtensions(): array
     {

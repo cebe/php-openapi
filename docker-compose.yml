@@ -18,5 +18,4 @@ services:
     node:
         image: node:12
         volumes:
-#            - ./tests/tmp/.composer:/root/.composer:rw
             - .:/app

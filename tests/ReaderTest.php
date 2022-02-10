@@ -89,6 +89,9 @@ YAML
         $this->assertEquals("1.0.0", $openapi->info->version);
     }
 
+    /**
+     * @see https://github.com/symfony/symfony/issues/34805
+     */
     public function testSymfonyYamlBugHunt()
     {
         $openApiFile = __DIR__ . '/../vendor/oai/openapi-specification/examples/v3.0/uspto.yaml';
