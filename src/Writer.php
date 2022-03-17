@@ -20,11 +20,12 @@ class Writer
     /**
      * Convert OpenAPI spec object to JSON data.
      * @param SpecObjectInterface|OpenApi $object the OpenApi object instance.
+     * @param int $flags json_encode() flags
      * @return string JSON string.
      */
-    public static function writeToJson(SpecObjectInterface $object): string
+    public static function writeToJson(SpecObjectInterface $object, int $flags = JSON_PRETTY_PRINT): string
     {
-        return json_encode($object->getSerializableData(), JSON_PRETTY_PRINT);
+        return json_encode($object->getSerializableData(), $flags);
     }
 
     /**
