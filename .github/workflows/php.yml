@@ -65,7 +65,11 @@ jobs:
           tools: composer:v2
 
       - name: Require specific symfony/yaml version
-        run: "composer require symfony/yaml:'${{ matrix.symfony-yaml }}' --prefer-dist --no-interaction --ansi --no-install"
+        run: "composer require symfony/yaml:'${{ matrix.symfony-yaml }}' --no-interaction --ansi --no-install"
+
+      - name: Require newer phpunit/phpunit version
+        run: "composer require phpunit/phpunit '^9.5' --dev --no-interaction --ansi --no-install"
+        if: matrix.php == '8.1'
 
       - name: "Install dependencies with Composer"
         uses: "ramsey/composer-install@v2"
