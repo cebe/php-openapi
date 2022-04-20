@@ -183,8 +183,7 @@ class Paths implements SpecObjectInterface, DocumentContextInterface, ArrayAcces
      * @return boolean true on success or false on failure.
      * The return value will be casted to boolean if non-boolean was returned.
      */
-    #[\ReturnTypeWillChange]
-    public function offsetExists($offset)
+    public function offsetExists($offset): bool
     {
         return $this->hasPath($offset);
     }
@@ -196,7 +195,7 @@ class Paths implements SpecObjectInterface, DocumentContextInterface, ArrayAcces
      * @return PathItem Can return all value types.
      */
     #[\ReturnTypeWillChange]
-    public function offsetGet($offset)
+    public function offsetGet($offset) //: mixed
     {
         return $this->getPath($offset);
     }
@@ -207,8 +206,7 @@ class Paths implements SpecObjectInterface, DocumentContextInterface, ArrayAcces
      * @param mixed $offset The offset to assign the value to.
      * @param mixed $value The value to set.
      */
-    #[\ReturnTypeWillChange]
-    public function offsetSet($offset, $value)
+    public function offsetSet($offset, $value): void
     {
         $this->addPath($offset, $value);
     }
@@ -218,8 +216,7 @@ class Paths implements SpecObjectInterface, DocumentContextInterface, ArrayAcces
      * @link http://php.net/manual/en/arrayaccess.offsetunset.php
      * @param mixed $offset The offset to unset.
      */
-    #[\ReturnTypeWillChange]
-    public function offsetUnset($offset)
+    public function offsetUnset($offset): void
     {
         $this->removePath($offset);
     }
@@ -230,8 +227,7 @@ class Paths implements SpecObjectInterface, DocumentContextInterface, ArrayAcces
      * @return int The custom count as an integer.
      * The return value is cast to an integer.
      */
-    #[\ReturnTypeWillChange]
-    public function count()
+    public function count(): int
     {
         return count($this->_paths);
     }
@@ -241,8 +237,7 @@ class Paths implements SpecObjectInterface, DocumentContextInterface, ArrayAcces
      * @link http://php.net/manual/en/iteratoraggregate.getiterator.php
      * @return Traversable An instance of an object implementing <b>Iterator</b> or <b>Traversable</b>
      */
-    #[\ReturnTypeWillChange]
-    public function getIterator()
+    public function getIterator(): Traversable
     {
         return new ArrayIterator($this->_paths);
     }

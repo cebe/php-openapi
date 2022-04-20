@@ -127,7 +127,7 @@ final class JsonReference implements JsonSerializable
      * which is a value of any type other than a resource.
      */
     #[\ReturnTypeWillChange]
-    public function jsonSerialize()
+    public function jsonSerialize() //: mixed
     {
         return (object)['$ref' => $this->getReference()];
     }

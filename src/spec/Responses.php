@@ -173,8 +173,7 @@ class Responses implements SpecObjectInterface, DocumentContextInterface, ArrayA
      * @return boolean true on success or false on failure.
      * The return value will be casted to boolean if non-boolean was returned.
      */
-    #[\ReturnTypeWillChange]
-    public function offsetExists($offset)
+    public function offsetExists($offset): bool
     {
         return $this->hasResponse($offset);
     }
@@ -186,7 +185,7 @@ class Responses implements SpecObjectInterface, DocumentContextInterface, ArrayA
      * @return mixed Can return all value types.
      */
     #[\ReturnTypeWillChange]
-    public function offsetGet($offset)
+    public function offsetGet($offset) //: mixed
     {
         return $this->getResponse($offset);
     }
@@ -197,8 +196,7 @@ class Responses implements SpecObjectInterface, DocumentContextInterface, ArrayA
      * @param mixed $offset The offset to assign the value to.
      * @param mixed $value The value to set.
      */
-    #[\ReturnTypeWillChange]
-    public function offsetSet($offset, $value)
+    public function offsetSet($offset, $value): void
     {
         $this->addResponse($offset, $value);
     }
@@ -208,8 +206,7 @@ class Responses implements SpecObjectInterface, DocumentContextInterface, ArrayA
      * @link http://php.net/manual/en/arrayaccess.offsetunset.php
      * @param mixed $offset The offset to unset.
      */
-    #[\ReturnTypeWillChange]
-    public function offsetUnset($offset)
+    public function offsetUnset($offset): void
     {
         $this->removeResponse($offset);
     }
@@ -220,8 +217,7 @@ class Responses implements SpecObjectInterface, DocumentContextInterface, ArrayA
      * @return int The custom count as an integer.
      * The return value is cast to an integer.
      */
-    #[\ReturnTypeWillChange]
-    public function count()
+    public function count(): int
     {
         return count($this->_responses);
     }
@@ -231,8 +227,7 @@ class Responses implements SpecObjectInterface, DocumentContextInterface, ArrayA
      * @link http://php.net/manual/en/iteratoraggregate.getiterator.php
      * @return Traversable An instance of an object implementing <b>Iterator</b> or <b>Traversable</b>
      */
-    #[\ReturnTypeWillChange]
-    public function getIterator()
+    public function getIterator(): Traversable
     {
         return new ArrayIterator($this->_responses);
     }
