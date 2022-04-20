@@ -29,9 +29,6 @@ use Symfony\Component\Yaml\Yaml;
  */
 class Reference implements SpecObjectInterface, DocumentContextInterface
 {
-    /** @var array<string, mixed>  */
-    private static $relativeReferencesCache = [];
-
     /**
      * @var string
      */
@@ -297,7 +294,7 @@ class Reference implements SpecObjectInterface, DocumentContextInterface
     /**
      * Adjust relative references inside of the file to match the context of the base file
      */
-    private function adjustRelativeReferences($referencedDocument, $basePath, $baseDocument = null, $oContext = null)
+    private function adjustRelativeReferences($referencedDocument, $basePath, $baseDocument = null, ?ReferenceContext $oContext = null)
     {
         if ($baseDocument === null) {
             $baseDocument = $referencedDocument;
@@ -307,8 +304,8 @@ class Reference implements SpecObjectInterface, DocumentContextInterface
             // adjust reference URLs
             if ($key === '$ref' && is_string($value)) {
                 $fullPath = $basePath . $value;
-                if (array_key_exists($fullPath, self::$relativeReferencesCache)) {
-                    return self::$relativeReferencesCache[$fullPath];
+                if ($oContext !== null && $oContext->getCache()->has($fullPath, 'relativeReferences')) {
+                    return $oContext->getCache()->get($fullPath, 'relativeReferences');
                 }
 
                 if (isset($value[0]) && $value[0] === '#') {
@@ -322,7 +319,9 @@ class Reference implements SpecObjectInterface, DocumentContextInterface
                     $this->_recursingInsideFile = true;
                     $return = $this->adjustRelativeReferences($inlineDocument, $basePath, $baseDocument, $oContext);
                     $this->_recursingInsideFile = false;
-                    self::$relativeReferencesCache[$fullPath] = $return;
+                    if ($oContext !== null) {
+                        $oContext->getCache()->set($fullPath, 'relativeReferences', $return);
+                    }
                     return $return;
                 }
                 $context = new ReferenceContext(null, $basePath);
