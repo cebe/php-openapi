@@ -23,7 +23,7 @@ class Writer
      * @param int $flags json_encode() flags
      * @return string JSON string.
      */
-    public static function writeToJson(SpecObjectInterface $object, int $flags = JSON_PRETTY_PRINT): string
+    public static function writeToJson(SpecObjectInterface $object, int $flags = JSON_PRETTY_PRINT | JSON_UNESCAPED_UNICODE): string
     {
         return json_encode($object->getSerializableData(), $flags);
     }
