@@ -19,6 +19,7 @@ jobs:
           - "7.3"
           - "7.4"
           - "8.0"
+          - "8.1"
         dependencies:
           - "lowest"
           - "highest"
@@ -48,6 +49,8 @@ jobs:
           # symfony/yaml v3.4 is not compatible with PHP 8.0 but has no upper-bound, so it installs on it
           - php: '8.0'
             symfony-yaml: '^3.4'
+          - php: '8.1'
+            symfony-yaml: '^3.4'
 
     runs-on: ${{ matrix.os }}
 
@@ -62,7 +65,11 @@ jobs:
           tools: composer:v2
 
       - name: Require specific symfony/yaml version
-        run: "composer require symfony/yaml:'${{ matrix.symfony-yaml }}' --prefer-dist --no-interaction --ansi --no-install"
+        run: "composer require symfony/yaml:'${{ matrix.symfony-yaml }}' --no-interaction --ansi --no-install"
+
+      - name: Require newer phpunit/phpunit version
+        run: "composer require phpunit/phpunit '^9.5' --dev --no-interaction --ansi --no-install"
+        if: matrix.php == '8.1'
 
       - name: "Install dependencies with Composer"
         uses: "ramsey/composer-install@v2"
