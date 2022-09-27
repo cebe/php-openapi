@@ -35,6 +35,8 @@ abstract class SpecBaseObject implements SpecObjectInterface, DocumentContextInt
     private $_baseDocument;
     private $_jsonPointer;
 
+    private $_context;
+
 
     /**
      * @return array array of attributes available in this object.
@@ -397,6 +399,13 @@ abstract class SpecBaseObject implements SpecObjectInterface, DocumentContextInt
         if ($this->_recursingReferences) {
             return;
         }
+
+        $key = isset($this->_jsonPointer) ? $this->_jsonPointer->getPointer() : null;
+        if ($key && $this->_context  && $this->_context->getCache()->has($key,'#properties')) {
+            $this->_properties = $this->_context->getCache()->get($key,'#properties');            
+            return;
+        } 
+
         $this->_recursingReferences = true;
 
         foreach ($this->_properties as $property => $value) {
@@ -423,6 +432,10 @@ abstract class SpecBaseObject implements SpecObjectInterface, DocumentContextInt
             }
         }
 
+        if($key && $this->_context ){
+            $this->_context->getCache()->set($key,'#properties', $this->_properties);
+        }           
+
         $this->_recursingReferences = false;
     }
 
@@ -431,6 +444,7 @@ abstract class SpecBaseObject implements SpecObjectInterface, DocumentContextInt
      */
     public function setReferenceContext(ReferenceContext $context)
     {
+        $this->_context = $context;
         // avoid recursion to get stuck in a loop
         if ($this->_recursingReferenceContext) {
             return;
