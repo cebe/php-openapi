@@ -27,6 +27,7 @@ license:
   name: Apache 2.0
   url: https://www.apache.org/licenses/LICENSE-2.0.html
 version: 1.0.1
+x-extra-var: foo
 YAML
             , Info::class);
 
@@ -46,6 +47,11 @@ YAML
         $this->assertInstanceOf(License::class, $info->license);
         $this->assertEquals('Apache 2.0', $info->license->name);
         $this->assertEquals('https://www.apache.org/licenses/LICENSE-2.0.html', $info->license->url);
+
+        $this->assertEquals('foo', $info->getExtensions()['x-extra-var']);
+        $this->assertEquals('foo', $info->getExtension('x-extra-var'));
+        $this->assertEquals('foo', $info->getExtension('extra-var'));
+        $this->assertNull($info->getExtension('another-var'));
     }
 
     public function testReadInvalid()

@@ -37,6 +37,33 @@ JSON
         );
     }
 
+    public function testWriteJsonExtensions()
+    {
+        $openapi = $this->createOpenAPI();
+        $openapi->{'x-extra-var'} = 'foo';
+        $openapi->setExtension('x-another-var', 'bar');
+        $openapi->setExtension('short-var', 'baz');
+
+        $json = \cebe\openapi\Writer::writeToJson($openapi);
+
+        $this->assertEquals(preg_replace('~\R~', "\n", <<<JSON
+{
+    "openapi": "3.0.0",
+    "info": {
+        "title": "Test API",
+        "version": "1.0.0"
+    },
+    "paths": {},
+    "x-extra-var": "foo",
+    "x-another-var": "bar",
+    "x-short-var": "baz"
+}
+JSON
+),
+            $json
+        );
+    }
+
     public function testWriteJsonMofify()
     {
         $openapi = $this->createOpenAPI();
