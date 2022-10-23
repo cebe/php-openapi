@@ -9,7 +9,6 @@ namespace cebe\openapi\spec;
 
 use cebe\openapi\exceptions\TypeErrorException;
 use cebe\openapi\SpecBaseObject;
-use \JsonSerializable;
 
 /**
  * This is the root document object of the OpenAPI document.
@@ -26,7 +25,7 @@ use \JsonSerializable;
  * @property ExternalDocumentation|null $externalDocs
  *
  */
-class OpenApi extends SpecBaseObject implements JsonSerializable
+class OpenApi extends SpecBaseObject
 {
     /**
      * @return array array of attributes available in this object.
@@ -79,9 +78,5 @@ class OpenApi extends SpecBaseObject implements JsonSerializable
         if (!empty($this->openapi) && !preg_match('/^3\.0\.\d+(-rc\d)?$/i', $this->openapi)) {
             $this->addError('Unsupported openapi version: ' . $this->openapi);
         }
-    }
-
-    public function jsonSerialize() {
-        return $this->getSerializableData();
     }
 }
