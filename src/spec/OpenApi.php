@@ -9,7 +9,6 @@ namespace cebe\openapi\spec;
 
 use cebe\openapi\exceptions\TypeErrorException;
 use cebe\openapi\SpecBaseObject;
-use cebe\openapi\Writer;
 use \JsonSerializable;
 
 /**
@@ -83,6 +82,6 @@ class OpenApi extends SpecBaseObject implements JsonSerializable
     }
 
     public function jsonSerialize() {
-        return Writer::writeToJson($this);
+        return $this->getSerializableData();
     }
 }
