@@ -116,7 +116,7 @@ class PathItem extends SpecBaseObject
     {
         $operations = [];
         foreach ($this->attributes() as $attribute => $type) {
-            if ($type === Operation::class && isset($this->$attribute)) {
+            if (\is_array($type) && $type[0] === Operation::class && isset($this->$attribute)) {
                 $operations[$attribute] = $this->$attribute;
             }
         }
