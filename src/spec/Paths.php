@@ -195,7 +195,7 @@ class Paths implements SpecObjectInterface, DocumentContextInterface, ArrayAcces
      * @return PathItem Can return all value types.
      */
     #[\ReturnTypeWillChange]
-    public function offsetGet($offset) //: mixed
+    public function offsetGet($offset): mixed
     {
         return $this->getPath($offset);
     }
