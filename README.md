@@ -13,14 +13,14 @@ Supported OpenAPI versions:
 - 3.0.x
 - 3.1.x
 
-[![Latest Stable Version](https://poser.pugx.org/cebe/php-openapi/v/stable)](https://packagist.org/packages/cebe/php-openapi)
-[![Total Downloads](https://poser.pugx.org/cebe/php-openapi/downloads)](https://packagist.org/packages/cebe/php-openapi)
-[![Build Status](https://github.com/cebe/php-openapi/workflows/CI/badge.svg)](https://github.com/cebe/php-openapi/actions)
+[![Latest Stable Version](https://poser.pugx.org/devizzent/cebe-php-openapi/v/stable)](https://packagist.org/packages/devizzent/cebe-php-openapi)
+[![Total Downloads](https://poser.pugx.org/devizzent/cebe-php-openapi/downloads)](https://packagist.org/packages/devizzent/cebe-php-openapi)
+[![Build Status](https://github.com/devizzent/cebe-php-openapi/workflows/CI/badge.svg)](https://github.com/devizzent/cebe-php-openapi/actions)
 
 
 ## Install
 
-    composer require cebe/php-openapi
+    composer require devizzent/cebe-php-openapi
 
 ## Requirements
 
@@ -31,11 +31,7 @@ Supported OpenAPI versions:
 This library provides a low level API for reading and writing OpenAPI files. It is used by higher level tools to
 do awesome work:
 
-- [cebe/yii2-openapi](https://github.com/cebe/yii2-openapi) Code Generator for REST API from OpenAPI 3 Descriptions, includes fake data generator.
-- [cebe/yii2-app-api](https://github.com/cebe/yii2-app-api) Yii framework application template for developing API-first applications.
-- [league/openapi-psr7-validator](https://github.com/thephpleague/openapi-psr7-validator) validates PSR-7 messages (HTTP request/response) against OpenAPI descriptions.
-- [dsuurlant/response2schema](https://github.com/dsuurlant/response2schema) a quick and easy tool for generating OpenAPI schemas based on example data.
-- ... ([add yours](https://github.com/cebe/php-openapi/edit/master/README.md#L24))
+- ... ([add yours](https://github.com/devizzent/cebe-php-openapi/edit/master/README.md#L24))
 
 ## Usage
 
@@ -253,12 +249,3 @@ You may use the docker environment for local development:
     make IN_DOCKER=1 test
     ...
 
-# Support
-
-**Need help with your API project?**
-
-Professional support, consulting as well as software development services are available:
-
-https://www.cebe.cc/en/contact
-
-Development of this library is sponsored by [cebe.:cloud: "Your Professional Deployment Platform"](https://cebe.cloud).
