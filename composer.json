@@ -1,8 +1,8 @@
 {
-	"name": "cebe/php-openapi",
+	"name": "devizzent/cebe-php-openapi",
 	"description": "Read and write OpenAPI yaml/json files and make the content accessable in PHP objects.",
 	"keywords": ["openapi"],
-	"homepage": "https://github.com/cebe/php-openapi#readme",
+	"homepage": "https://github.com/DEVizzent/cebe-php-openapi#readme",
 	"type": "library",
 	"license": "MIT",
 	"authors": [
@@ -11,11 +11,15 @@
 			"email": "mail@cebe.cc",
 			"homepage": "https://cebe.cc/",
 			"role": "Creator"
+		},
+		{
+			"name": "Vicent Valls",
+			"email": "vizzent@gmail.com"
 		}
 	],
 	"support": {
-		"issues": "https://github.com/cebe/php-openapi/issues",
-		"source": "https://github.com/cebe/php-openapi"
+		"issues": "https://github.com/DEVizzent/cebe-php-openapi/issues",
+		"source": "https://github.com/DEVizzent/cebe-php-openapi"
 	},
 	"require": {
 		"php": ">=7.1.0",

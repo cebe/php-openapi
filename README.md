@@ -1,3 +1,7 @@
+## Atention
+This is a fork of [cebe/php-openapi](https://github.com/cebe/php-openapi). I created it as library because the pull request
+of the openapi3.1 was taking years and a lot of developers want to use it.
+
 # php-openapi
 
 Read and write [OpenAPI](https://www.openapis.org/) 3.x YAML and JSON files and make the content accessible in PHP objects.
