@@ -30,7 +30,7 @@
 		"mermade/openapi3-examples": "1.0.0",
 		"apis-guru/openapi-directory": "1.0.0",
 		"nexmo/api-specification": "1.0.0",
-		"phpstan/phpstan": "^0.12.0"
+		"phpstan/phpstan": "^0.12.0 || ^1.9"
 	},
 	"conflict": {
 		"symfony/yaml": "3.4.0 - 3.4.4 || 4.0.0 - 4.4.17 || 5.0.0 - 5.1.9 || 5.2.0"
