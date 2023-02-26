@@ -13,6 +13,7 @@ use cebe\openapi\json\JsonPointer;
 use cebe\openapi\json\JsonReference;
 use cebe\openapi\spec\Reference;
 use cebe\openapi\spec\Type;
+use \JsonSerializable;
 
 /**
  * Base class for all spec objects.
@@ -20,7 +21,7 @@ use cebe\openapi\spec\Type;
  * Implements property management and validation basics.
  *
  */
-abstract class SpecBaseObject implements SpecObjectInterface, DocumentContextInterface
+abstract class SpecBaseObject implements SpecObjectInterface, DocumentContextInterface, JsonSerializable
 {
     private $_properties = [];
     private $_errors = [];
@@ -524,5 +525,9 @@ abstract class SpecBaseObject implements SpecObjectInterface, DocumentContextInt
             $extensions[$propertyKey] = $extension;
         }
         return $extensions;
+    }
+
+    public function jsonSerialize() {
+        return $this->getSerializableData();
     }
 }
