@@ -420,4 +420,31 @@ JSON;
         $this->assertEquals('string', $person->properties['name']->type);
         $this->assertEquals('string', $person->properties['$ref']->type);
     }
+
+    public function testArrayKeyIsPerseveredInPropertiesThatAreArrays()
+    {
+        $json = <<<'JSON'
+{
+  "webhooks": {
+    "branch-protection-rule-created": {
+      "post": {
+        "description": "A branch protection rule was created.",
+        "requestBody": {
+          "required": true,
+          "content": {
+            "application/json": {
+              "schema": {
+                "type": "string"
+              }
+            }
+          }
+        }
+      }
+    }
+  }
+}
+JSON;
+        $openApi = Reader::readFromJson($json);
+        self::assertArrayHasKey('branch-protection-rule-created', $openApi->webhooks);
+    }
 }
