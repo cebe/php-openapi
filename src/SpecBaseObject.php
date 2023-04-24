@@ -12,6 +12,7 @@ use cebe\openapi\exceptions\UnknownPropertyException;
 use cebe\openapi\json\JsonPointer;
 use cebe\openapi\json\JsonReference;
 use cebe\openapi\spec\Reference;
+use cebe\openapi\spec\Schema;
 use cebe\openapi\spec\Type;
 
 /**
@@ -153,7 +154,7 @@ abstract class SpecBaseObject implements SpecObjectInterface, DocumentContextInt
             return $data;
         }
 
-        if (is_array($data) && isset($data['$ref'])) {
+        if (is_array($data) && isset($data['$ref']) && $type !== Schema::class) {
             return new Reference($data, $type);
         }
 
