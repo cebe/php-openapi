@@ -88,7 +88,7 @@ class Reference implements SpecObjectInterface, DocumentContextInterface
         } catch (InvalidJsonPointerSyntaxException $e) {
             $this->_errors[] = 'Reference: value of $ref is not a valid JSON pointer: ' . $e->getMessage();
         }
-        if (count($data) !== 1) {
+        if (count($data) !== (isset($data['nullable']) ? 2 : 1)) {
             $this->_errors[] = 'Reference: additional properties are given. Only $ref should be set in a Reference Object.';
         }
     }
