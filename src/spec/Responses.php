@@ -185,7 +185,7 @@ class Responses implements SpecObjectInterface, DocumentContextInterface, ArrayA
      * @return mixed Can return all value types.
      */
     #[\ReturnTypeWillChange]
-    public function offsetGet($offset): mixed
+    public function offsetGet($offset) //: mixed
     {
         return $this->getResponse($offset);
     }

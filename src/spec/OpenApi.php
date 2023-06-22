@@ -107,7 +107,7 @@ class OpenApi extends SpecBaseObject
      */
     public function getMajorVersion()
     {
-        if (is_string($this->openapi) && preg_match(static::PATTERN_VERSION, $this->openapi, $matches)) {
+        if (preg_match(static::PATTERN_VERSION, $this->openapi, $matches)) {
             switch ($matches[1]) {
                 case '3.0':
                     return static::VERSION_3_0;
