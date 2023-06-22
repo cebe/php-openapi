@@ -2,9 +2,9 @@ name: CI
 
 on:
   push:
-    branches: [ master, openapi-31 ]
+    branches: [ master ]
   pull_request:
-    branches: [ master, openapi-31 ]
+    branches: [ master ]
 
 jobs:
   phpunit:
