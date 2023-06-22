@@ -20,6 +20,7 @@ jobs:
           - "7.4"
           - "8.0"
           - "8.1"
+          - "8.2"
         dependencies:
           - "lowest"
           - "highest"
@@ -50,6 +51,8 @@ jobs:
           - php: '8.0'
             symfony-yaml: '^3.4'
           - php: '8.1'
+            symfony-yaml: '^3.4'
+          - php: '8.2'
             symfony-yaml: '^3.4'
 
     runs-on: ${{ matrix.os }}
