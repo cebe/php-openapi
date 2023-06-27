@@ -26,7 +26,7 @@ do awesome work:
 - [cebe/yii2-app-api](https://github.com/cebe/yii2-app-api) Yii framework application template for developing API-first applications.
 - [league/openapi-psr7-validator](https://github.com/thephpleague/openapi-psr7-validator) validates PSR-7 messages (HTTP request/response) against OpenAPI descriptions.
 - [dsuurlant/response2schema](https://github.com/dsuurlant/response2schema) a quick and easy tool for generating OpenAPI schemas based on example data.
-- [googoogajoob/openapislim4](https://github.com/googoogajoob/openapislim4) Configure the paths of a slim4 application from an openapi definition.
+- [googoogajoob/openapi-slim4](https://github.com/googoogajoob/openapi-slim4) Configure the paths of a slim4 application from an openapi definition.
 - ... ([add yours](https://github.com/cebe/php-openapi/edit/master/README.md#L24))
 
 ## Usage
