@@ -112,7 +112,6 @@ $defs:
     properties:
       url:
         type: string
-        format: uri-reference
       description:
         type: string
       variables:

@@ -161,8 +161,7 @@
       "type": "object",
       "properties": {
         "url": {
-          "type": "string",
-          "format": "uri-reference"
+          "type": "string"
         },
         "description": {
           "type": "string"
