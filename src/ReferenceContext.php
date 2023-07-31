@@ -131,8 +131,8 @@ class ReferenceContext
                 //Confirm parent is valid
                 if(!empty($parts[$parent]) && $parts[$parent] !== '..'){
                     unset($parts[$parent]);
-                    unset($parts[$i]);
                 }
+                unset($parts[$i]);
             }
         }
         return '/'.implode('/', $parts);
