@@ -180,6 +180,10 @@ class ReferenceContextTest extends \PHPUnit\Framework\TestCase
                 'file:///var/www/definitions.yaml',
             ],
             [
+                '/./definitions.yaml',
+                'file:///definitions.yaml',
+            ],            
+            [
                 '/var/www/api/schema/../../definitions.yaml',
                 'file:///var/www/definitions.yaml',
             ],
