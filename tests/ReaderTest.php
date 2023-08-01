@@ -129,6 +129,64 @@ JSON
     }
 
 
+    public function testForceUniqueOperationIdJSON(){
+      $api = \cebe\openapi\Reader::readFromJson(<<<JSON
+      {
+        "openapi": "3.0.0",
+        "info": {
+          "title": "Test API",
+          "version": "1.0.0"
+        },
+        "paths": {
+          "/path": {
+            "get": {
+              "operationId": "op1",
+              "responses": {
+                "200": {
+                  "description": "Success"
+                }
+              }
+            },
+            "post": {
+              "operationId": "op1",
+              "responses": {
+                "200": {
+                  "description": "Success"
+                }
+              }
+            }
+          }
+        }
+      }
+      JSON);
+      
+      $this->assertFalse($api->validate());   
+    }
+
+
+    public function testForceUniqueOperationIdYAML(){
+      $openapi = \cebe\openapi\Reader::readFromYaml(<<<YAML
+      openapi: 3.0.0
+      info:
+        title: "Test API"
+        version: "1.0.0"
+      paths:
+        /path:      
+          get:
+            operationId: op1
+            responses:
+              '200':
+                description: Validation error
+          post:
+            operationId: op1
+            responses:
+              '200':
+                description: Validation error
+      YAML);
+      $this->assertFalse($openapi->validate());   
+    }
+
+
     // TODO test invalid JSON
     // TODO test invalid YAML
 }
