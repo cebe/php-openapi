@@ -130,6 +130,7 @@ JSON
 
 
     public function testForceUniqueOperationIdJSON(){
+      //Duplicate
       $api = \cebe\openapi\Reader::readFromJson(<<<JSON
       {
         "openapi": "3.0.0",
@@ -161,10 +162,44 @@ JSON
       JSON);
       
       $this->assertFalse($api->validate());   
+      
+      //Non duplicate
+      $api = \cebe\openapi\Reader::readFromJson(<<<JSON
+      {
+        "openapi": "3.0.0",
+        "info": {
+          "title": "Test API",
+          "version": "1.0.0"
+        },
+        "paths": {
+          "/path": {
+            "get": {
+              "operationId": "op1",
+              "responses": {
+                "200": {
+                  "description": "Success"
+                }
+              }
+            },
+            "post": {
+              "operationId": "op2",
+              "responses": {
+                "200": {
+                  "description": "Success"
+                }
+              }
+            }
+          }
+        }
+      }
+      JSON);
+      
+      $this->assertTrue($api->validate());        
     }
 
 
     public function testForceUniqueOperationIdYAML(){
+      //Duplicate
       $openapi = \cebe\openapi\Reader::readFromYaml(<<<YAML
       openapi: 3.0.0
       info:
@@ -183,7 +218,28 @@ JSON
               '200':
                 description: Validation error
       YAML);
-      $this->assertFalse($openapi->validate());   
+      $this->assertFalse($openapi->validate());  
+      
+      //Non Duplicate
+      $openapi = \cebe\openapi\Reader::readFromYaml(<<<YAML
+      openapi: 3.0.0
+      info:
+        title: "Test API"
+        version: "1.0.0"
+      paths:
+        /path:      
+          get:
+            operationId: op1
+            responses:
+              '200':
+                description: Validation error
+          post:
+            operationId: op2
+            responses:
+              '200':
+                description: Validation error
+      YAML);
+      $this->assertTrue($openapi->validate()); 
     }
 
 
