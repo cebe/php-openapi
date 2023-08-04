@@ -23,7 +23,6 @@ use cebe\openapi\SpecBaseObject;
  */
 class Encoding extends SpecBaseObject
 {
-
     /**
      * @return array array of attributes available in this object.
      */

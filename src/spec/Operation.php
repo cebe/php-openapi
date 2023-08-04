@@ -29,7 +29,6 @@ use cebe\openapi\SpecBaseObject;
  */
 class Operation extends SpecBaseObject
 {
-
     /**
      * @return array array of attributes available in this object.
      */

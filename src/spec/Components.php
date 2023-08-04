@@ -32,6 +32,58 @@ use cebe\openapi\SpecBaseObject;
 class Components extends SpecBaseObject
 {
     /**
+     * @param string $name schema name
+     */
+    public function removeSchema(string $name): void
+    {
+        $this->deleteProperty('schemas', $name);
+    }
+
+    /**
+     * @param string $name parameter name
+     */
+    public function removeParameter(string $name): void
+    {
+        $this->deleteProperty('parameters', $name);
+    }
+
+    /**
+     * @param string $name response name
+     */
+    public function removeResponse(string $name): void
+    {
+        $this->deleteProperty('responses', $name);
+    }
+
+    /**
+     * @param string $name securityScheme name
+     */
+    public function removeSecuityScheme(string $name): void
+    {
+        $this->deleteProperty('securitySchemes', $name);
+    }
+
+    /**
+     * @param string $name request body name
+     */
+    public function removeRequestBody(string $name): void
+    {
+        $this->deleteProperty('requestBodies', $name);
+    }
+
+
+    protected function deleteProperty($key, $name = null): void
+    {
+        if(is_array($this->$key)) {
+            if($name && !empty($this->$key[$name])) {
+                $properties = $this->$key;
+                unset($properties[$name]);
+                $this->$key = $properties;
+            }
+        }
+    }
+
+    /**
      * @return array array of attributes available in this object.
      */
     protected function attributes(): array
