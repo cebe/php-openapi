@@ -348,6 +348,32 @@ abstract class SpecBaseObject implements SpecObjectInterface, DocumentContextInt
         }
     }
 
+
+    protected function deleteProperty($key, $name = null, $value = null): void
+    {
+        if(is_array($this->$key) && $name) {
+            $this->_properties[$key] = $this->_removeKey($this->$key, $name, $value);
+        }else{
+            $this->_properties = $this->_removeKey($this->_properties, $key);              
+        }
+    }
+
+    private function _removeKey(array $arrayData, String $name, $value = null): array {
+        if(!empty($arrayData[$name])) {
+            $properties = $arrayData;
+            unset($properties[$name]);
+            return $properties;
+        }
+        foreach($arrayData as $key => $val){
+            if($name === $val){
+                unset($arrayData[$key]); 
+            }elseif($val instanceof self && !empty($val->$name) && $val->$name === $value){
+                unset($arrayData[$key]); 
+            }
+        }
+        return $arrayData;
+    }
+
     public function __get($name)
     {
         if (isset($this->_properties[$name])) {
@@ -525,4 +551,12 @@ abstract class SpecBaseObject implements SpecObjectInterface, DocumentContextInt
         }
         return $extensions;
     }
+
+    /**
+     * Remove a property or an attribute
+     *  @param string $name name of property to be removed
+     */
+    public function removeProperty($name){
+        $this->deleteProperty($name);
+    }     
 }

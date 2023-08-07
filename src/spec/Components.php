@@ -71,18 +71,6 @@ class Components extends SpecBaseObject
         $this->deleteProperty('requestBodies', $name);
     }
 
-
-    protected function deleteProperty($key, $name = null): void
-    {
-        if(is_array($this->$key)) {
-            if($name && !empty($this->$key[$name])) {
-                $properties = $this->$key;
-                unset($properties[$name]);
-                $this->$key = $properties;
-            }
-        }
-    }
-
     /**
      * @return array array of attributes available in this object.
      */

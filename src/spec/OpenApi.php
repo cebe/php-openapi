@@ -45,6 +45,31 @@ class OpenApi extends SpecBaseObject
     }
 
     /**
+     * @param string $name  name of security requirement
+     */
+    public function removeSecurity(string $name): void
+    {
+        $this->deleteProperty('security', $name);
+    } 
+    
+    /**
+     * @param string $name tag name
+     */
+    public function removeTag(string $name): void
+    {
+        $this->deleteProperty('tags', $name);
+    }     
+    
+    /**
+     * @param string $name  server's property key
+     * @param string $value  server's property value
+     */
+    public function removeServer(string $name, $value): void
+    {
+        $this->deleteProperty('servers', $name, $value);
+    }         
+
+    /**
      * @return array array of attributes default values.
      */
     protected function attributeDefaults(): array

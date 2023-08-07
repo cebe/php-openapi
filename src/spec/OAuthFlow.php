@@ -35,6 +35,14 @@ class OAuthFlow extends SpecBaseObject
     }
 
     /**
+     * @param string $name scope's name
+     */
+    public function removeScope(string $name): void
+    {
+        $this->deleteProperty('scopes', $name);
+    }       
+
+    /**
      * Perform validation on this object, check data against OpenAPI Specification rules.
      *
      * Call `addError()` in case of validation errors.

@@ -79,6 +79,12 @@ class OpenApiTest extends \PHPUnit\Framework\TestCase
 
         // externalDocs
         $this->assertNull($openapi->externalDocs);
+
+        $this->assertEquals(1, count($openapi->servers));
+        $openapi->removeServer('url', 'http://petstore.swagger.io/v1');
+        $this->assertEquals(1, count($openapi->servers));
+        //Default only
+        $this->assertEquals('/', $openapi->servers[0]->url);          
     }
 
     public function assertAllInstanceOf($className, $array)

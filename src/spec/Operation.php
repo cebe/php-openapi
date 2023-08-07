@@ -57,6 +57,41 @@ class Operation extends SpecBaseObject
         ];
     }
 
+        /**
+     * @param string $name tag name
+     */
+    public function removeTag(string $name): void
+    {
+        $this->deleteProperty('tags', $name);
+    }   
+    
+    /**
+     * @param string $name  parameter's property key
+     * @param string $value  parameter's property value
+     */
+    public function removeParameter(string $name, $value): void
+    {
+        $this->deleteProperty('parameters', $name, $value);
+    }   
+    
+    /**
+     * @param string $name  name of security requirement
+     */
+    public function removeSecurity(string $name): void
+    {
+        $this->deleteProperty('security', $name);
+    } 
+
+    /**
+     * @param string $name  server's property key
+     * @param string $value  server's property value
+     */
+    public function removeServer(string $name, $value): void
+    {
+        $this->deleteProperty('servers', $name, $value);
+    }      
+        
+
     /**
      * Perform validation on this object, check data against OpenAPI Specification rules.
      *

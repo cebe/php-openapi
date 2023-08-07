@@ -90,5 +90,17 @@ YAML
 
         // deprecated Default value is false.
         $this->assertFalse($operation->deprecated);
+
+        $this->assertEquals(count($operation->tags), 1);
+        $operation->removeTag('pet');
+        $this->assertEquals(count($operation->tags), 0);
+
+        $this->assertTrue(!empty($operation->operationId));
+        $operation->removeProperty('operationId');
+        $this->assertTrue(empty($operation->operationId));  
+
+        $this->assertEquals(count($operation->parameters), 1);
+        $operation->removeParameter('name', 'petId');
+        $this->assertEquals(count($operation->parameters), 0);      
     }
 }
