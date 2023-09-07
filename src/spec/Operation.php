@@ -67,11 +67,10 @@ class Operation extends SpecBaseObject
     
     /**
      * @param string $name  parameter's property key
-     * @param string $value  parameter's property value
      */
-    public function removeParameter(string $name, $value): void
+    public function removeParameter(string $name): void
     {
-        $this->deleteProperty('parameters', $name, $value);
+        $this->deleteProperty('parameters', 'name', $name);
     }   
     
     /**
@@ -84,11 +83,10 @@ class Operation extends SpecBaseObject
 
     /**
      * @param string $name  server's property key
-     * @param string $value  server's property value
      */
-    public function removeServer(string $name, $value): void
+    public function removeServer(string $name): void
     {
-        $this->deleteProperty('servers', $name, $value);
+        $this->deleteProperty('servers', 'url', $name);
     }      
         
 
