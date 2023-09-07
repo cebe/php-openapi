@@ -1,0 +1,33 @@
+openapi: 3.0.2
+info:
+  title: My API
+  version: 1.0.0
+x-extension-1: Extension1
+x-extension-2: Extension2
+X-EXTENSION: Invalid because of Uppercase X-
+xyz-extension: invalid extension
+paths:
+  /bar:
+    parameters:
+      - name: id
+        in: path
+        description: ID of the item.
+        required: true  
+    get:
+      operationId: getBar
+      responses:
+        '200':
+          $ref: 'openapi.yaml#/components/responses/Bar'
+    post:
+      operationId: createBar
+      responses:
+        '200':
+          $ref: 'openapi.yaml#/components/responses/Bar'          
+components:
+  responses:
+    Bar:
+      description: A bar
+      content:
+        application/json:
+          schema: { type: object }
+          
