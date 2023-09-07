@@ -45,7 +45,7 @@ class OpenApi extends SpecBaseObject
     }
 
     /**
-     * @param string $name  name of security requirement
+     * @param string $name  name of security attribute requirement
      */
     public function removeSecurity(string $name): void
     {
@@ -61,12 +61,11 @@ class OpenApi extends SpecBaseObject
     }     
     
     /**
-     * @param string $name  server's property key
-     * @param string $value  server's property value
+     * @param string $url  server's url value
      */
-    public function removeServer(string $name, $value): void
+    public function removeServer(string $url): void
     {
-        $this->deleteProperty('servers', $name, $value);
+        $this->deleteProperty('servers', 'url', $url);
     }         
 
     /**

@@ -369,6 +369,8 @@ abstract class SpecBaseObject implements SpecObjectInterface, DocumentContextInt
                 unset($arrayData[$key]); 
             }elseif($val instanceof self && !empty($val->$name) && $val->$name === $value){
                 unset($arrayData[$key]); 
+            }elseif($val instanceof self && !empty($val->$name) && is_array($val->$name)){
+                unset($arrayData[$key]); 
             }
         }
         return $arrayData;
