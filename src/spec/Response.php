@@ -35,6 +35,30 @@ class Response extends SpecBaseObject
     }
 
     /**
+     * @param string $name  headers' name
+     */
+    public function removeHeader(string $name): void
+    {
+        $this->deleteProperty('headers', $name);
+    }      
+
+    /**
+     * @param string $operationId  headers' operationId
+     */
+    public function removeLinkByOperationId(string $operationId): void
+    {
+        $this->deleteProperty('links', 'operationId', $operationId);
+    }      
+
+    /**
+     * @param string $operationRef  link's operationRef
+     */
+    public function removeLinkByoperationRef(string $operationRef): void
+    {
+        $this->deleteProperty('links', 'operationRef', $operationRef);
+    }      
+
+    /**
      * Perform validation on this object, check data against OpenAPI Specification rules.
      */
     protected function performValidation()
