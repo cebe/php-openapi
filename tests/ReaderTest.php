@@ -197,7 +197,80 @@ JSON
       $this->assertTrue($api->validate());        
     }
 
+    //Different Paths
+    public function testForceUniqueOperationIdInDifferentPathsJSON(){
+      //Duplicate
+      $api = \cebe\openapi\Reader::readFromJson(<<<JSON
+      {
+        "openapi": "3.0.0",
+        "info": {
+          "title": "Test API",
+          "version": "1.0.0"
+        },
+        "paths": {
+          "/path1": {
+            "get": {
+              "operationId": "op1",
+              "responses": {
+                "200": {
+                  "description": "Success"
+                }
+              }
+            }
+          },
+          "/path2": {
+            "get": {
+              "operationId": "op1",
+              "responses": {
+                "200": {
+                  "description": "Success"
+                }
+              }
+            }
+          }
+        }
+      }
+      JSON);
+      
+      $this->assertFalse($api->validate());   
+      
+      // Non duplicate
+      $api = \cebe\openapi\Reader::readFromJson(<<<JSON
+      {
+        "openapi": "3.0.0",
+        "info": {
+          "title": "Test API",
+          "version": "1.0.0"
+        },
+        "paths": {
+          "/path1": {
+            "get": {
+              "operationId": "op1",
+              "responses": {
+                "200": {
+                  "description": "Success"
+                }
+              }
+            }
+          },
+          "/path2": {
+            "post": {
+              "operationId": "op2",
+              "responses": {
+                "200": {
+                  "description": "Success"
+                }
+              }
+            }
+          }
+        }
+      }
+      JSON);
+      
+      // $this->assertTrue($api->validate());        
+    }
 
+    //The same paths
     public function testForceUniqueOperationIdYAML(){
       //Duplicate
       $openapi = \cebe\openapi\Reader::readFromYaml(<<<YAML
@@ -241,6 +314,54 @@ JSON
       YAML);
       $this->assertTrue($openapi->validate()); 
     }
+
+    //Duplicate Different paths
+    public function testForceUniqueOperationIdInDifferentPathsYAML(){
+      //Duplicate
+      $openapi = \cebe\openapi\Reader::readFromYaml(<<<YAML
+      openapi: 3.0.0
+      info:
+        title: "Test API"
+        version: "1.0.0"
+      paths:
+        /path1:      
+          get:
+            operationId: op1
+            responses:
+              '200':
+                description: Validation error
+        /path2:      
+          get:
+            operationId: op1
+            responses:
+              '200':
+                description: Validation error                
+
+      YAML);
+      $this->assertFalse($openapi->validate());  
+      
+      //Non Duplicate
+      $openapi = \cebe\openapi\Reader::readFromYaml(<<<YAML
+      openapi: 3.0.0
+      info:
+        title: "Test API"
+        version: "1.0.0"
+      paths:
+        /path1:      
+          get:
+            operationId: op1
+            responses:
+              '200':
+                description: Validation error
+        /path2:      
+          get:
+            operationId: op2
+            responses:
+              '200':
+                description: Validation error   
+      YAML);
+      $this->assertTrue($openapi->validate()); 
+    }    
 
 
     // TODO test invalid JSON
