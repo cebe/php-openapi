@@ -68,6 +68,20 @@ JSON
         /** @var $responses Responses */
         $responses = Reader::readFromYaml(<<<'YAML'
 '200':
+  headers:
+    X-RateLimit-Limit:
+      schema:
+        type: integer
+      description: Request limit per hour.
+    X-RateLimit-Remaining:
+      schema:
+        type: integer
+      description: The number of requests left for the time window.
+  links:
+    GetUserByUserId: 
+      operationId: getUser
+    GetUserByUserRef:  
+      operationRef: '/paths/1/get'      
   description: a pet to be returned
   content:
     application/json:
@@ -121,6 +135,20 @@ YAML
             $this->assertInstanceOf(Response::class, $response);
         }
         $this->assertEquals([200, 'default'], $keys);
+
+        //Test Remove headers
+        $response = $responses['200'];
+        $this->assertEquals(count($response->headers), 2);
+        $response->removeHeader('X-RateLimit-Limit');
+        $this->assertEquals(count($response->headers), 1);           
+
+        //Test Remove links
+        $this->assertEquals(count($response->links), 2);
+        $response->removeLinkByOperationId('getUser');
+        $this->assertEquals(count($response->links), 1);  
+
+        $response->removeLinkByoperationRef('/paths/1/get');
+        $this->assertEquals(count($response->links), 0);           
     }
 
     public function testResponseCodes()

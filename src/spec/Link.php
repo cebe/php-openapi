@@ -48,4 +48,12 @@ class Link extends SpecBaseObject
             $this->addError('Link: operationId and operationRef are mutually exclusive.');
         }
     }
+
+    /**
+     * @param string $name parameter name
+     */
+    public function removeParameter(string $name): void
+    {
+        $this->deleteProperty('parameters', $name);
+    }
 }

@@ -30,6 +30,14 @@ JSON
         $this->assertEquals(['userId' => 'test.path.id'], $link->parameters);
         $this->assertEquals(null, $link->requestBody);
         $this->assertEquals(null, $link->server);
+
+        $this->assertNotNull($link->parameters);
+        $link->removeParameter('userId');
+        $this->assertTrue(empty($link->parameters['userId']));       
+        
+        $this->assertNotNull($link->parameters);
+        $link->removeProperty('parameters');
+        $this->assertTrue(empty($link->parameters));             
     }
 
     public function testValidateBothOperationIdAndOperationRef()

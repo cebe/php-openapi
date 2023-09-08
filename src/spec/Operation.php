@@ -29,7 +29,6 @@ use cebe\openapi\SpecBaseObject;
  */
 class Operation extends SpecBaseObject
 {
-
     /**
      * @return array array of attributes available in this object.
      */
@@ -57,6 +56,39 @@ class Operation extends SpecBaseObject
             'security' => null,
         ];
     }
+
+    /**
+     * @param string $name tag name
+     */
+    public function removeTag(string $name): void
+    {
+        $this->deleteProperty('tags', $name);
+    }
+    
+    /**
+     * @param string $name  parameter's property key
+     */
+    public function removeParameter(string $name): void
+    {
+        $this->deleteProperty('parameters', 'name', $name);
+    }
+    
+    /**
+     * @param string $name  name of security requirement
+     */
+    public function removeSecurity(string $name): void
+    {
+        $this->deleteProperty('security', $name);
+    }
+
+    /**
+     * @param string $name  server's property key
+     */
+    public function removeServer(string $name): void
+    {
+        $this->deleteProperty('servers', 'url', $name);
+    }
+        
 
     /**
      * Perform validation on this object, check data against OpenAPI Specification rules.

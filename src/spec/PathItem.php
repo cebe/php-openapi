@@ -215,4 +215,30 @@ class PathItem extends SpecBaseObject
             $this->_ref->setDocumentContext($baseDocument, $jsonPointer->append('$ref'));
         }
     }
+
+    /**
+     * @param string $name  parameter's property key
+     */
+    public function removeParameter(string $name): void
+    {
+        $this->deleteProperty('parameters', 'name', $name);
+    }
+
+    /**
+     * @param string $name  server's url
+     */
+    public function removeServer(string $name): void
+    {
+        $this->deleteProperty('servers', 'url', $name);
+    }
+
+    /**
+     * @param string $httpVerb is http verb you wish to delete. eg: get, post, etc
+     * @param string $operationId is unique identify of Operation
+     */
+    public function removeOperation(string $httpVerb, $operationId): void
+    {
+        $this->deleteProperty($httpVerb, 'operationId', $operationId);
+    }
+
 }
