@@ -78,7 +78,7 @@ class MediaType extends SpecBaseObject
     public function removeExample(string $name): void
     {
         $this->deleteProperty('examples', $name);
-    }   
+    }
     
     /**
      * @param string $name example name
@@ -86,7 +86,7 @@ class MediaType extends SpecBaseObject
     public function removeEncoding(string $name): void
     {
         $this->deleteProperty('encoding', $name);
-    }        
+    }
 
     /**
      * Perform validation on this object, check data against OpenAPI Specification rules.

@@ -55,5 +55,5 @@ class Link extends SpecBaseObject
     public function removeParameter(string $name): void
     {
         $this->deleteProperty('parameters', $name);
-    }    
+    }
 }

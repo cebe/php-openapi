@@ -353,24 +353,25 @@ abstract class SpecBaseObject implements SpecObjectInterface, DocumentContextInt
     {
         if(is_array($this->$key) && $name) {
             $this->_properties[$key] = $this->_removeKey($this->$key, $name, $value);
-        }else{
-            $this->_properties = $this->_removeKey($this->_properties, $key);              
+        } else {
+            $this->_properties = $this->_removeKey($this->_properties, $key);
         }
     }
 
-    private function _removeKey(array $arrayData, String $name, $value = null): array {
+    private function _removeKey(array $arrayData, String $name, $value = null): array
+    {
         if(!empty($arrayData[$name])) {
             $properties = $arrayData;
             unset($properties[$name]);
             return $properties;
         }
-        foreach($arrayData as $key => $val){
-            if($name === $val){
-                unset($arrayData[$key]); 
-            }elseif($val instanceof self && !empty($val->$name) && $val->$name === $value){
-                unset($arrayData[$key]); 
-            }elseif($val instanceof self && !empty($val->$name) && is_array($val->$name)){
-                unset($arrayData[$key]); 
+        foreach($arrayData as $key => $val) {
+            if($name === $val) {
+                unset($arrayData[$key]);
+            } elseif($val instanceof self && !empty($val->$name) && $val->$name === $value) {
+                unset($arrayData[$key]);
+            } elseif($val instanceof self && !empty($val->$name) && is_array($val->$name)) {
+                unset($arrayData[$key]);
             }
         }
         return $arrayData;
@@ -558,7 +559,8 @@ abstract class SpecBaseObject implements SpecObjectInterface, DocumentContextInt
      * Remove a property or an attribute
      *  @param string $name name of property to be removed
      */
-    public function removeProperty($name){
+    public function removeProperty($name)
+    {
         $this->deleteProperty($name);
-    }     
+    }
 }

@@ -50,7 +50,7 @@ class OpenApi extends SpecBaseObject
     public function removeSecurity(string $name): void
     {
         $this->deleteProperty('security', $name);
-    } 
+    }
     
     /**
      * @param string $name tag name
@@ -58,7 +58,7 @@ class OpenApi extends SpecBaseObject
     public function removeTag(string $name): void
     {
         $this->deleteProperty('tags', $name);
-    }     
+    }
     
     /**
      * @param string $url  server's url value
@@ -66,7 +66,7 @@ class OpenApi extends SpecBaseObject
     public function removeServer(string $url): void
     {
         $this->deleteProperty('servers', 'url', $url);
-    }         
+    }
 
     /**
      * @return array array of attributes default values.

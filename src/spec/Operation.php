@@ -57,13 +57,13 @@ class Operation extends SpecBaseObject
         ];
     }
 
-        /**
+    /**
      * @param string $name tag name
      */
     public function removeTag(string $name): void
     {
         $this->deleteProperty('tags', $name);
-    }   
+    }
     
     /**
      * @param string $name  parameter's property key
@@ -71,7 +71,7 @@ class Operation extends SpecBaseObject
     public function removeParameter(string $name): void
     {
         $this->deleteProperty('parameters', 'name', $name);
-    }   
+    }
     
     /**
      * @param string $name  name of security requirement
@@ -79,7 +79,7 @@ class Operation extends SpecBaseObject
     public function removeSecurity(string $name): void
     {
         $this->deleteProperty('security', $name);
-    } 
+    }
 
     /**
      * @param string $name  server's property key
@@ -87,7 +87,7 @@ class Operation extends SpecBaseObject
     public function removeServer(string $name): void
     {
         $this->deleteProperty('servers', 'url', $name);
-    }      
+    }
         
 
     /**

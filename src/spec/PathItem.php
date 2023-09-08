@@ -222,7 +222,7 @@ class PathItem extends SpecBaseObject
     public function removeParameter(string $name): void
     {
         $this->deleteProperty('parameters', 'name', $name);
-    }   
+    }
 
     /**
      * @param string $name  server's url
@@ -233,12 +233,12 @@ class PathItem extends SpecBaseObject
     }
 
     /**
-     * @param string $httpVerb is http verb you wish to delete. eg: get, post, etc 
+     * @param string $httpVerb is http verb you wish to delete. eg: get, post, etc
      * @param string $operationId is unique identify of Operation
      */
     public function removeOperation(string $httpVerb, $operationId): void
     {
         $this->deleteProperty($httpVerb, 'operationId', $operationId);
-    }      
-    
+    }
+
 }
