@@ -42,7 +42,7 @@ class Reader
         $context->mode = $resolveReferences;
         $context->setDefaultCacheKey($baseType);
         $spec->setReferenceContext($context);
-        if($resolveReferences && $context->hasComponentsRef()){
+        if($resolveReferences && $context->hasComponentsRef()) {
             $spec->resolveReferences();
         }
         return $spec;
@@ -60,11 +60,11 @@ class Reader
      * @return SpecObjectInterface|OpenApi the OpenApi object instance.
      * The type of the returned object depends on the `$baseType` argument.
      * @throws TypeErrorException in case invalid spec data is supplied.
-     */    
+     */
     protected static function fromJson(string $json, string $baseType = OpenApi::class): SpecObjectInterface
     {
         return new $baseType(json_decode($json, true));
-    }    
+    }
 
     /**
      * Populate OpenAPI spec object from YAML data.

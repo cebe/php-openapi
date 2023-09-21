@@ -59,7 +59,7 @@ class ReferenceContext
 
     /**
      * @var string Default cache key for data read from string
-     */    
+     */
     private $_string_cache_key = OpenApi::class;
 
     /**
@@ -264,14 +264,14 @@ class ReferenceContext
         $this->_read_from_string = true;
         $parsedContent  = $this->parseAndCacheContent($content, $this->resolveCacheUri(''));
 
-        if(array_key_exists('components', $parsedContent) && str_contains($content, '#/components')){
+        if(array_key_exists('components', $parsedContent) && str_contains($content, '#/components')) {
             $this->_content_has_components = true;
         }
     }
     
     /**
      * Is content from string or file
-     */    
+     */
     public function isFromFile(): bool
     {
         return !$this->_read_from_string;
@@ -283,7 +283,7 @@ class ReferenceContext
     public function setDefaultCacheKey($key = OpenApi::class)
     {
         $this->_string_cache_key = $key;
-    }    
+    }
 
     /**
      * Return result indicating if components and ref is present in read string
@@ -291,7 +291,7 @@ class ReferenceContext
     public function hasComponentsRef(): bool
     {
         return $this->_content_has_components;
-    }      
+    }
 
     /**
      * Retrieve the referenced data via JSON pointer.
@@ -331,7 +331,8 @@ class ReferenceContext
         return $referencedObject;
     }
 
-    protected function resolveCacheUri($uri){
+    protected function resolveCacheUri($uri)
+    {
         return empty($uri) ? $this->_string_cache_key : $uri;
     }
 
