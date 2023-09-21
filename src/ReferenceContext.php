@@ -10,6 +10,7 @@ namespace cebe\openapi;
 use cebe\openapi\exceptions\IOException;
 use cebe\openapi\exceptions\UnresolvableReferenceException;
 use cebe\openapi\json\JsonPointer;
+use cebe\openapi\spec\OpenApi;
 use cebe\openapi\spec\Reference;
 use Symfony\Component\Yaml\Yaml;
 
@@ -51,6 +52,21 @@ class ReferenceContext
      */
     private $_cache;
 
+    /**
+     * @var bool checks if content is read from string or file
+     */
+    private $_read_from_string = false;
+
+    /**
+     * @var string Default cache key for data read from string
+     */    
+    private $_string_cache_key = OpenApi::class;
+
+    /**
+     * @var bool checks if read string contains components
+     */
+    private $_content_has_components = false;
+
 
     /**
      * ReferenceContext constructor.
@@ -62,7 +78,7 @@ class ReferenceContext
     public function __construct(?SpecObjectInterface $base, string $uri, $cache = null)
     {
         $this->_baseSpec = $base;
-        $this->_uri = $this->normalizeUri($uri);
+        $this->_uri = empty($uri) ? static::class : $this->normalizeUri($uri);
         $this->_cache = $cache ?? new ReferenceContextCache();
         if ($cache === null && $base !== null) {
             $this->_cache->set($this->_uri, null, $base);
@@ -210,6 +226,7 @@ class ReferenceContext
      */
     public function fetchReferencedFile($uri)
     {
+        $uri = $this->resolveCacheUri($uri);
         if ($this->_cache->has('FILE_CONTENT://' . $uri, 'FILE_CONTENT')) {
             return $this->_cache->get('FILE_CONTENT://' . $uri, 'FILE_CONTENT');
         }
@@ -221,6 +238,15 @@ class ReferenceContext
             throw $e;
         }
         // TODO lazy content detection, should be improved
+        $parsedContent = $this->parseAndCacheContent($content, $uri);
+        return $parsedContent;
+    }
+
+    /**
+     * Parse content from string to either Yaml or Json
+     */
+    protected function parseAndCacheContent($content, $uri): array
+    {
         if (strpos(ltrim($content), '{') === 0) {
             $parsedContent = json_decode($content, true);
         } else {
@@ -229,6 +255,43 @@ class ReferenceContext
         $this->_cache->set('FILE_CONTENT://' . $uri, 'FILE_CONTENT', $parsedContent);
         return $parsedContent;
     }
+    
+    /**
+     * Prepare content read and cache from JSON or YAML string
+     */
+    public function prepareDataFromString($content)
+    {
+        $this->_read_from_string = true;
+        $parsedContent  = $this->parseAndCacheContent($content, $this->resolveCacheUri(''));
+
+        if(array_key_exists('components', $parsedContent) && str_contains($content, '#/components')){
+            $this->_content_has_components = true;
+        }
+    }
+    
+    /**
+     * Is content from string or file
+     */    
+    public function isFromFile(): bool
+    {
+        return !$this->_read_from_string;
+    }
+
+    /**
+     * Uses default base classname to cache what ever is read
+     */
+    public function setDefaultCacheKey($key = OpenApi::class)
+    {
+        $this->_string_cache_key = $key;
+    }    
+
+    /**
+     * Return result indicating if components and ref is present in read string
+     */
+    public function hasComponentsRef(): bool
+    {
+        return $this->_content_has_components;
+    }      
 
     /**
      * Retrieve the referenced data via JSON pointer.
@@ -266,5 +329,19 @@ class ReferenceContext
         $this->_cache->set($ref, $toType, $referencedObject);
 
         return $referencedObject;
+    }
+
+    protected function resolveCacheUri($uri){
+        return empty($uri) ? $this->_string_cache_key : $uri;
+    }
+
+    /**
+     * Static function that reads from string and initialises base class
+     */
+    public static function readFromString($base, $content): static
+    {
+        $context = new static($base, '');
+        $context->prepareDataFromString($content);
+        return $context;
     }
 }

@@ -23,6 +23,7 @@ class Reader
 {
     /**
      * Populate OpenAPI spec object from JSON data.
+     * Saves reference context for resolving internal references
      * @phpstan-template T of SpecObjectInterface
      * @phpstan-param class-string<T> $baseType
      * @phpstan-return T
@@ -34,10 +35,36 @@ class Reader
      * The type of the returned object depends on the `$baseType` argument.
      * @throws TypeErrorException in case invalid spec data is supplied.
      */
-    public static function readFromJson(string $json, string $baseType = OpenApi::class): SpecObjectInterface
+    public static function readFromJson(string $json, string $baseType = OpenApi::class, bool $resolveReferences = true): SpecObjectInterface
+    {
+        $spec = static::fromJson($json, $baseType);
+        $context = ReferenceContext::readFromString($spec, $json);
+        $context->mode = $resolveReferences;
+        $context->setDefaultCacheKey($baseType);
+        $spec->setReferenceContext($context);
+        if($resolveReferences && $context->hasComponentsRef()){
+            $spec->resolveReferences();
+        }
+        return $spec;
+    }
+
+    /**
+     * Populate OpenAPI spec object from JSON data.
+     * @phpstan-template T of SpecObjectInterface
+     * @phpstan-param class-string<T> $baseType
+     * @phpstan-return T
+     * @param string $json the JSON string to decode.
+     * @param string $baseType the base Type to instantiate. This must be an instance of [[SpecObjectInterface]].
+     * The default is [[OpenApi]] which is the base type of a OpenAPI specification file.
+     * You may choose a different type if you instantiate objects from sub sections of a specification.
+     * @return SpecObjectInterface|OpenApi the OpenApi object instance.
+     * The type of the returned object depends on the `$baseType` argument.
+     * @throws TypeErrorException in case invalid spec data is supplied.
+     */    
+    protected static function fromJson(string $json, string $baseType = OpenApi::class): SpecObjectInterface
     {
         return new $baseType(json_decode($json, true));
-    }
+    }    
 
     /**
      * Populate OpenAPI spec object from YAML data.
@@ -89,7 +116,7 @@ class Reader
             $e->fileName = $fileName;
             throw $e;
         }
-        $spec = static::readFromJson($fileContent, $baseType);
+        $spec = static::fromJson($fileContent, $baseType);
         $context = new ReferenceContext($spec, $fileName);
         $spec->setReferenceContext($context);
         if ($resolveReferences !== false) {
