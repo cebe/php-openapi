@@ -1,5 +1,6 @@
 <?php
 
+use cebe\openapi\Reader;
 use cebe\openapi\spec\OpenApi;
 use Symfony\Component\Yaml\Yaml;
 
@@ -232,4 +233,199 @@ class OpenApiTest extends \PHPUnit\Framework\TestCase
         }
 
     }
+
+
+    public function testDeepValidationOfApiOperationsJSON()
+    {
+        $openapi = Reader::readFromJson(<<<JSON
+        {
+          "openapi": "3.0.0",
+          "info": {
+            "title": "Test API",
+            "version": "1.0.0"
+          },
+          "paths": {
+            "/path": {
+              "get": {
+                "responses": {
+                  "200": {
+                    "\$ref": "#/components/schemas/notAResponse"
+                  }
+                }
+              }
+            }
+          },
+          "components": {
+            "schemas": {
+              "notAResponse": {
+                "type": "integer"
+              }
+            }
+          }
+        }
+        JSON);
+        $this->assertFalse($openapi->validate()); 
+
+        //PASS - Contains Description
+        $openapi = Reader::readFromJson(<<<JSON
+        {
+          "openapi": "3.0.0",
+          "info": {
+            "title": "Test API",
+            "version": "1.0.0"
+          },
+          "paths": {
+            "/path": {
+              "get": {
+                "responses": {
+                  "200": {
+                    "\$ref": "#/components/schemas/notAResponse"
+                  }
+                }
+              }
+            }
+          },
+          "components": {
+            "schemas": {
+              "notAResponse": {
+                "type": "integer",
+                "description": "Test Description"
+              }
+            }
+          }
+        }
+        JSON);
+        $this->assertTrue($openapi->validate()); 
+
+
+        //FAILS - Does not contain required description
+        $openapi = Reader::readFromJson(<<<JSON
+        {
+          "openapi": "3.0.0",
+          "info": {
+            "title": "Test API",
+            "version": "1.0.0"
+          },
+          "paths": {
+            "/path": {
+              "get": {
+                "responses": {
+                  "200": {
+                    "content": "A simple response"
+                  }
+                }
+              }
+            }
+          }
+        }
+        JSON);
+        $this->assertFalse($openapi->validate());         
+
+        //PASSES - Contains Description
+        $openapi = Reader::readFromJson(<<<JSON
+        {
+          "openapi": "3.0.0",
+          "info": {
+            "title": "Test API",
+            "version": "1.0.0"
+          },
+          "paths": {
+            "/path": {
+              "get": {
+                "responses": {
+                  "200": {
+                    "description": "A simple response"
+                  }
+                }
+              }
+            }
+          }
+        }
+        JSON);
+        $this->assertTrue($openapi->validate());              
+    }   
+    
+    public function testDeepValidationOfApiOperationsYAML()
+    {
+        $openapi = Reader::readFromYaml(<<<'YAML'
+openapi: 3.0.2
+info:
+  title: My API
+  version: "1.0.0"
+paths:
+  '/path':
+    get:
+      responses:
+        200:
+          $ref: '#/components/schemas/notAResponse'
+components:
+  schemas:
+    notAResponse:
+      type: "integer"                  
+YAML);
+        $this->assertFalse($openapi->validate()); 
+
+        //PASS - Contains Description
+        $openapi = Reader::readFromYaml(<<<'YAML'
+openapi: 3.0.2
+info:
+  title: My API
+  version: "1.0.0"
+paths:
+  '/path':
+    get:
+      responses:
+        200:
+          $ref: '#/components/schemas/notAResponse'
+components:
+  schemas:
+    notAResponse:
+      type: "integer" 
+      description: "Test Description"                 
+YAML);
+
+        $this->assertTrue($openapi->validate());  
+        
+        //FAILS - Contains Description
+        $openapi = Reader::readFromYaml(<<<'YAML'
+openapi: 3.0.2
+info:
+  title: My API
+  version: "1.0.0"
+paths:
+  '/path':
+    get:
+      responses:
+        200:
+          content: "A simple response"
+components:
+  schemas:
+    notAResponse:
+      type: "integer" 
+      description: "Test Description"                 
+YAML);
+
+        $this->assertFalse($openapi->validate());    
+        
+        //FAILS - Contains Description
+        $openapi = Reader::readFromYaml(<<<'YAML'
+openapi: 3.0.2
+info:
+  title: My API
+  version: "1.0.0"
+paths:
+  '/path':
+    get:
+      responses:
+        200:
+          description: "Test Description" 
+components:
+  schemas:
+    notAResponse:
+      type: "integer" 
+      description: "Test Description"                 
+YAML);
+
+        $this->assertTrue($openapi->validate());         
+    }     
 }
