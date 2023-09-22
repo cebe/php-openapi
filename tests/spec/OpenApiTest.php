@@ -235,7 +235,7 @@ class OpenApiTest extends \PHPUnit\Framework\TestCase
     }
 
 
-    public function testDeepValidationOfApiOperations()
+    public function testDeepValidationOfApiOperationsJSON()
     {
         $openapi = Reader::readFromJson(<<<JSON
         {
@@ -343,5 +343,89 @@ class OpenApiTest extends \PHPUnit\Framework\TestCase
         }
         JSON);
         $this->assertTrue($openapi->validate());              
-    }    
+    }   
+    
+    public function testDeepValidationOfApiOperationsYAML()
+    {
+        $openapi = Reader::readFromYaml(<<<'YAML'
+openapi: 3.0.2
+info:
+  title: My API
+  version: "1.0.0"
+paths:
+  '/path':
+    get:
+      responses:
+        200:
+          $ref: '#/components/schemas/notAResponse'
+components:
+  schemas:
+    notAResponse:
+      type: "integer"                  
+YAML);
+        $this->assertFalse($openapi->validate()); 
+
+        //PASS - Contains Description
+        $openapi = Reader::readFromYaml(<<<'YAML'
+openapi: 3.0.2
+info:
+  title: My API
+  version: "1.0.0"
+paths:
+  '/path':
+    get:
+      responses:
+        200:
+          $ref: '#/components/schemas/notAResponse'
+components:
+  schemas:
+    notAResponse:
+      type: "integer" 
+      description: "Test Description"                 
+YAML);
+
+        $this->assertTrue($openapi->validate());  
+        
+        //FAILS - Contains Description
+        $openapi = Reader::readFromYaml(<<<'YAML'
+openapi: 3.0.2
+info:
+  title: My API
+  version: "1.0.0"
+paths:
+  '/path':
+    get:
+      responses:
+        200:
+          content: "A simple response"
+components:
+  schemas:
+    notAResponse:
+      type: "integer" 
+      description: "Test Description"                 
+YAML);
+
+        $this->assertFalse($openapi->validate());    
+        
+        //FAILS - Contains Description
+        $openapi = Reader::readFromYaml(<<<'YAML'
+openapi: 3.0.2
+info:
+  title: My API
+  version: "1.0.0"
+paths:
+  '/path':
+    get:
+      responses:
+        200:
+          description: "Test Description" 
+components:
+  schemas:
+    notAResponse:
+      type: "integer" 
+      description: "Test Description"                 
+YAML);
+
+        $this->assertTrue($openapi->validate());         
+    }     
 }

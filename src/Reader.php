@@ -39,8 +39,8 @@ class Reader
     {
         $spec = static::fromJson($json, $baseType);
         $context = ReferenceContext::readFromString($spec, $json);
-        $context->mode = $resolveReferences;
         $context->setDefaultCacheKey($baseType);
+        $context->mode = ReferenceContext::RESOLVE_MODE_INLINE;
         $spec->setReferenceContext($context);
         if($resolveReferences && $context->hasComponentsRef()) {
             $spec->resolveReferences();
@@ -79,7 +79,33 @@ class Reader
      * The type of the returned object depends on the `$baseType` argument.
      * @throws TypeErrorException in case invalid spec data is supplied.
      */
-    public static function readFromYaml(string $yaml, string $baseType = OpenApi::class): SpecObjectInterface
+    public static function readFromYaml(string $yaml, string $baseType = OpenApi::class, bool $resolveReferences = true): SpecObjectInterface
+    {
+        $spec = static::fromYaml($yaml, $baseType);
+        $context = ReferenceContext::readFromString($spec, $yaml);
+        $context->setDefaultCacheKey($baseType);
+        $context->mode = ReferenceContext::RESOLVE_MODE_INLINE;
+        $spec->setReferenceContext($context);
+        if($resolveReferences && $context->hasComponentsRef()) {
+            $spec->resolveReferences();
+        }
+        return $spec;
+    }
+
+    /**
+     * Populate OpenAPI spec object from YAML data.
+     * @phpstan-template T of SpecObjectInterface
+     * @phpstan-param class-string<T> $baseType
+     * @phpstan-return T
+     * @param string $yaml the YAML string to decode.
+     * @param string $baseType the base Type to instantiate. This must be an instance of [[SpecObjectInterface]].
+     * The default is [[OpenApi]] which is the base type of a OpenAPI specification file.
+     * You may choose a different type if you instantiate objects from sub sections of a specification.
+     * @return SpecObjectInterface|OpenApi the OpenApi object instance.
+     * The type of the returned object depends on the `$baseType` argument.
+     * @throws TypeErrorException in case invalid spec data is supplied.
+     */
+    public static function fromYaml(string $yaml, string $baseType = OpenApi::class): SpecObjectInterface
     {
         return new $baseType(Yaml::parse($yaml));
     }
@@ -162,7 +188,7 @@ class Reader
             $e->fileName = $fileName;
             throw $e;
         }
-        $spec = static::readFromYaml($fileContent, $baseType);
+        $spec = static::fromYaml($fileContent, $baseType);
         $context = new ReferenceContext($spec, $fileName);
         $spec->setReferenceContext($context);
         if ($resolveReferences !== false) {
