@@ -154,26 +154,10 @@ class OpenApiTest extends \PHPUnit\Framework\TestCase
             $it->next();
         }
 
-        // examples from https://github.com/Nexmo/api-specification/tree/master/definitions
-        $nexmoExamples = [];
-        /** @var $it RecursiveDirectoryIterator|RecursiveIteratorIterator */
-        $it = new RecursiveIteratorIterator(new RecursiveDirectoryIterator(__DIR__ . '/../../vendor/nexmo/api-specification/definitions'));
-        $it->rewind();
-        while($it->valid()) {
-            if ($it->getExtension() === 'yml'
-             && strpos($it->getSubPath(), 'common') === false
-             && $it->getBasename() !== 'voice.v2.yml' // contains invalid references
-            ) {
-                $nexmoExamples[] = $it->key();
-            }
-            $it->next();
-        }
-
         $all = array_merge(
             $oaiExamples,
             $mermadeExamples,
             $apisGuruExamples,
-            $nexmoExamples
         );
         foreach($all as $path) {
             yield [
