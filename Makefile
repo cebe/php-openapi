@@ -15,6 +15,9 @@ DOCKER_PHP=docker-compose run --rm php
 DOCKER_NODE=docker-compose run --rm -w /app node
 endif
 
+CONTAINER_NAME=$$(echo $$(pwd) | tr / _)
+
+
 all:
 	@echo "the following commands are available:"
 	@echo ""
@@ -31,6 +34,12 @@ all:
 
 check-style: php-cs-fixer.phar
 	PHP_CS_FIXER_IGNORE_ENV=1 ./php-cs-fixer.phar fix src/ --diff --dry-run
+
+cli:
+	docker-compose exec --user=$(shell id -u) php bash
+
+cli_root:
+	docker-compose exec --user="root" php bash
 
 fix-style: php-cs-fixer.phar
 	$(DOCKER_PHP) vendor/bin/indent --tabs composer.json
@@ -80,6 +89,12 @@ coverage: .php-openapi-covA .php-openapi-covB
 	grep -rhPo '@covers .+' tests |cut -c 28- |sort > $@
 .php-openapi-covB:
 	grep -rhPo '^class \w+' src/spec/ | awk '{print $$2}' |grep -v '^Type$$' | sort > $@
+
+docker-compose.override.yml: docker-compose.override.dist.yml
+	test -f $@ || cp $< $@
+
+start-docker: docker-compose.override.yml
+	CONTAINER_NAME=$(CONTAINER_NAME) docker-compose up -d
 
 .PHONY: all check-style fix-style install test lint coverage
 
