@@ -1,4 +1,0 @@
-version: "3"
-services:
-    php:
-        container_name: "C_${CONTAINER_NAME}"
