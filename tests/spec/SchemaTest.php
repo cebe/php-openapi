@@ -420,4 +420,63 @@ JSON;
         $this->assertEquals('string', $person->properties['name']->type);
         $this->assertEquals('string', $person->properties['$ref']->type);
     }
+
+    // https://github.com/cebe/yii2-openapi/issues/165
+    public function test165ResolveAllOf()
+    {
+        $openApi = Reader::readFromYaml(<<<'YAML'
+
+
+openapi: 3.0.3
+
+info:
+  title: Add validation rules by attribute name or pattern \#30
+  version: 1.0.0
+
+components:
+  schemas:
+    User:
+      type: object
+      required:
+        - id
+        - name
+      properties:
+        id:
+          type: integer
+        name:
+          type: string
+    Post:
+      type: object
+      properties:
+        id:
+          type: integer
+        content:
+          type: string
+        user:
+          allOf:
+            - $ref: '#/components/schemas/User'
+            - x-faker: false
+
+paths:
+  '/':
+    get:
+      responses:
+        '200':
+          description: OK
+
+
+YAML
+        );
+
+        $openApi->resolveReferences(new \cebe\openapi\ReferenceContext($openApi, 'file:///tmp/openapi.yaml'));
+        $result = $openApi->validate();
+        $this->assertTrue($result);
+        $this->assertEquals([], $openApi->getErrors());
+
+        // $this->assertTrue($openApi->components->schemas['Post']->getSerializableData());
+
+        // $openApi->components->schemas['Post']->resolveReferences();
+        $this->assertTrue($openApi->components->schemas['Post']->getSerializableData());
+        // $this->assertTrue($openApi->components->schemas['Post']->properties['user']->properties);
+    }
 }
