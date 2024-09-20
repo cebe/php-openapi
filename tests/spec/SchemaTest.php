@@ -425,12 +425,16 @@ JSON;
     // TODO cleanup
     public function test165ResolveAllOf()
     {
+//        return;
 //        $openApi->resolveReferences(new \cebe\openapi\ReferenceContext($openApi, 'file:///tmp/openapi.yaml'));
         $openApi = Reader::readFromYamlFile(__DIR__ . '/data/resolve_all_of.yml');
         $result = $openApi->validate();
 //        $openApi->resolveAllOf();
         $this->assertTrue($result);
         $this->assertEquals([], $openApi->getErrors());
+
+        $this->assertFalse($openApi->components->schemas['Post']->properties['user']->{'x-faker'});
+        $this->assertTrue($openApi->components->schemas['Post']->properties['user']->{'x-faker2'});
 
         // $this->assertTrue($openApi->components->schemas['Post']->getSerializableData());
 //        $openApi->components->schemas['Post']->properties['user']->allOf = ['abc' => 'def'];
@@ -441,7 +445,6 @@ JSON;
 //        $this->assertTrue($openApi->components->schemas['Post']->getSerializableData());
          $this->assertSame(
              json_decode(json_encode($openApi->components->schemas['Post']->getSerializableData()), true)
-
              , []
          );
     }

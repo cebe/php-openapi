@@ -17,16 +17,16 @@ components:
           type: integer
         name:
           type: string
-#    User2:
-#      type: object
-#      required:
-#        - id2
-#        - name
-#      properties:
-#        id2:
-#          type: integer
-#        name:
-#          type: array
+    Pet:
+      type: object
+      required:
+        - id2
+        - name2
+      properties:
+        id2:
+          type: integer
+        name2:
+          type: array
     Post:
       type: object
       properties:
@@ -37,7 +37,7 @@ components:
         user:
           allOf:
             - $ref: '#/components/schemas/User'
-#            - $ref: '#/components/schemas/User2'
+            - $ref: '#/components/schemas/Pet'
             - x-faker: false
             - x-faker2: true
 
