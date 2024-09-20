@@ -1,10 +1,10 @@
 TODO.taskpaper
 
- ☐ undo commit
- ☐ undo commit
  ☐ create failing test
  ☐ implement the solution
  ☐ fix failing tests if any
  ☐ resolve TODOs if any
+ ☐ undo commit https://github.com/cebe/php-openapi/pull/208/commits/27e2618787ac21275cb2137e06bd35f202b51b6b
+ ☐ undo commit https://github.com/cebe/php-openapi/pull/208/commits/b4c19c7599154029dc2035d42282b05237124d79
  ☐ review Merge Request
  ☐ delete this file and submit Merge Request

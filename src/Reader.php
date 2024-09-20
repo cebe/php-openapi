@@ -147,6 +147,8 @@ class Reader
             }
             $spec->resolveReferences();
         }
+        $spec->resolveAllOf();
+        $spec->resolveAllOf2(); // TODO rename + refactor if possible
         return $spec;
     }
 }

@@ -422,61 +422,27 @@ JSON;
     }
 
     // https://github.com/cebe/yii2-openapi/issues/165
+    // TODO cleanup
     public function test165ResolveAllOf()
     {
-        $openApi = Reader::readFromYaml(<<<'YAML'
-
-
-openapi: 3.0.3
-
-info:
-  title: Add validation rules by attribute name or pattern \#30
-  version: 1.0.0
-
-components:
-  schemas:
-    User:
-      type: object
-      required:
-        - id
-        - name
-      properties:
-        id:
-          type: integer
-        name:
-          type: string
-    Post:
-      type: object
-      properties:
-        id:
-          type: integer
-        content:
-          type: string
-        user:
-          allOf:
-            - $ref: '#/components/schemas/User'
-            - x-faker: false
-
-paths:
-  '/':
-    get:
-      responses:
-        '200':
-          description: OK
-
-
-YAML
-        );
-
-        $openApi->resolveReferences(new \cebe\openapi\ReferenceContext($openApi, 'file:///tmp/openapi.yaml'));
+//        $openApi->resolveReferences(new \cebe\openapi\ReferenceContext($openApi, 'file:///tmp/openapi.yaml'));
+        $openApi = Reader::readFromYamlFile(__DIR__ . '/data/resolve_all_of.yml');
         $result = $openApi->validate();
+//        $openApi->resolveAllOf();
         $this->assertTrue($result);
         $this->assertEquals([], $openApi->getErrors());
 
         // $this->assertTrue($openApi->components->schemas['Post']->getSerializableData());
+//        $openApi->components->schemas['Post']->properties['user']->allOf = ['abc' => 'def'];
+//        $openApi->components->schemas['Post']->properties['user']->__set('allOf', ['abc' => 'def']);
 
         // $openApi->components->schemas['Post']->resolveReferences();
-        $this->assertTrue($openApi->components->schemas['Post']->getSerializableData());
-        // $this->assertTrue($openApi->components->schemas['Post']->properties['user']->properties);
+//        $this->assertTrue($openApi->components->schemas['Post']);
+//        $this->assertTrue($openApi->components->schemas['Post']->getSerializableData());
+         $this->assertSame(
+             json_decode(json_encode($openApi->components->schemas['Post']->getSerializableData()), true)
+
+             , []
+         );
     }
 }

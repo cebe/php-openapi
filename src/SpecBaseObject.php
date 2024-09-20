@@ -12,6 +12,7 @@ use cebe\openapi\exceptions\UnknownPropertyException;
 use cebe\openapi\json\JsonPointer;
 use cebe\openapi\json\JsonReference;
 use cebe\openapi\spec\Reference;
+use cebe\openapi\spec\Schema;
 use cebe\openapi\spec\Type;
 
 /**
@@ -524,5 +525,76 @@ abstract class SpecBaseObject implements SpecObjectInterface, DocumentContextInt
             $extensions[$propertyKey] = $extension;
         }
         return $extensions;
+    }
+
+    public function getProperties(): array
+    {
+        return $this->_properties;
+    }
+
+    public function mergeProperties($properties)
+    {
+        $this->_properties = array_merge($this->_properties, $properties);
+    }
+
+    public function resolveAllOf($parent = null)
+    {
+        foreach ($this->_properties as $property => $value) {
+            if ($property === 'allOf' && !empty($value)) {
+                $this->_properties[$property] = $this->mergeAllAllOfsInToSingleObj($value);
+            } elseif ($value instanceof SpecObjectInterface && method_exists($value, 'resolveAllOf')) {
+                $value->resolveAllOf($this->_properties[$property]);
+            } elseif (is_array($value)) {
+                foreach ($value as $k => $item) {
+                    if ($k === 'allOf' && !empty($item)) {
+                        $this->_properties[$property][$k] = $this->mergeAllAllOfsInToSingleObj($item);
+                    } elseif ($item instanceof SpecObjectInterface) {
+                        $item->resolveAllOf($this->_properties[$property][$k]);
+                    }
+                }
+            }
+        }
+    }
+
+    public function mergeAllAllOfsInToSingleObj($allOfs): self
+    {
+        $allOfs = $this->allOf;
+        /** @var static $first */
+        $first = $this->allOf[0];
+        unset($allOfs[0]);
+        foreach ($allOfs as $allOf) {
+            /** @var Schema $allOf */
+            $first->mergeProperties($allOf->getProperties());
+        }
+        return $first;
+    }
+
+    public function resolveAllOf2() // TODO
+    {
+        foreach ($this->_properties as $property => $value) {
+            if ($property === 'properties' && !empty($value)) {
+                foreach ($value as $k => $v) {
+                    if (!empty($v->allOf)) {
+                        $temp = $v->allOf;
+                        $this->_properties[$property][$k] = $temp;
+                    }
+                }
+            } elseif ($value instanceof SpecObjectInterface && method_exists($value, 'resolveAllOf2')) {
+                $value->resolveAllOf2();
+            } elseif (is_array($value)) {
+                foreach ($value as $k2 => $item) {
+                    if ($k2 === 'properties' && !empty($item)) {
+                        foreach ($item as $kIn => $vIn) { // TODO rename var names
+                            if (!empty($vIn->allOf)) {
+                                $tempIn = $vIn->allOf;
+                                $this->_properties[$property][$value][$k2][$kIn] = $tempIn;
+                            }
+                        }
+                    } elseif ($item instanceof SpecObjectInterface) {
+                        $item->resolveAllOf2();
+                    }
+                }
+            }
+        }
     }
 }
