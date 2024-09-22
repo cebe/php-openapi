@@ -11,6 +11,7 @@ use cebe\openapi\exceptions\TypeErrorException;
 use cebe\openapi\exceptions\UnknownPropertyException;
 use cebe\openapi\json\JsonPointer;
 use cebe\openapi\json\JsonReference;
+use cebe\openapi\spec\OpenApi;
 use cebe\openapi\spec\Reference;
 use cebe\openapi\spec\Schema;
 use cebe\openapi\spec\Type;
@@ -534,11 +535,18 @@ abstract class SpecBaseObject implements SpecObjectInterface, DocumentContextInt
 
     public function mergeProperties($properties)
     {
-        $this->_properties = array_merge_recursive($this->_properties, $properties);
+        $this->_properties = OpenApi::array_merge_recursive_distinct($this->_properties, $properties);
     }
 
+    private $_recursingAllOf = false;
     public function resolveAllOf()
     {
+        // avoid recursion to get stuck in a loop
+        if ($this->_recursingAllOf) {
+            return;
+        }
+        $this->_recursingAllOf = true;
+
         foreach ($this->_properties as $property => $value) {
             if ($property === 'allOf' && !empty($value)) {
                 $this->_properties[$property] = $this->mergeAllAllOfsInToSingleObj();
@@ -554,6 +562,7 @@ abstract class SpecBaseObject implements SpecObjectInterface, DocumentContextInt
                 }
             }
         }
+        $this->_recursingAllOf = false;
     }
 
     public function mergeAllAllOfsInToSingleObj(): self

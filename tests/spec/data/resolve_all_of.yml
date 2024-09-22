@@ -17,6 +17,7 @@ components:
           type: integer
         name:
           type: string
+          maxLength: 10
     Pet:
       type: object
       required:
@@ -26,7 +27,19 @@ components:
         id2:
           type: integer
         name2:
-          type: array
+          type: string
+          maxLength: 12
+    Fruit:
+      type: object
+      required:
+        - id3
+        - name
+      properties:
+        id3:
+          type: integer
+        name:
+          type: string
+          maxLength: 14
     Post:
       type: object
       properties:
@@ -38,6 +51,7 @@ components:
           allOf:
             - $ref: '#/components/schemas/User'
             - $ref: '#/components/schemas/Pet'
+            - $ref: '#/components/schemas/Fruit'
             - x-faker: false
             - x-faker2: true
 
