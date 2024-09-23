@@ -3,6 +3,7 @@
 use cebe\openapi\Reader;
 use cebe\openapi\ReferenceContext;
 use cebe\openapi\spec\Discriminator;
+use cebe\openapi\spec\OpenApi;
 use cebe\openapi\spec\Reference;
 use cebe\openapi\spec\Schema;
 use cebe\openapi\spec\Type;
@@ -425,7 +426,7 @@ JSON;
     // TODO cleanup
     public function test165ResolveAllOf()
     {
-        $openApi = Reader::readFromYamlFile(__DIR__ . '/data/resolve_all_of.yml');
+        $openApi = Reader::readFromYamlFile(__DIR__ . '/data/resolve_all_of.yml', OpenApi::class, true, true);
         $result = $openApi->validate();
         $this->assertTrue($result);
         $this->assertEquals([], $openApi->getErrors());
@@ -437,7 +438,7 @@ JSON;
 //        $this->assertSame(
 //            json_decode(json_encode($openApi->components->schemas['Post']->getSerializableData()), true)
 //            , []
-//        ); 
+//        );
 
         $this->assertSame(
             json_decode(json_encode($openApi->components->schemas['Post']->getSerializableData()), true)

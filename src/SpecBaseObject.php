@@ -33,6 +33,7 @@ abstract class SpecBaseObject implements SpecObjectInterface, DocumentContextInt
     private $_recursingReferences = false;
     private $_recursingReferenceContext = false;
     private $_recursingDocumentContext = false;
+    private $_recursingAllOf = false;
 
     private $_baseDocument;
     private $_jsonPointer;
@@ -538,7 +539,6 @@ abstract class SpecBaseObject implements SpecObjectInterface, DocumentContextInt
         $this->_properties = OpenApi::arrayMergeRecursiveDistinct($this->_properties, $properties);
     }
 
-    private $_recursingAllOf = false;
     public function resolveAllOf()
     {
         // avoid recursion to get stuck in a loop
@@ -548,24 +548,13 @@ abstract class SpecBaseObject implements SpecObjectInterface, DocumentContextInt
         $this->_recursingAllOf = true;
 
         foreach ($this->_properties as $property => $value) {
-            if ($property === 'allOf' && !empty($value)) {
-                $this->_properties[$property] = $this->mergeAllAllOfsInToSingleObj();
-            } elseif ($value instanceof SpecObjectInterface && method_exists($value, 'resolveAllOf')) {
-                $value->resolveAllOf();
-            } elseif (is_array($value)) {
-                foreach ($value as $k => $item) {
-                    if ($k === 'allOf' && !empty($item)) {
-                        $this->_properties[$property][$k] = $this->mergeAllAllOfsInToSingleObj();
-                    } elseif ($item instanceof SpecObjectInterface && method_exists($item, 'resolveAllOf')) {
-                        $item->resolveAllOf();
-                    }
-                }
-            }
+            $this->handleMergingOfAllAllOfs($property, $value);
+            $this->removeAllOfKey($property, $value);
         }
         $this->_recursingAllOf = false;
     }
 
-    public function mergeAllAllOfsInToSingleObj(): self
+    public function mergeAllAllOfsInToSingleObject(): self
     {
         $allOfs = $this->allOf;
         /** @var static $first */
@@ -578,30 +567,45 @@ abstract class SpecBaseObject implements SpecObjectInterface, DocumentContextInt
         return $first;
     }
 
-    public function resolveAllOf2() // TODO
+    public function handleMergingOfAllAllOfs(string $property, $value): void
     {
-        foreach ($this->_properties as $property => $value) {
-            if ($property === 'properties' && !empty($value)) {
-                foreach ($value as $k => $v) {
-                    if (!empty($v->allOf)) {
-                        $temp = $v->allOf;
-                        $this->_properties[$property][$k] = $temp;
-                    }
+        if ($property === 'allOf' && !empty($value)) {
+            $this->_properties[$property] = $this->mergeAllAllOfsInToSingleObject();
+        } elseif ($value instanceof SpecObjectInterface && method_exists($value, 'resolveAllOf')) {
+            $value->resolveAllOf();
+        } elseif (is_array($value)) {
+            foreach ($value as $k => $item) {
+                if ($k === 'allOf' && !empty($item)) {
+                    $this->_properties[$property][$k] = $this->mergeAllAllOfsInToSingleObject();
+                } elseif ($item instanceof SpecObjectInterface && method_exists($item, 'resolveAllOf')) {
+                    $item->resolveAllOf();
                 }
-            } elseif ($value instanceof SpecObjectInterface && method_exists($value, 'resolveAllOf2')) {
-                $value->resolveAllOf2();
-            } elseif (is_array($value)) {
-                foreach ($value as $k2 => $item) {
-                    if ($k2 === 'properties' && !empty($item)) {
-                        foreach ($item as $kIn => $vIn) { // TODO rename var names
-                            if (!empty($vIn->allOf)) {
-                                $tempIn = $vIn->allOf;
-                                $this->_properties[$property][$k2][$kIn] = $tempIn;
-                            }
+            }
+        }
+    }
+
+    public function removeAllOfKey(string $property, $value): void
+    {
+        if ($property === 'properties' && !empty($value)) {
+            foreach ($value as $k => $v) {
+                if (!empty($v->allOf)) {
+                    $temp = $v->allOf;
+                    $this->_properties[$property][$k] = $temp;
+                }
+            }
+        } elseif ($value instanceof SpecObjectInterface && method_exists($value, 'resolveAllOf2')) {
+            $value->resolveAllOf2();
+        } elseif (is_array($value)) {
+            foreach ($value as $arrayValueKey => $item) {
+                if ($arrayValueKey === 'properties' && !empty($item)) {
+                    foreach ($item as $itemKey => $itemValue) {
+                        if (!empty($itemValue->allOf)) {
+                            $tempIn = $itemValue->allOf;
+                            $this->_properties[$property][$arrayValueKey][$itemKey] = $tempIn;
                         }
-                    } elseif ($item instanceof SpecObjectInterface && method_exists($item, 'resolveAllOf2')) {
-                        $item->resolveAllOf2();
                     }
+                } elseif ($item instanceof SpecObjectInterface && method_exists($item, 'resolveAllOf2')) {
+                    $item->resolveAllOf2();
                 }
             }
         }

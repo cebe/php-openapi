@@ -121,13 +121,14 @@ class Reader
      * Since version 1.5.0 this can be a string indicating the reference resolving mode:
      * - `inline` only resolve references to external files.
      * - `all` resolve all references except recursive references.
+     * @param bool $resolveAllOfs whether to automatically resolve all `allOf`s automatically. It will only work if [[$resolveReferences]] is `true` or [[ReferenceContext::RESOLVE_MODE_ALL]]
      * @return SpecObjectInterface|OpenApi the OpenApi object instance.
      * The type of the returned object depends on the `$baseType` argument.
      * @throws TypeErrorException in case invalid spec data is supplied.
      * @throws UnresolvableReferenceException in case references could not be resolved.
      * @throws IOException when the file is not readable.
      */
-    public static function readFromYamlFile(string $fileName, string $baseType = OpenApi::class, $resolveReferences = true): SpecObjectInterface
+    public static function readFromYamlFile(string $fileName, string $baseType = OpenApi::class, $resolveReferences = true, $resolveAllOfs = false): SpecObjectInterface
     {
         $fileContent = file_get_contents($fileName);
         if ($fileContent === false) {
@@ -147,8 +148,9 @@ class Reader
             }
             $spec->resolveReferences();
         }
-        $spec->resolveAllOf();
-        $spec->resolveAllOf2(); // TODO rename + refactor if possible
+        if ($resolveAllOfs && ($resolveReferences === true || $resolveReferences === ReferenceContext::RESOLVE_MODE_ALL)) {
+            $spec->resolveAllOf();
+        }
         return $spec;
     }
 }
