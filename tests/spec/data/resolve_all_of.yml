@@ -31,6 +31,7 @@ components:
           maxLength: 12
     Fruit:
       type: object
+      description: The Fruit description
       required:
         - id3
         - name
@@ -60,6 +61,7 @@ components:
                   type: integer
                 name4:
                   type: string
+            - description: The last user description
 
 paths:
   '/':

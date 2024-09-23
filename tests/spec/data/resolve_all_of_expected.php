@@ -44,8 +44,9 @@ return [
                 ]
 
             ],
+            'description' => 'The last user description',
             'x-faker' => false,
-            'x-faker2' => true
+            'x-faker2' => true,
         ],
     ],
 ];
