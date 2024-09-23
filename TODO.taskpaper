@@ -4,8 +4,8 @@ TODO.taskpaper
  ✔ implement the solution @done (24-09-23 18:50)
  ✔ fix failing tests if any @done (24-09-23 18:50)
  ✔ resolve TODOs if any @done (24-09-23 19:03)
- ☐ readFromJsonFile
- ☐ undo commit https://github.com/cebe/php-openapi/pull/208/commits/27e2618787ac21275cb2137e06bd35f202b51b6b
- ☐ undo commit https://github.com/cebe/php-openapi/pull/208/commits/b4c19c7599154029dc2035d42282b05237124d79
- ☐ review Merge Request
+ ✔ readFromJsonFile @done (24-09-23 19:58)
+ ✔ undo commit https://github.com/cebe/php-openapi/pull/208/commits/27e2618787ac21275cb2137e06bd35f202b51b6b @done (24-09-23 19:58)
+ ✔ undo commit https://github.com/cebe/php-openapi/pull/208/commits/b4c19c7599154029dc2035d42282b05237124d79 @done (24-09-23 19:58)
+ ✔ review Merge Request @done (24-09-23 19:58)
  ☐ delete this file and submit Merge Request
