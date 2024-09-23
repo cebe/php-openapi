@@ -54,6 +54,12 @@ components:
             - $ref: '#/components/schemas/Fruit'
             - x-faker: false
             - x-faker2: true
+            - type: object
+              properties:
+                id4:
+                  type: integer
+                name4:
+                  type: string
 
 paths:
   '/':

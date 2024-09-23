@@ -535,7 +535,7 @@ abstract class SpecBaseObject implements SpecObjectInterface, DocumentContextInt
 
     public function mergeProperties($properties)
     {
-        $this->_properties = OpenApi::array_merge_recursive_distinct($this->_properties, $properties);
+        $this->_properties = OpenApi::arrayMergeRecursiveDistinct($this->_properties, $properties);
     }
 
     private $_recursingAllOf = false;

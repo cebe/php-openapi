@@ -93,7 +93,7 @@ class OpenApi extends SpecBaseObject
      * Function call example: `$result = array_merge_recursive_distinct(a1, a2, ... aN);`
      * TODO add test and more docs
      */
-    public static function array_merge_recursive_distinct()
+    public static function arrayMergeRecursiveDistinct()
     {
         $arrays = func_get_args();
         $base = array_shift($arrays);
@@ -109,8 +109,8 @@ class OpenApi extends SpecBaseObject
                     $base[$key] = $append[$key];
                     continue;
                 }
-                if(is_array($value) or is_array($base[$key])) {
-                    $base[$key] = static::array_merge_recursive_distinct($base[$key], $append[$key]);
+                if(is_array($value) || is_array($base[$key])) {
+                    $base[$key] = static::arrayMergeRecursiveDistinct($base[$key], $append[$key]);
                 } elseif(is_numeric($key)) {
                     if(!in_array($value, $base)) {
                         $base[] = $value;
