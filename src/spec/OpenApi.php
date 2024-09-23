@@ -91,7 +91,7 @@ class OpenApi extends SpecBaseObject
      * unique
      *
      * Function call example: `$result = array_merge_recursive_distinct(a1, a2, ... aN);`
-     * TODO add test and more docs
+     * More documentation is present at [array merge recursive distinct.md](../../../doc/array merge recursive distinct.md) file
      */
     public static function arrayMergeRecursiveDistinct()
     {

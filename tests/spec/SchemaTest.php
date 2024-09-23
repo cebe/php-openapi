@@ -423,7 +423,6 @@ JSON;
     }
 
     // https://github.com/cebe/yii2-openapi/issues/165
-    // TODO cleanup
     public function test165ResolveAllOf()
     {
         $openApi = Reader::readFromYamlFile(__DIR__ . '/data/resolve_all_of.yml', OpenApi::class, true, true);

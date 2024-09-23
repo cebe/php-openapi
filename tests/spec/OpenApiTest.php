@@ -230,6 +230,89 @@ class OpenApiTest extends \PHPUnit\Framework\TestCase
         if ($openapi->externalDocs !== null) {
             $this->assertInstanceOf(\cebe\openapi\spec\ExternalDocumentation::class, $openapi->externalDocs);
         }
+    }
 
+    public function testArrayMergeRecursiveDistinct()
+    {
+        $result = OpenApi::arrayMergeRecursiveDistinct(['id', 'name'], ['id2', 'name2']);
+        $this->assertSame(['id', 'name', 'id2', 'name2'], $result);
+
+        $result = OpenApi::arrayMergeRecursiveDistinct(['id', 'name'], ['id2', 'name']);
+        $this->assertSame(['id', 'name', 'id2'], $result);
+
+        $result = OpenApi::arrayMergeRecursiveDistinct(['type' => 'object'], ['x-faker' => true]);
+        $this->assertSame(['type' => 'object', 'x-faker' => true], $result);
+
+        $result = OpenApi::arrayMergeRecursiveDistinct([
+            'properties' => [
+                'id' => [
+                    'type' => 'integer'
+                ],
+                'name' => [
+                    'type' => 'string'
+                ],
+            ]
+        ], [
+            'properties' => [
+                'id2' => [
+                    'type' => 'integer'
+                ],
+                'name2' => [
+                    'type' => 'string'
+                ],
+            ]
+        ]);
+        $this->assertSame([
+            'properties' => [
+                'id' => [
+                    'type' => 'integer'
+                ],
+                'name' => [
+                    'type' => 'string'
+                ],
+                'id2' => [
+                    'type' => 'integer'
+                ],
+                'name2' => [
+                    'type' => 'string'
+                ],
+            ]
+        ], $result);
+
+        $result = OpenApi::arrayMergeRecursiveDistinct([
+            'properties' => [
+                'id' => [
+                    'type' => 'integer'
+                ],
+                'name' => [
+                    'type' => 'string',
+                    'maxLength' => 10
+                ],
+            ]
+        ], [
+            'properties' => [
+                'id2' => [
+                    'type' => 'integer'
+                ],
+                'name' => [
+                    'type' => 'string',
+                    'maxLength' => 12
+                ],
+            ]
+        ]);
+        $this->assertSame([
+            'properties' => [
+                'id' => [
+                    'type' => 'integer'
+                ],
+                'name' => [
+                    'type' => 'string',
+                    'maxLength' => 12
+                ],
+                'id2' => [
+                    'type' => 'integer'
+                ]
+            ]
+        ], $result);
     }
 }
