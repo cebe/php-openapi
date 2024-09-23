@@ -593,8 +593,8 @@ abstract class SpecBaseObject implements SpecObjectInterface, DocumentContextInt
                     $this->_properties[$property][$k] = $temp;
                 }
             }
-        } elseif ($value instanceof SpecObjectInterface && method_exists($value, 'resolveAllOf2')) {
-            $value->resolveAllOf2();
+        } elseif ($value instanceof SpecObjectInterface && method_exists($value, 'resolveAllOf')) {
+            $value->resolveAllOf();
         } elseif (is_array($value)) {
             foreach ($value as $arrayValueKey => $item) {
                 if ($arrayValueKey === 'properties' && !empty($item)) {
@@ -604,8 +604,8 @@ abstract class SpecBaseObject implements SpecObjectInterface, DocumentContextInt
                             $this->_properties[$property][$arrayValueKey][$itemKey] = $tempIn;
                         }
                     }
-                } elseif ($item instanceof SpecObjectInterface && method_exists($item, 'resolveAllOf2')) {
-                    $item->resolveAllOf2();
+                } elseif ($item instanceof SpecObjectInterface && method_exists($item, 'resolveAllOf')) {
+                    $item->resolveAllOf($arrayValueKey, $item);
                 }
             }
         }

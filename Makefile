@@ -15,7 +15,7 @@ DOCKER_PHP=docker-compose run --rm php
 DOCKER_NODE=docker-compose run --rm -w /app node
 endif
 
-CONTAINER_NAME=$$(echo $$(pwd) | tr / _ | cut -c 2-)
+CONTAINER_NAME=$$(echo $$(pwd) | tr / _ | cut -c 2-) # lets have unique container name when dealing with lot of forks
 UID=$(shell id -u)
 
 all:
@@ -36,7 +36,7 @@ check-style: php-cs-fixer.phar
 	PHP_CS_FIXER_IGNORE_ENV=1 ./php-cs-fixer.phar fix src/ --diff --dry-run
 
 cli:
-	COMPOSE_PROJECT_NAME=$(CONTAINER_NAME) docker-compose exec --user=$(UID) php bash
+	COMPOSE_PROJECT_NAME=$(CONTAINER_NAME) docker-compose exec --user=$(UID) php bash # lets have unique container name when dealing with lot of forks
 
 cli_root:
 	COMPOSE_PROJECT_NAME=$(CONTAINER_NAME) docker-compose exec --user="root" php bash

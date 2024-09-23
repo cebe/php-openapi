@@ -3,7 +3,8 @@ TODO.taskpaper
  ✔ create failing test @done (24-09-23 18:50)
  ✔ implement the solution @done (24-09-23 18:50)
  ✔ fix failing tests if any @done (24-09-23 18:50)
- ☐ resolve TODOs if any
+ ✔ resolve TODOs if any @done (24-09-23 19:03)
+ ☐ readFromJsonFile
  ☐ undo commit https://github.com/cebe/php-openapi/pull/208/commits/27e2618787ac21275cb2137e06bd35f202b51b6b
  ☐ undo commit https://github.com/cebe/php-openapi/pull/208/commits/b4c19c7599154029dc2035d42282b05237124d79
  ☐ review Merge Request
