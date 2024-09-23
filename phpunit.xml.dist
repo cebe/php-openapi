@@ -13,7 +13,11 @@
 				<directory suffix="Test.php">./tests</directory>
 			</testsuite>
 		</testsuites>
-
+        <filter><!-- compatibility with PHPUnit < 9 -->
+            <whitelist>
+                <directory>./src</directory>
+            </whitelist>
+        </filter>
 		<coverage>
 			<include>
 				<directory>./src</directory>
