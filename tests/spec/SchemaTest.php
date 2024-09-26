@@ -1,6 +1,6 @@
 <?php
 
-use cebe\openapi\Reader;
+use cebe\openapi\{Reader, SpecBaseObject};
 use cebe\openapi\ReferenceContext;
 use cebe\openapi\spec\Discriminator;
 use cebe\openapi\spec\OpenApi;
@@ -425,10 +425,18 @@ JSON;
     // https://github.com/cebe/yii2-openapi/issues/165
     public function test165ResolveAllOf()
     {
+        $unresolvedAllOfOpenApi = Reader::readFromYamlFile(__DIR__ . '/data/resolve_all_of.yml');
+        $this->assertInstanceOf(SpecBaseObject::class, $unresolvedAllOfOpenApi->components->schemas['Post']->properties['user']);
+        $this->assertIsArray($unresolvedAllOfOpenApi->components->schemas['Post']->properties['user']->allOf);
+        $this->assertNotEmpty($unresolvedAllOfOpenApi->components->schemas['Post']->properties['user']->allOf);
+
         $openApi = Reader::readFromYamlFile(__DIR__ . '/data/resolve_all_of.yml', OpenApi::class, true, true);
         $result = $openApi->validate();
         $this->assertTrue($result);
         $this->assertEquals([], $openApi->getErrors());
+
+        $this->assertInstanceOf(SpecBaseObject::class, $openApi->components->schemas['Post']->properties['user']);
+        $this->assertObjectNotHasProperty('allOf', $openApi->components->schemas['Post']->properties['user']);
 
         $this->assertFalse($openApi->components->schemas['Post']->properties['user']->{'x-faker'});
         $this->assertTrue($openApi->components->schemas['Post']->properties['user']->{'x-faker2'});
