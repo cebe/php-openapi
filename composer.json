@@ -81,7 +81,7 @@
 				"source": {
 					"url": "https://github.com/APIs-guru/openapi-directory",
 					"type": "git",
-					"reference": "openapi3.0.0"
+					"reference": "9d2e0b6696a230a182d740a8e97ba27fb41b13bd"
 				}
 			}
 		},
