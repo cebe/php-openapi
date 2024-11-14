@@ -21,6 +21,7 @@ class Type
     const BOOLEAN = 'boolean';
     const OBJECT = 'object';
     const ARRAY = 'array';
+    const NULL = 'null'; // Since OpenAPI 3.1
 
     /**
      * Indicate whether a type is a scalar type, i.e. not an array or object.
@@ -38,6 +39,7 @@ class Type
             self::NUMBER,
             self::STRING,
             self::BOOLEAN,
+            self::NULL,
         ]);
     }
 }
