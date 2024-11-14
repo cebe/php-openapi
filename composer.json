@@ -20,7 +20,7 @@
 	"require": {
 		"php": ">=7.1.0",
 		"ext-json": "*",
-		"symfony/yaml": "^3.4 || ^4 || ^5 || ^6",
+		"symfony/yaml": "^3.4 || ^4 || ^5 || ^6 || ^7.0",
 		"justinrainbow/json-schema": "^5.2"
 	},
 	"require-dev": {
@@ -81,7 +81,7 @@
 				"source": {
 					"url": "https://github.com/APIs-guru/openapi-directory",
 					"type": "git",
-					"reference": "openapi3.0.0"
+					"reference": "9d2e0b6696a230a182d740a8e97ba27fb41b13bd"
 				}
 			}
 		},
@@ -91,9 +91,9 @@
 				"name": "nexmo/api-specification",
 				"version": "1.0.0",
 				"source": {
-					"url": "https://github.com/Nexmo/api-specification",
+					"url": "https://github.com/cebe/nexmo-api-specification",
 					"type": "git",
-					"reference": "voice-2.0.0"
+					"reference": "590fadf21f528ed8e05f6ff47c2e49d81f50a181"
 				}
 			}
 		}
