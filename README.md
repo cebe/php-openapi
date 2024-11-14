@@ -27,6 +27,7 @@ do awesome work:
 - [league/openapi-psr7-validator](https://github.com/thephpleague/openapi-psr7-validator) validates PSR-7 messages (HTTP request/response) against OpenAPI descriptions.
 - [dsuurlant/response2schema](https://github.com/dsuurlant/response2schema) a quick and easy tool for generating OpenAPI schemas based on example data.
 - [hotmeteor/spectator](https://github.com/hotmeteor/spectator) a light-weight OpenAPI testing tool for existing Laravel test suite.
+- [googoogajoob/openapi-slim4](https://github.com/googoogajoob/openapi-slim4) Configure the paths of a slim4 application from an openapi definition.
 - ... ([add yours](https://github.com/cebe/php-openapi/edit/master/README.md#L24))
 
 ## Usage
