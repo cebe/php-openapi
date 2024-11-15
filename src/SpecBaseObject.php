@@ -11,7 +11,6 @@ use cebe\openapi\exceptions\TypeErrorException;
 use cebe\openapi\exceptions\UnknownPropertyException;
 use cebe\openapi\json\JsonPointer;
 use cebe\openapi\json\JsonReference;
-use cebe\openapi\spec\OpenApi;
 use cebe\openapi\spec\Reference;
 use cebe\openapi\spec\Schema;
 use cebe\openapi\spec\Type;
@@ -536,7 +535,7 @@ abstract class SpecBaseObject implements SpecObjectInterface, DocumentContextInt
 
     public function mergeProperties($properties)
     {
-        $this->_properties = OpenApi::arrayMergeRecursiveDistinct($this->_properties, $properties);
+        $this->_properties = Helper::arrayMergeRecursiveDistinct($this->_properties, $properties);
     }
 
     public function resolveAllOf()
