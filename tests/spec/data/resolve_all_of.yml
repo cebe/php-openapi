@@ -1,0 +1,71 @@
+
+openapi: 3.0.3
+
+info:
+  title: Resolve allOf
+  version: 1.0.0
+
+components:
+  schemas:
+    User:
+      type: object
+      required:
+        - id
+        - name
+      properties:
+        id:
+          type: integer
+        name:
+          type: string
+          maxLength: 10
+    Pet:
+      type: object
+      required:
+        - id2
+        - name2
+      properties:
+        id2:
+          type: integer
+        name2:
+          type: string
+          maxLength: 12
+    Fruit:
+      type: object
+      description: The Fruit description
+      required:
+        - id3
+        - name
+      properties:
+        id3:
+          type: integer
+        name:
+          type: string
+          maxLength: 14
+    Post:
+      type: object
+      properties:
+        id:
+          type: integer
+        content:
+          type: string
+        user:
+          allOf:
+            - $ref: '#/components/schemas/User'
+            - $ref: '#/components/schemas/Pet'
+            - $ref: '#/components/schemas/Fruit'
+            - x-faker: false
+            - x-faker2: true
+            - type: object
+              properties:
+                id4:
+                  type: integer
+                name4:
+                  type: string
+            - description: The last user description
+
+paths:
+  '/':
+    get:
+      responses:
+        '200':
+          description: OK

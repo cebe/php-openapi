@@ -230,6 +230,7 @@ class OpenApiTest extends \PHPUnit\Framework\TestCase
         if ($openapi->externalDocs !== null) {
             $this->assertInstanceOf(\cebe\openapi\spec\ExternalDocumentation::class, $openapi->externalDocs);
         }
-
     }
+
+
 }
