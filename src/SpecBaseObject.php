@@ -604,7 +604,7 @@ abstract class SpecBaseObject implements SpecObjectInterface, DocumentContextInt
                         }
                     }
                 } elseif ($item instanceof SpecObjectInterface && method_exists($item, 'resolveAllOf')) {
-                    $item->resolveAllOf($arrayValueKey, $item);
+                    $item->resolveAllOf();
                 }
             }
         }

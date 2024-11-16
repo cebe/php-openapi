@@ -452,4 +452,19 @@ JSON;
              , $expected
         );
     }
+
+    // https://github.com/cebe/yii2-openapi/issues/165
+    public function test165ResolveNestedAllOfWithReference()
+    {
+        $openApi = Reader::readFromYamlFile(__DIR__ . '/data/resolve_nested_all_of_with_reference.yml', OpenApi::class, true, true);
+        $result = $openApi->validate();
+        $this->assertTrue($result);
+        $this->assertEquals([], $openApi->getErrors());
+
+        $expected = require_once __DIR__ . '/data/resolve_nested_all_of_with_reference.php';
+        $this->assertSame(
+            json_decode(json_encode($openApi->components->schemas['Pet']->getSerializableData()), true)
+            , $expected
+        );
+    }
 }
