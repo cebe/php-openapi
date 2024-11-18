@@ -566,7 +566,7 @@ abstract class SpecBaseObject implements SpecObjectInterface, DocumentContextInt
         return $first;
     }
 
-    public function handleMergingOfAllAllOfs(string $property, $value): void
+    private function handleMergingOfAllAllOfs(string $property, $value): void
     {
         if ($property === 'allOf' && !empty($value)) {
             $this->_properties[$property] = $this->mergeAllAllOfsInToSingleObject();
