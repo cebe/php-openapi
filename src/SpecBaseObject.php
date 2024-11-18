@@ -583,7 +583,7 @@ abstract class SpecBaseObject implements SpecObjectInterface, DocumentContextInt
         }
     }
 
-    public function removeAllOfKey(string $property, $value): void
+    private function removeAllOfKey(string $property, $value): void
     {
         if ($property === 'properties' && !empty($value)) {
             foreach ($value as $k => $v) {
