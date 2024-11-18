@@ -553,7 +553,7 @@ abstract class SpecBaseObject implements SpecObjectInterface, DocumentContextInt
         $this->_recursingAllOf = false;
     }
 
-    public function mergeAllAllOfsInToSingleObject(): self
+    private function mergeAllAllOfsInToSingleObject(): self
     {
         $allOfs = $this->allOf;
         /** @var static $first */
