@@ -294,9 +294,8 @@ class Reference implements SpecObjectInterface, DocumentContextInterface
     /**
      * Adjust relative references inside of the file to match the context of the base file
      */
-    private function adjustRelativeReferences($referencedDocument, $basePath, $baseDocument = null, $oContext = null)
+    private function adjustRelativeReferences($referencedDocument, $basePath, $baseDocument = null, ?ReferenceContext $oContext = null)
     {
-        $context = new ReferenceContext(null, $basePath);
         if ($baseDocument === null) {
             $baseDocument = $referencedDocument;
         }
@@ -304,6 +303,11 @@ class Reference implements SpecObjectInterface, DocumentContextInterface
         foreach ($referencedDocument as $key => $value) {
             // adjust reference URLs
             if ($key === '$ref' && is_string($value)) {
+                $fullPath = $basePath . $value;
+                if ($oContext !== null && $oContext->getCache()->has($fullPath, 'relativeReferences')) {
+                    return $oContext->getCache()->get($fullPath, 'relativeReferences');
+                }
+
                 if (isset($value[0]) && $value[0] === '#') {
                     // direcly inline references in the same document,
                     // these are not going to be valid in the new context anymore
@@ -315,8 +319,12 @@ class Reference implements SpecObjectInterface, DocumentContextInterface
                     $this->_recursingInsideFile = true;
                     $return = $this->adjustRelativeReferences($inlineDocument, $basePath, $baseDocument, $oContext);
                     $this->_recursingInsideFile = false;
+                    if ($oContext !== null) {
+                        $oContext->getCache()->set($fullPath, 'relativeReferences', $return);
+                    }
                     return $return;
                 }
+                $context = new ReferenceContext(null, $basePath);
                 $referencedDocument[$key] = $context->resolveRelativeUri($value);
                 $parts = explode('#', $referencedDocument[$key], 2);
                 if ($parts[0] === $oContext->getUri()) {
@@ -329,6 +337,7 @@ class Reference implements SpecObjectInterface, DocumentContextInterface
             // adjust URLs for 'externalValue' references in Example Objects
             // https://spec.openapis.org/oas/v3.0.3#example-object
             if ($key === 'externalValue' && is_string($value)) {
+                $context = new ReferenceContext(null, $basePath);
                 $referencedDocument[$key] = $this->makeRelativePath($oContext->getUri(), $context->resolveRelativeUri($value));
                 continue;
             }
