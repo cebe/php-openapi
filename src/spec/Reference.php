@@ -64,7 +64,7 @@ class Reference implements SpecObjectInterface, DocumentContextInterface
      * @param string $to class name of the type referenced by this Reference
      * @throws TypeErrorException in case invalid data is supplied.
      */
-    public function __construct(array $data, string $to = null)
+    public function __construct(array $data, ?string $to = null)
     {
         if (!isset($data['$ref'])) {
             throw new TypeErrorException(
@@ -170,7 +170,7 @@ class Reference implements SpecObjectInterface, DocumentContextInterface
      * If you call resolveReferences() make sure to replace the Reference with the resolved object first.
      * @throws UnresolvableReferenceException in case of errors.
      */
-    public function resolve(ReferenceContext $context = null)
+    public function resolve(?ReferenceContext $context = null)
     {
         if ($context === null) {
             $context = $this->getContext();
@@ -357,7 +357,7 @@ class Reference implements SpecObjectInterface, DocumentContextInterface
      * Resolves all Reference Objects in this object and replaces them with their resolution.
      * @throws UnresolvableReferenceException
      */
-    public function resolveReferences(ReferenceContext $context = null)
+    public function resolveReferences(?ReferenceContext $context = null)
     {
         throw new UnresolvableReferenceException('Cyclic reference detected, resolveReferences() called on a Reference Object.');
     }

@@ -133,7 +133,7 @@ class Callback implements SpecObjectInterface, DocumentContextInterface
      * Resolves all Reference Objects in this object and replaces them with their resolution.
      * @throws UnresolvableReferenceException
      */
-    public function resolveReferences(ReferenceContext $context = null)
+    public function resolveReferences(?ReferenceContext $context = null)
     {
         if ($this->_pathItem !== null) {
             $this->_pathItem->resolveReferences($context);

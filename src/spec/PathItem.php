@@ -150,7 +150,7 @@ class PathItem extends SpecBaseObject
      * Resolves all Reference Objects in this object and replaces them with their resolution.
      * @throws \cebe\openapi\exceptions\UnresolvableReferenceException in case resolving a reference fails.
      */
-    public function resolveReferences(ReferenceContext $context = null)
+    public function resolveReferences(?ReferenceContext $context = null)
     {
         if ($this->_ref instanceof Reference) {
             $pathItem = $this->_ref->resolve($context);
