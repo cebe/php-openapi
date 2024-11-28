@@ -1,8 +1,9 @@
 <?php
 
-use cebe\openapi\Reader;
+use cebe\openapi\{Reader, SpecBaseObject};
 use cebe\openapi\ReferenceContext;
 use cebe\openapi\spec\Discriminator;
+use cebe\openapi\spec\OpenApi;
 use cebe\openapi\spec\Reference;
 use cebe\openapi\spec\Schema;
 use cebe\openapi\spec\Type;
@@ -419,5 +420,51 @@ JSON;
         $this->assertInstanceOf(Schema::class, $person->properties['$ref']);
         $this->assertEquals('string', $person->properties['name']->type);
         $this->assertEquals('string', $person->properties['$ref']->type);
+    }
+
+    // https://github.com/cebe/yii2-openapi/issues/165
+    public function test165ResolveAllOf()
+    {
+        $unresolvedAllOfOpenApi = Reader::readFromYamlFile(__DIR__ . '/data/resolve_all_of.yml');
+        $this->assertInstanceOf(SpecBaseObject::class, $unresolvedAllOfOpenApi->components->schemas['Post']->properties['user']);
+        $this->assertIsArray($unresolvedAllOfOpenApi->components->schemas['Post']->properties['user']->allOf);
+        $this->assertNotEmpty($unresolvedAllOfOpenApi->components->schemas['Post']->properties['user']->allOf);
+
+        $openApi = Reader::readFromYamlFile(__DIR__ . '/data/resolve_all_of.yml', OpenApi::class, true, true);
+        $result = $openApi->validate();
+        $this->assertTrue($result);
+        $this->assertEquals([], $openApi->getErrors());
+
+        $this->assertInstanceOf(SpecBaseObject::class, $openApi->components->schemas['Post']->properties['user']);
+        $this->assertObjectNotHasProperty('allOf', $openApi->components->schemas['Post']->properties['user']);
+
+        $this->assertFalse($openApi->components->schemas['Post']->properties['user']->{'x-faker'});
+        $this->assertTrue($openApi->components->schemas['Post']->properties['user']->{'x-faker2'});
+        $expected = require_once __DIR__ . '/data/resolve_all_of_expected.php';
+
+//        $this->assertSame(
+//            json_decode(json_encode($openApi->components->schemas['Post']->getSerializableData()), true)
+//            , []
+//        );
+
+        $this->assertSame(
+            json_decode(json_encode($openApi->components->schemas['Post']->getSerializableData()), true)
+             , $expected
+        );
+    }
+
+    // https://github.com/cebe/yii2-openapi/issues/165
+    public function test165ResolveNestedAllOfWithReference()
+    {
+        $openApi = Reader::readFromYamlFile(__DIR__ . '/data/resolve_nested_all_of_with_reference.yml', OpenApi::class, true, true);
+        $result = $openApi->validate();
+        $this->assertTrue($result);
+        $this->assertEquals([], $openApi->getErrors());
+
+        $expected = require_once __DIR__ . '/data/resolve_nested_all_of_with_reference.php';
+        $this->assertSame(
+            json_decode(json_encode($openApi->components->schemas['Pet']->getSerializableData()), true)
+            , $expected
+        );
     }
 }

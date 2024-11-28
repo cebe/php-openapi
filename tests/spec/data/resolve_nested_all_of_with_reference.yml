@@ -1,0 +1,59 @@
+openapi: 3.0.3
+
+info:
+  title: resolve_nested_all_of_with_reference
+  version: 1.0.0
+
+components:
+  schemas:
+    User:
+      type: object
+      required:
+        - id
+        - name
+      properties:
+        id:
+          type: integer
+        name:
+          type: string
+          maxLength: 10
+
+    Pet:
+      type: object
+      required:
+        - id2
+        - name
+      properties:
+        id2:
+          type: integer
+        name:
+          type: string
+          maxLength: 12
+        physical:
+          allOf:
+            - type: object
+              properties:
+                weight:
+                  type: integer
+                dimension:
+                  allOf:
+                    - type: object
+                      properties:
+                        height:
+                          type: integer
+                        length:
+                          type: integer
+                        width:
+                          type: integer
+                        miscellaneous:
+                          type: object
+                          properties:
+                            owner:
+                              $ref: '#/components/schemas/User'
+
+paths:
+  '/':
+    get:
+      responses:
+        '200':
+          description: OK
