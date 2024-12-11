@@ -525,4 +525,37 @@ abstract class SpecBaseObject implements SpecObjectInterface, DocumentContextInt
         }
         return $extensions;
     }
+
+    /**
+     * Returns extension property with `x-` prefix.
+     * @see https://github.com/OAI/OpenAPI-Specification/blob/3.0.2/versions/3.0.2.md#specificationExtensions
+     * @param string $key The property key, e.g. 'x-prop' or 'prop' (the 'x-' prefix is added automatically if needed).
+     * @return mixed|null The property value, if present.
+     * @since 1.8.0
+     */
+    public function getExtension(string $key)
+    {
+        if (strpos($key, 'x-') !== 0) {
+            $key = 'x-' . $key;
+        }
+
+        return $this->_properties[$key] ?? null;
+    }
+
+    /**
+     * Set extension property with `x-` prefix.
+     * @see https://github.com/OAI/OpenAPI-Specification/blob/3.0.2/versions/3.0.2.md#specificationExtensions
+     * @param string $key The property key, e.g. 'x-prop' or 'prop' (the 'x-' prefix is added automatically if needed).
+     * @param mixed $value The property value.
+     * @return void
+     * @since 1.8.0
+     */
+    public function setExtension(string $key, $value): void
+    {
+        if (strpos($key, 'x-') !== 0) {
+            $key = 'x-' . $key;
+        }
+
+        $this->_properties[$key] = $value;
+    }
 }
