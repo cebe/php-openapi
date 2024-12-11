@@ -71,6 +71,10 @@ YAML
         ];
         $this->assertEquals($expectedCat, $mediaType->examples['cat']->value);
 
+        $this->assertNotNull($mediaType->examples);
+        $mediaType->removeExample('dog');
+        $this->assertTrue(empty($mediaType->examples['dog']));               
+
     }
 
     public function testCreateionFromObjects()

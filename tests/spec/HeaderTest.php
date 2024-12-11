@@ -14,6 +14,7 @@ class HeaderTest extends \PHPUnit\Framework\TestCase
         $header = Reader::readFromJson(<<<JSON
 {
   "description": "The number of allowed requests in the current period",
+  "style": "json",
   "schema": {
     "type": "integer"
   }
@@ -28,6 +29,10 @@ JSON
         $this->assertEquals('The number of allowed requests in the current period', $header->description);
         $this->assertInstanceOf(\cebe\openapi\spec\Schema::class, $header->schema);
         $this->assertEquals('integer', $header->schema->type);
+
+        $this->assertEquals('json', $header->style);
+        $header->removeProperty('style');
+        $this->assertTrue(empty($header->style));
     }
 
 }

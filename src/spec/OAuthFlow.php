@@ -21,7 +21,6 @@ use cebe\openapi\SpecBaseObject;
  */
 class OAuthFlow extends SpecBaseObject
 {
-
     /**
      * @return array array of attributes available in this object.
      */
@@ -33,6 +32,14 @@ class OAuthFlow extends SpecBaseObject
             'refreshUrl' => Type::STRING,
             'scopes' => [Type::STRING, Type::STRING],
         ];
+    }
+
+    /**
+     * @param string $name scope's name
+     */
+    public function removeScope(string $name): void
+    {
+        $this->deleteProperty('scopes', $name);
     }
 
     /**

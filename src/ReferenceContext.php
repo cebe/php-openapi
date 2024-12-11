@@ -23,11 +23,11 @@ class ReferenceContext
      * The result will be a single API description file with references
      * inside of the file structure.
      */
-    const RESOLVE_MODE_INLINE = 'inline';
+    public const RESOLVE_MODE_INLINE = 'inline';
     /**
      * resolve all references, except recursive ones.
      */
-    const RESOLVE_MODE_ALL = 'all';
+    public const RESOLVE_MODE_ALL = 'all';
 
     /**
      * @var bool whether to throw UnresolvableReferenceException in case a reference can not
@@ -103,7 +103,7 @@ class ReferenceContext
         $host     = $parts['host'] ?? '';
         $port     = !empty($parts['port']) ? ':' . $parts['port'] : '';
         $user     = $parts['user'] ?? '';
-        $pass     = !empty($parts['pass']) ? ':' . $parts['pass']  : '';
+        $pass     = !empty($parts['pass']) ? ':' . $parts['pass'] : '';
         $pass     = ($user || $pass) ? "$pass@" : '';
         $path     = $parts['path'] ?? '';
         $query    = !empty($parts['query']) ? '?' . $parts['query'] : '';

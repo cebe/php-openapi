@@ -192,4 +192,30 @@ JSON
         $this->assertEquals('A bar', $barPath->get->responses['200']->description);
         $this->assertEquals('non-existing resource', $barPath->get->responses['404']->description);
     }
+
+    public function testPathItemRemoveProperties()
+    {
+        $file = __DIR__ . '/data/paths/path-item-test.yaml';
+        /** @var $openapi OpenApi */
+        $openapi = Reader::readFromYamlFile($file, \cebe\openapi\spec\OpenApi::class, true);
+
+        $this->assertTrue($openapi->validate());
+        $barPath = $openapi->paths['/bar'];
+
+        $this->assertCount(2, $barPath->getOperations());
+        $this->assertInstanceOf(Operation::class, $barPath->get);
+        $this->assertEquals('getBar', $barPath->get->operationId);
+
+        $this->assertEquals(count($barPath->parameters), 1);
+        $barPath->removeParameter('id');
+        $this->assertEquals(count($barPath->parameters), 0);           
+
+        $barPath->removeOperation('get', 'getBar');
+        $this->assertCount(1, $barPath->getOperations()); 
+        
+        $this->assertInstanceOf(Operation::class, $barPath->post);
+        $this->assertEquals('createBar', $barPath->post->operationId);        
+        $barPath->removeOperation('post', 'createBar');
+        $this->assertEmpty($barPath->getOperations());           
+    }    
 }

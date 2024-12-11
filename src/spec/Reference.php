@@ -154,7 +154,7 @@ class Reference implements SpecObjectInterface, DocumentContextInterface
     /**
      * @return ReferenceContext
      */
-    public function getContext() : ?ReferenceContext
+    public function getContext(): ?ReferenceContext
     {
         return $this->_context;
     }
