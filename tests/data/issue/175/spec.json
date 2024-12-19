@@ -1,0 +1,20 @@
+{
+    "openapi": "3.0.0",
+    "info": {
+        "title": "My API",
+        "version": "1, 2"
+    },
+    "paths": {
+        "/v1/users/profile": {
+            "get": {
+                "operationId": "V1GetUserProfile",
+                "summary": "Returns the user profile",
+                "responses": {
+                    "401": {
+                        "$ref": "./401.json"
+                    }
+                }
+            }
+        }
+    }
+}
