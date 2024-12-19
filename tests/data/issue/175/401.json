@@ -1,0 +1,20 @@
+{
+    "description": "401 response",
+    "content": {
+        "application/json": {
+            "schema": {
+                "properties": {
+                    "message": {
+                        "type": "string"
+                    }
+                },
+                "required": [
+                    "message"
+                ]
+            },
+            "example": {
+                "message": "Unauthenticated."
+            }
+        }
+    }
+}
