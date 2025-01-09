@@ -83,4 +83,3 @@ coverage: .php-openapi-covA .php-openapi-covB
 
 .PHONY: all check-style fix-style install test lint coverage
 
-
