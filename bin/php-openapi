@@ -89,7 +89,7 @@ foreach($argv as $k => $arg) {
                     "\BPHP OpenAPI 3 tool\C\n"
                     . "\B------------------\C\n"
                     . "by Carsten Brandt <mail@cebe.cc>\n\n",
-                    STDERR
+                    fopen('php://stderr', 'w')
                 );
                 usage();
             break;
@@ -140,16 +140,16 @@ switch ($command) {
 
         if ($validator->isValid() && empty($errors)) {
             if(!$silentMode) {
-                print_formatted("The supplied API Description \B\Gvalidates\C against the OpenAPI v3.0 schema.\n", STDERR);
+                print_formatted("The supplied API Description \B\Gvalidates\C against the OpenAPI v3.0 schema.\n", fopen('php://stderr', 'w'));
             }
             exit(0);
         }
 
         if (!empty($errors)) {
             if ($inputFile === null) {
-                print_formatted("\BErrors found while reading the API description from STDIN:\C\n", STDERR);
+                print_formatted("\BErrors found while reading the API description from STDIN:\C\n", fopen('php://stderr', 'w'));
             } else {
-                print_formatted("\BErrors found while reading the API description from {$inputFile}:\C\n", STDERR);
+                print_formatted("\BErrors found while reading the API description from {$inputFile}:\C\n", fopen('php://stderr', 'w'));
             }
             foreach ($errors as $error) {
                 if (($openPos = strpos($error, '[')) !== false && ($closePos = strpos($error, ']')) !== false && $openPos < $closePos) {
@@ -159,11 +159,11 @@ switch ($command) {
                 } else {
                     $error = escape_formatted($error);
                 }
-                print_formatted("- " . $error . "\n", STDERR);
+                print_formatted("- " . $error . "\n", fopen('php://stderr', 'w'));
             }
         }
         if (!$validator->isValid()) {
-            print_formatted("\BOpenAPI v3.0 schema violations:\C\n", STDERR);
+            print_formatted("\BOpenAPI v3.0 schema violations:\C\n", fopen('php://stderr', 'w'));
             $errors = $validator->getErrors();
             foreach ($errors as $error) {
                 // hide some errors triggered by other errors further down the path
@@ -192,7 +192,7 @@ switch ($command) {
                     }
                 }
 
-                print_formatted(sprintf("- [\Y%s\C] %s\n", escape_formatted($error['property']), escape_formatted($error['message'])), STDERR);
+                print_formatted(sprintf("- [\Y%s\C] %s\n", escape_formatted($error['property']), escape_formatted($error['message'])), fopen('php://stderr', 'w'));
             }
         }
         exit(2);
@@ -356,7 +356,7 @@ Usage:
 
 
 EOF
-    , STDERR
+    , fopen('php://stderr', 'w')
 );
     exit(1);
 }
@@ -368,7 +368,7 @@ EOF
  * @return void
  */
 function error($message, $callback = null) {
-    print_formatted("\B\RError\C: " . escape_formatted($message) . "\n", STDERR);
+    print_formatted("\B\RError\C: " . escape_formatted($message) . "\n", fopen('php://stderr', 'w'));
     if (is_callable($callback)) {
         call_user_func($callback);
     }
