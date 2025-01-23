@@ -10,10 +10,12 @@ class IssueTest extends \PHPUnit\Framework\TestCase
 //        $this->assertTrue($openapi->getErrors());
 //        $this->assertTrue($openapi->validate());
 
-
-        // exec('echo hiiiiiiiii', $output, $code);
-        exec('bin/php-openapi validate tests/data/issue/165/spec.yml', $output, $code);
-        $this->assertSame($output, ['/path/to/php-openapi']);
+        // exec('echo hi', $output, $code);
+        exec('bin/php-openapi validate tests/data/issue/165/spec.yml 2>&1', $output, $code);
+        $this->assertSame($output, [
+            'OpenAPI v3.0 schema violations:',
+            '- [components.schemas.answer.properties.id] The property summary is not defined and the definition does not allow additional properties',
+        ]);
         // $this->assertSame(0, $code);
     }
 }
