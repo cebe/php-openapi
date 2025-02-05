@@ -9,7 +9,6 @@ namespace cebe\openapi;
 
 use cebe\openapi\exceptions\IOException;
 use cebe\openapi\spec\OpenApi;
-use Symfony\Component\Yaml\Yaml;
 
 /**
  * Utility class to simplify writing JSON or YAML OpenAPI specs.
@@ -35,7 +34,11 @@ class Writer
      */
     public static function writeToYaml(SpecObjectInterface $object): string
     {
-        return Yaml::dump($object->getSerializableData(), 256, 2, Yaml::DUMP_OBJECT_AS_MAP | Yaml::DUMP_EMPTY_ARRAY_AS_SEQUENCE);
+//        return Yaml::dump($object->getSerializableData(), 256, 2, Yaml::DUMP_OBJECT_AS_MAP | Yaml::DUMP_EMPTY_ARRAY_AS_SEQUENCE);
+        return yaml_emit(
+            json_decode(json_encode($object->getSerializableData(), JSON_FORCE_OBJECT), true),
+            YAML_UTF8_ENCODING
+        );
     }
 
     /**

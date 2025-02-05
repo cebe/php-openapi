@@ -74,11 +74,13 @@ JSON
 
 
         $this->assertEquals(preg_replace('~\R~', "\n", <<<YAML
+---
 openapi: 3.0.0
 info:
-  title: 'Test API'
+  title: Test API
   version: 1.0.0
-paths: {  }
+paths: []
+...
 
 YAML
         ),
@@ -121,12 +123,14 @@ JSON
 
 
         $this->assertEquals(preg_replace('~\R~', "\n", <<<YAML
+---
 openapi: 3.0.0
 info:
-  title: 'Test API'
+  title: Test API
   version: 1.0.0
-paths: {  }
+paths: []
 security: []
+...
 
 YAML
         ),
@@ -173,14 +177,15 @@ JSON
 
 
         $this->assertEquals(preg_replace('~\R~', "\n", <<<YAML
+---
 openapi: 3.0.0
 info:
-  title: 'Test API'
+  title: Test API
   version: 1.0.0
-paths: {  }
+paths: []
 security:
-  -
-    Bearer: []
+- Bearer: []
+...
 
 YAML
         ),
