@@ -36,8 +36,7 @@ class Writer
     {
 //        return Yaml::dump($object->getSerializableData(), 256, 2, Yaml::DUMP_OBJECT_AS_MAP | Yaml::DUMP_EMPTY_ARRAY_AS_SEQUENCE);
         return yaml_emit(
-            json_decode(json_encode($object->getSerializableData(), JSON_FORCE_OBJECT), true),
-            YAML_UTF8_ENCODING
+            json_decode(json_encode($object->getSerializableData()), true)
         );
     }
 
