@@ -1,6 +1,11 @@
 <?php
 
+use cebe\openapi\spec\Components;
+use cebe\openapi\spec\OpenApi;
+use cebe\openapi\spec\Operation;
+use cebe\openapi\spec\PathItem;
 use cebe\openapi\spec\SecurityRequirement;
+use cebe\openapi\spec\SecurityScheme;
 
 class WriterTest extends \PHPUnit\Framework\TestCase
 {
@@ -186,5 +191,32 @@ YAML
         ),
             $yaml
         );
+    }
+
+    public function testSecurity()
+    {
+        $openapi = new OpenApi([
+            'components' => new Components([
+                'securitySchemes' => [
+                    'BearerAuth' => new SecurityScheme([
+                        'type' => 'http',
+                        'scheme' => 'bearer',
+                        'bearerFormat' => 'AuthToken and JWT Format' # optional, arbitrary value for documentation purposes
+                    ])
+                ],
+            ]),
+            'paths' => [
+                '/test' => new PathItem([
+                    'get' => new Operation([
+                        'security' => [
+                            'BearerAuth' => new SecurityRequirement([])
+                        ],
+                    ])
+                ])
+            ]
+        ]);
+
+        $result = json_decode(json_encode($openapi->getSerializableData()), true);
+        $this->assertTrue($result);
     }
 }

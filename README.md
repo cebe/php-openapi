@@ -298,4 +298,3 @@ Professional support, consulting as well as software development services are av
 https://www.cebe.cc/en/contact
 
 Development of this library is sponsored by [cebe.:cloud: "Your Professional Deployment Platform"](https://cebe.cloud).
-
