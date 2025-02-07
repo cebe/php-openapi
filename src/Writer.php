@@ -36,6 +36,7 @@ class Writer
     public static function writeToYaml(SpecObjectInterface $object): string
     {
         return Yaml::dump($object->getSerializableData(), 256, 2, Yaml::DUMP_OBJECT_AS_MAP | Yaml::DUMP_EMPTY_ARRAY_AS_SEQUENCE);
+//        return Yaml::dump(json_decode(json_encode($object->getSerializableData()), true), 256, 2, Yaml::DUMP_OBJECT_AS_MAP | Yaml::DUMP_EMPTY_ARRAY_AS_SEQUENCE);
     }
 
     /**
