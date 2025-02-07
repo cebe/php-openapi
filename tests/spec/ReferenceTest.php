@@ -1,13 +1,13 @@
 <?php
 
 use cebe\openapi\Reader;
+use cebe\openapi\spec\Example;
 use cebe\openapi\spec\OpenApi;
 use cebe\openapi\spec\Parameter;
 use cebe\openapi\spec\Reference;
 use cebe\openapi\spec\RequestBody;
 use cebe\openapi\spec\Response;
 use cebe\openapi\spec\Schema;
-use cebe\openapi\spec\Example;
 
 /**
  * @covers \cebe\openapi\spec\Reference
@@ -441,21 +441,23 @@ YAML;
         $yaml = \cebe\openapi\Writer::writeToYaml($openapi);
 
         $expected = <<<YAML
+---
 openapi: 3.0.0
 info:
-  title: 'Ref Example'
+  title: Ref Example
   version: 1.0.0
 paths:
   /pet:
     get:
       responses:
-        '200':
-          description: 'return a pet'
+        200:
+          description: return a pet
   /cat:
     get:
       responses:
-        '200':
-          description: 'return a cat'
+        200:
+          description: return a cat
+...
 
 YAML;
         // remove line endings to make string equal on windows
@@ -474,53 +476,53 @@ YAML;
         $openapi = Reader::readFromYamlFile(__DIR__ . '/data/reference/ReferencedCommonParamsInReferencedPath.yml', OpenApi::class, \cebe\openapi\ReferenceContext::RESOLVE_MODE_INLINE);
         $yaml = \cebe\openapi\Writer::writeToYaml($openapi);
         $expected = <<<YAML
+---
 openapi: 3.0.0
 info:
-  title: 'Nested reference with common path params'
+  title: Nested reference with common path params
   version: 1.0.0
 paths:
   /example:
     get:
       responses:
-        '200':
-          description: 'OK if common params can be references'
+        200:
+          description: OK if common params can be references
       request:
         content:
           application/json:
             examples:
               user:
-                summary: 'User Example'
+                summary: User Example
                 externalValue: ./paths/examples/user-example.json
               userex:
-                summary: 'External User Example'
-                externalValue: 'https://api.example.com/examples/user-example.json'
+                summary: External User Example
+                externalValue: https://api.example.com/examples/user-example.json
     parameters:
-      -
-        name: test
-        in: header
-        description: 'Test parameter to be referenced'
-        required: true
-        schema:
-          enum:
-            - test
-          type: string
+    - name: test
+      in: header
+      description: Test parameter to be referenced
+      required: true
+      schema:
+        enum:
+        - test
+        type: string
     x-something: something
   /something:
     get:
       responses:
-        '200':
-          description: 'OK if common params can be references'
+        200:
+          description: OK if common params can be references
     parameters:
-      -
-        name: test
-        in: header
-        description: 'Test parameter to be referenced'
-        required: true
-        schema:
-          enum:
-            - test
-          type: string
+    - name: test
+      in: header
+      description: Test parameter to be referenced
+      required: true
+      schema:
+        enum:
+        - test
+        type: string
     x-something: something
+...
 
 YAML;
         // remove line endings to make string equal on windows
@@ -541,16 +543,17 @@ YAML;
         $yaml = \cebe\openapi\Writer::writeToYaml($openapi);
 
         $expected = <<<YAML
+---
 openapi: 3.0.3
 info:
-  title: 'Link Example'
+  title: Link Example
   version: 1.0.0
 paths:
   /pet:
     get:
       responses:
-        '200':
-          description: 'return a pet'
+        200:
+          description: return a pet
 components:
   schemas:
     Pet:
@@ -561,7 +564,7 @@ components:
           format: int64
         cat:
           \$ref: '#/components/schemas/Cat'
-      description: 'A Pet'
+      description: A Pet
     Cat:
       type: object
       properties:
@@ -570,10 +573,11 @@ components:
           format: int64
         name:
           type: string
-          description: 'the cats name'
+          description: the cats name
         pet:
           \$ref: '#/components/schemas/Pet'
-      description: 'A Cat'
+      description: A Cat
+...
 
 YAML;
         // remove line endings to make string equal on windows
@@ -594,16 +598,17 @@ YAML;
         $yaml = \cebe\openapi\Writer::writeToYaml($openapi);
 
         $expected = <<<YAML
+---
 openapi: 3.0.3
 info:
-  title: 'Link Example'
+  title: Link Example
   version: 1.0.0
 paths:
   /pet:
     get:
       responses:
-        '200':
-          description: 'return a pet'
+        200:
+          description: return a pet
 components:
   schemas:
     Pet:
@@ -620,11 +625,11 @@ components:
               format: int64
             name:
               type: string
-              description: 'the cats name'
+              description: the cats name
             pet:
               \$ref: '#/components/schemas/Pet'
-          description: 'A Cat'
-      description: 'A Pet'
+          description: A Cat
+      description: A Pet
     Cat:
       type: object
       properties:
@@ -633,7 +638,7 @@ components:
           format: int64
         name:
           type: string
-          description: 'the cats name'
+          description: the cats name
         pet:
           type: object
           properties:
@@ -642,8 +647,9 @@ components:
               format: int64
             cat:
               \$ref: '#/components/schemas/Cat'
-          description: 'A Pet'
-      description: 'A Cat'
+          description: A Pet
+      description: A Cat
+...
 
 YAML;
         // remove line endings to make string equal on windows

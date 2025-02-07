@@ -30,7 +30,7 @@ class OpenApiTest extends \PHPUnit\Framework\TestCase
     {
         $openApiFile = __DIR__ . '/../../vendor/oai/openapi-specification/examples/v3.0/petstore.yaml';
 
-        $yaml = Yaml::parse(file_get_contents($openApiFile));
+        $yaml = yaml_parse(file_get_contents($openApiFile));
         $openapi = new OpenApi($yaml);
 
         $result = $openapi->validate();

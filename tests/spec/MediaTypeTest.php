@@ -1,8 +1,8 @@
 <?php
 
 use cebe\openapi\Reader;
-use cebe\openapi\spec\MediaType;
 use cebe\openapi\spec\Example;
+use cebe\openapi\spec\MediaType;
 use cebe\openapi\spec\OpenApi;
 use cebe\openapi\spec\Reference;
 use Symfony\Component\Yaml\Yaml;
@@ -125,7 +125,7 @@ YAML
 
     public function testUnresolvedReferencesInEncoding()
     {
-        $yaml = Yaml::parse(<<<'YAML'
+        $yaml = yaml_parse(<<<'YAML'
 openapi: "3.0.0"
 info:
   version: 1.0.0

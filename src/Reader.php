@@ -13,7 +13,6 @@ use cebe\openapi\exceptions\UnresolvableReferenceException;
 use cebe\openapi\json\InvalidJsonPointerSyntaxException;
 use cebe\openapi\json\JsonPointer;
 use cebe\openapi\spec\OpenApi;
-use Symfony\Component\Yaml\Yaml;
 
 /**
  * Utility class to simplify reading JSON or YAML OpenAPI specs.
@@ -54,7 +53,7 @@ class Reader
      */
     public static function readFromYaml(string $yaml, string $baseType = OpenApi::class): SpecObjectInterface
     {
-        return new $baseType(Yaml::parse($yaml));
+        return new $baseType(yaml_parse($yaml));
     }
 
     /**

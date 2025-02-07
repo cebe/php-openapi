@@ -11,7 +11,6 @@ use cebe\openapi\exceptions\IOException;
 use cebe\openapi\exceptions\UnresolvableReferenceException;
 use cebe\openapi\json\JsonPointer;
 use cebe\openapi\spec\Reference;
-use Symfony\Component\Yaml\Yaml;
 
 /**
  * ReferenceContext represents a context in which references are resolved.
@@ -224,7 +223,7 @@ class ReferenceContext
         if (strpos(ltrim($content), '{') === 0) {
             $parsedContent = json_decode($content, true);
         } else {
-            $parsedContent = Yaml::parse($content);
+            $parsedContent = yaml_parse($content);
         }
         $this->_cache->set('FILE_CONTENT://' . $uri, 'FILE_CONTENT', $parsedContent);
         return $parsedContent;

@@ -8,7 +8,6 @@
 namespace cebe\openapi\spec;
 
 use cebe\openapi\DocumentContextInterface;
-use cebe\openapi\exceptions\IOException;
 use cebe\openapi\exceptions\TypeErrorException;
 use cebe\openapi\exceptions\UnresolvableReferenceException;
 use cebe\openapi\json\InvalidJsonPointerSyntaxException;
@@ -17,7 +16,6 @@ use cebe\openapi\json\JsonReference;
 use cebe\openapi\json\NonexistentJsonPointerReferenceException;
 use cebe\openapi\ReferenceContext;
 use cebe\openapi\SpecObjectInterface;
-use Symfony\Component\Yaml\Yaml;
 
 /**
  * Reference Object
