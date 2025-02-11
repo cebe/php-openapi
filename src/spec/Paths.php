@@ -46,6 +46,10 @@ class Paths implements SpecObjectInterface, DocumentContextInterface, ArrayAcces
      * @var JsonPointer|null
      */
     private $_jsonPointer;
+    /**
+     * @var string
+     */
+    private $_operationsIds = [];
 
 
     /**
@@ -146,6 +150,18 @@ class Paths implements SpecObjectInterface, DocumentContextInterface, ArrayAcces
             }
             if (strpos($key, '/') !== 0) {
                 $this->_errors[] = "Path must begin with /: $key";
+            }
+            $operations = $path->getOperations();
+            foreach($operations as $operation) {
+                $id = $operation->operationId;
+                if(empty($id)) {
+                    continue;
+                }
+                if(!empty($this->_operationsIds[$id]) && $this->_operationsIds[$id]) {
+                    $this->_errors[] = "Operation ID '$id', already exist. Operation IDs must be unique.";
+                    $valid = false;
+                }
+                $this->_operationsIds[$id] = true;
             }
         }
         return $valid && empty($this->_errors);
