@@ -195,7 +195,7 @@ YAML
 
     public function testSecurity()
     {
-        $openapi = new OpenApi([
+        $openapi = $this->createOpenAPI([
             'components' => new Components([
                 'securitySchemes' => [
                     'BearerAuth' => new SecurityScheme([
@@ -216,7 +216,29 @@ YAML
             ]
         ]);
 
-        $result = json_decode(json_encode($openapi->getSerializableData()), true);
-        $this->assertTrue($result);
+        $yaml = \cebe\openapi\Writer::writeToYaml($openapi);
+
+
+        $this->assertEquals(preg_replace('~\R~', "\n", <<<YAML
+openapi: 3.0.0
+info:
+  title: 'Test API'
+  version: 1.0.0
+paths:
+  /test:
+    get:
+      security:
+        BearerAuth: {  }
+components:
+  securitySchemes:
+    BearerAuth:
+      type: http
+      scheme: bearer
+      bearerFormat: 'AuthToken and JWT Format'
+
+YAML
+        ),
+            $yaml
+        );
     }
 }
