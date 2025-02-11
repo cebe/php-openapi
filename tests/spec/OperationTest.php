@@ -53,6 +53,8 @@ security:
 - petstore_auth:
   - write:pets
   - read:pets
+servers:
+- url: https://example.com
 externalDocs:
   description: Find more info here
   url: https://example.com
@@ -90,5 +92,25 @@ YAML
 
         // deprecated Default value is false.
         $this->assertFalse($operation->deprecated);
+
+        $this->assertEquals(count($operation->tags), 1);
+        $operation->removeTag('pet');
+        $this->assertEquals(count($operation->tags), 0);
+
+        $this->assertTrue(!empty($operation->operationId));
+        $operation->removeProperty('operationId');
+        $this->assertTrue(empty($operation->operationId));  
+
+        $this->assertEquals(count($operation->parameters), 1);
+        $operation->removeParameter('petId');
+        $this->assertEquals(count($operation->parameters), 0);      
+
+        $this->assertEquals(count($operation->servers), 1);
+        $operation->removeServer('https://example.com');
+        $this->assertEquals(count($operation->servers), 0);    
+        
+        $this->assertEquals(count($operation->security), 1);
+        $operation->removeSecurity('petstore_auth');
+        $this->assertEquals(count($operation->security), 0);          
     }
 }

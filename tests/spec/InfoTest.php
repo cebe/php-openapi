@@ -46,6 +46,10 @@ YAML
         $this->assertInstanceOf(License::class, $info->license);
         $this->assertEquals('Apache 2.0', $info->license->name);
         $this->assertEquals('https://www.apache.org/licenses/LICENSE-2.0.html', $info->license->url);
+
+        $this->assertNotNull($info->license);
+        $info->removeProperty('license');
+        $this->assertTrue(empty($info->license));        
     }
 
     public function testReadInvalid()
