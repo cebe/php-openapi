@@ -189,7 +189,9 @@ YAML
         $this->assertInstanceOf(Reference::class, $openapi->components->schemas['Dog']);
         $this->assertInstanceOf(Reference::class, $openapi->components->parameters['Parameter.PetId']);
 
-        $openapi->resolveReferences(new \cebe\openapi\ReferenceContext($openapi, $file));
+        $referenceContext = new \cebe\openapi\ReferenceContext($openapi, $file);
+        $referenceContext->throwException = false;
+        $openapi->resolveReferences($referenceContext);
 
         $this->assertInstanceOf(Schema::class, $openapi->components->schemas['Pet']);
         $this->assertInstanceOf(Schema::class, $openapi->components->schemas['Dog']);
@@ -657,4 +659,27 @@ YAML;
         }
     }
 
+    public function testResolveFileInSubdirWithFailReference()
+    {
+        $file = __DIR__ . '/data/reference/subdir.yaml';
+        /** @var $openapi OpenApi */
+        $openapi = Reader::readFromYamlFile($file, OpenApi::class, false);
+
+        $referenceContext = new \cebe\openapi\ReferenceContext($openapi, $file);
+        $referenceContext->throwException = false;
+        $referenceContext->mode = \cebe\openapi\ReferenceContext::RESOLVE_MODE_ALL;
+        $openapi->resolveReferences($referenceContext);
+
+        $result = $openapi->validate();
+        $this->assertMatchesRegularExpression(
+          "/Failed to resolve Reference 'subdir\/Foo\/Bar.yaml'/",
+          $openapi->getErrors()[0]
+        );
+        $this->assertFalse($result);
+
+        $this->assertInstanceOf(Schema::class, $openapi->components->schemas['Pet']);
+        $this->assertInstanceOf(Schema::class, $openapi->components->schemas['Dog']);
+        $this->assertInstanceOf(Parameter::class, $openapi->components->parameters['Parameter.PetId']);
+
+    }
 }
