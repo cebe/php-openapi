@@ -66,7 +66,7 @@ JSON
         }
     }
 
-    public function testCreateionFromObjects()
+    public function testCreationFromObjects()
     {
         $paths = new Paths([
             '/pets' => new PathItem([
