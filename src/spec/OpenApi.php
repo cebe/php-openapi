@@ -37,7 +37,7 @@ class OpenApi extends SpecBaseObject
             'servers' => [Server::class],
             'paths' => Paths::class,
             'components' => Components::class,
-            'security' => [Type::STRING, SecurityRequirement::class],
+            'security' => [SecurityRequirement::class],
             'tags' => [Tag::class],
             'externalDocs' => ExternalDocumentation::class,
         ];

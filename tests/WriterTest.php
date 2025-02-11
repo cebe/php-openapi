@@ -4,6 +4,8 @@ use cebe\openapi\spec\Components;
 use cebe\openapi\spec\OpenApi;
 use cebe\openapi\spec\Operation;
 use cebe\openapi\spec\PathItem;
+use cebe\openapi\spec\Response;
+use cebe\openapi\spec\Responses;
 use cebe\openapi\spec\SecurityRequirement;
 use cebe\openapi\spec\SecurityScheme;
 
@@ -193,7 +195,7 @@ YAML
         );
     }
 
-    public function testSecurity()
+    public function testSecurityAtPathOperationLevel()
     {
         $openapi = $this->createOpenAPI([
             'components' => new Components([
@@ -209,8 +211,11 @@ YAML
                 '/test' => new PathItem([
                     'get' => new Operation([
                         'security' => [
-                            'BearerAuth' => new SecurityRequirement([])
+                            new SecurityRequirement(['BearerAuth' => []])
                         ],
+                        'responses' => new Responses([
+                            200 => new Response(['description' => 'OK']),
+                        ])
                     ])
                 ])
             ]
@@ -227,14 +232,60 @@ info:
 paths:
   /test:
     get:
+      responses:
+        '200':
+          description: OK
       security:
-        BearerAuth: {  }
+        -
+          BearerAuth: []
 components:
   securitySchemes:
     BearerAuth:
       type: http
       scheme: bearer
       bearerFormat: 'AuthToken and JWT Format'
+
+YAML
+        ),
+            $yaml
+        );
+    }
+
+    public function testSecurityAtGlobalLevel()
+    {
+        $openapi = $this->createOpenAPI([
+            'components' => new Components([
+                'securitySchemes' => [
+                    'BearerAuth' => new SecurityScheme([
+                        'type' => 'http',
+                        'scheme' => 'bearer',
+                        'bearerFormat' => 'AuthToken and JWT Format' # optional, arbitrary value for documentation purposes
+                    ])
+                ],
+            ]),
+            'security' => [
+                'BearerAuth' => new SecurityRequirement([])
+            ],
+            'paths' => [],
+        ]);
+
+        $yaml = \cebe\openapi\Writer::writeToYaml($openapi);
+
+
+        $this->assertEquals(preg_replace('~\R~', "\n", <<<YAML
+openapi: 3.0.0
+info:
+  title: 'Test API'
+  version: 1.0.0
+paths: {  }
+components:
+  securitySchemes:
+    BearerAuth:
+      type: http
+      scheme: bearer
+      bearerFormat: 'AuthToken and JWT Format'
+security:
+  BearerAuth: {  }
 
 YAML
         ),
