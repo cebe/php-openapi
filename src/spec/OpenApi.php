@@ -7,7 +7,6 @@
 
 namespace cebe\openapi\spec;
 
-use cebe\openapi\exceptions\TypeErrorException;
 use cebe\openapi\SpecBaseObject;
 
 /**

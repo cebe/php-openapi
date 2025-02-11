@@ -12,6 +12,7 @@ use cebe\openapi\exceptions\UnknownPropertyException;
 use cebe\openapi\json\JsonPointer;
 use cebe\openapi\json\JsonReference;
 use cebe\openapi\spec\Reference;
+use cebe\openapi\spec\Schema;
 use cebe\openapi\spec\Type;
 
 /**
@@ -31,6 +32,7 @@ abstract class SpecBaseObject implements SpecObjectInterface, DocumentContextInt
     private $_recursingReferences = false;
     private $_recursingReferenceContext = false;
     private $_recursingDocumentContext = false;
+    private $_recursingAllOf = false;
 
     private $_baseDocument;
     private $_jsonPointer;
@@ -524,5 +526,87 @@ abstract class SpecBaseObject implements SpecObjectInterface, DocumentContextInt
             $extensions[$propertyKey] = $extension;
         }
         return $extensions;
+    }
+
+    public function getProperties(): array
+    {
+        return $this->_properties;
+    }
+
+    public function mergeProperties($properties)
+    {
+        $this->_properties = Helper::arrayMergeRecursiveDistinct($this->_properties, $properties);
+    }
+
+    public function resolveAllOf()
+    {
+        // avoid recursion to get stuck in a loop
+        if ($this->_recursingAllOf) {
+            return;
+        }
+        $this->_recursingAllOf = true;
+
+        foreach ($this->_properties as $property => $value) {
+            $this->handleMergingOfAllAllOfs($property, $value);
+            $this->removeAllOfKey($property, $value);
+        }
+        $this->_recursingAllOf = false;
+    }
+
+    private function mergeAllAllOfsInToSingleObject(): self
+    {
+        $allOfs = $this->allOf;
+        /** @var static $first */
+        $first = $this->allOf[0];
+        unset($allOfs[0]);
+        foreach ($allOfs as $allOf) {
+            /** @var Schema $allOf */
+            $first->mergeProperties($allOf->getProperties());
+        }
+        return $first;
+    }
+
+    private function handleMergingOfAllAllOfs(string $property, $value): void
+    {
+        if ($property === 'allOf' && !empty($value)) {
+            $this->_properties[$property] = $this->mergeAllAllOfsInToSingleObject();
+        } elseif ($value instanceof SpecObjectInterface && method_exists($value, 'resolveAllOf')) {
+            $value->resolveAllOf();
+        } elseif (is_array($value)) {
+            foreach ($value as $k => $item) {
+                if ($k === 'allOf' && !empty($item)) {
+                    $this->_properties[$property][$k] = $this->mergeAllAllOfsInToSingleObject();
+                } elseif ($item instanceof SpecObjectInterface && method_exists($item, 'resolveAllOf')) {
+                    $item->resolveAllOf();
+                }
+            }
+        }
+    }
+
+    private function removeAllOfKey(string $property, $value): void
+    {
+        if ($property === 'properties' && !empty($value)) {
+            foreach ($value as $k => $v) {
+                if (!empty($v->allOf)) {
+                    $temp = $v->allOf;
+                    $this->_properties[$property][$k] = $temp;
+                }
+            }
+        } elseif ($value instanceof SpecObjectInterface && method_exists($value, 'resolveAllOf')) {
+            $value->resolveAllOf();
+        } elseif (is_array($value)) {
+            foreach ($value as $arrayValueKey => $item) {
+                if ($arrayValueKey === 'properties' && !empty($item)) {
+                    foreach ($item as $itemKey => $itemValue) {
+                        if (!empty($itemValue->allOf)) {
+                            $tempIn = $itemValue->allOf;
+                            $this->_properties[$property][$arrayValueKey][$itemKey] = $tempIn;
+                        }
+                    }
+                } elseif ($item instanceof SpecObjectInterface && method_exists($item, 'resolveAllOf')) {
+                    $item->resolveAllOf();
+                }
+            }
+        }
     }
 }

@@ -15,6 +15,9 @@ DOCKER_PHP=docker-compose run --rm php
 DOCKER_NODE=docker-compose run --rm -w /app node
 endif
 
+CONTAINER_NAME=$$(echo $$(pwd) | tr / _ | cut -c 2-) # lets have unique container name when dealing with lot of forks
+UID=$(shell id -u)
+
 all:
 	@echo "the following commands are available:"
 	@echo ""
@@ -31,6 +34,12 @@ all:
 
 check-style: php-cs-fixer.phar
 	PHP_CS_FIXER_IGNORE_ENV=1 ./php-cs-fixer.phar fix src/ --diff --dry-run
+
+cli:
+	COMPOSE_PROJECT_NAME=$(CONTAINER_NAME) docker-compose exec --user=$(UID) php bash # lets have unique container name when dealing with lot of forks
+
+cli_root:
+	COMPOSE_PROJECT_NAME=$(CONTAINER_NAME) docker-compose exec --user="root" php bash
 
 fix-style: php-cs-fixer.phar
 	$(DOCKER_PHP) vendor/bin/indent --tabs composer.json
@@ -81,5 +90,13 @@ coverage: .php-openapi-covA .php-openapi-covB
 .php-openapi-covB:
 	grep -rhPo '^class \w+' src/spec/ | awk '{print $$2}' |grep -v '^Type$$' | sort > $@
 
-.PHONY: all check-style fix-style install test lint coverage
+build-docker:
+	COMPOSE_PROJECT_NAME=$(CONTAINER_NAME) docker-compose build
 
+start-docker:
+	COMPOSE_PROJECT_NAME=$(CONTAINER_NAME) docker-compose up -d
+
+stop-docker:
+	COMPOSE_PROJECT_NAME=$(CONTAINER_NAME) docker-compose down --remove-orphans
+
+.PHONY: all check-style fix-style install test lint coverage build-docker start-docker stop-docker
