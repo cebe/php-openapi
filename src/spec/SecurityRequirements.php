@@ -22,8 +22,11 @@ class SecurityRequirements extends SpecBaseObject
      */
     protected function attributes(): array
     {
+//        (Type::STRING => Type::ANY)[]
+
         // this object does not have a fixed set of attribute names
-        return [Type::STRING, SecurityRequirement::class];
+        return [];
+//        return [Type::STRING, SecurityRequirement::class];
     }
 
     /**

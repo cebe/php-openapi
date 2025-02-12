@@ -212,7 +212,7 @@ YAML
                 '/test' => new PathItem([
                     'get' => new Operation([
                         'security' => new SecurityRequirements([
-                            'BearerAuth' => new SecurityRequirement([])
+                            'BearerAuth' => new SecurityRequirement([]),
                         ]),
                         'responses' => new Responses([
                             200 => new Response(['description' => 'OK']),
