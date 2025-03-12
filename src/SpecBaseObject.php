@@ -20,8 +20,9 @@ use cebe\openapi\spec\Type;
  * Implements property management and validation basics.
  *
  */
-abstract class SpecBaseObject implements SpecObjectInterface, DocumentContextInterface
+abstract class SpecBaseObject implements SpecObjectInterface, DocumentContextInterface, RawSpecDataInterface
 {
+    private $_rawSpec;
     private $_properties = [];
     private $_errors = [];
 
@@ -63,6 +64,7 @@ abstract class SpecBaseObject implements SpecObjectInterface, DocumentContextInt
      */
     public function __construct(array $data)
     {
+        $this->_rawSpec = $data;
         foreach ($this->attributes() as $property => $type) {
             if (!isset($data[$property])) {
                 continue;
@@ -524,5 +526,10 @@ abstract class SpecBaseObject implements SpecObjectInterface, DocumentContextInt
             $extensions[$propertyKey] = $extension;
         }
         return $extensions;
+    }
+
+    public function getRawSpecData(): array
+    {
+        return $this->_rawSpec;
     }
 }
