@@ -46,7 +46,7 @@ class Operation extends SpecBaseObject
             'responses' => Responses::class,
             'callbacks' => [Type::STRING, Callback::class],
             'deprecated' => Type::BOOLEAN,
-            'security' => SecurityRequirements::class,
+            'security' => [SecurityRequirement::class],
             'servers' => [Server::class],
         ];
     }

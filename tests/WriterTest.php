@@ -211,9 +211,7 @@ YAML
             'paths' => [
                 '/test' => new PathItem([
                     'get' => new Operation([
-                        'security' => new SecurityRequirements([
-                            'BearerAuth' => new SecurityRequirement([]),
-                        ]),
+                        'security' => [new SecurityRequirement(['BearerAuth' => []])],
                         'responses' => new Responses([
                             200 => new Response(['description' => 'OK']),
                         ])
