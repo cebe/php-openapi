@@ -25,12 +25,21 @@ use cebe\openapi\SpecBaseObject;
  */
 class SecurityScheme extends SpecBaseObject
 {
+    public $name;
+    public $scheme;
     private $knownTypes = [
         "apiKey",
         "http",
         "oauth2",
         "openIdConnect"
     ];
+
+    public function __construct(array $data)
+    {
+        parent::__construct($data);
+        $this->name = array_keys($data)[0];
+        $this->scheme = array_values($data)[0];
+    }
 
     /**
      * @return array array of attributes available in this object.
