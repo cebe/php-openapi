@@ -11,7 +11,7 @@ use cebe\openapi\SpecBaseObject;
 
 class SecuritySchemes extends SpecBaseObject
 {
-    private $_securitySchemes = [];
+    private $_securitySchemes;
 
     public function __construct(array $data)
     {
@@ -31,13 +31,14 @@ class SecuritySchemes extends SpecBaseObject
     /**
      * @return mixed returns the serializable data of this object for converting it
      * to JSON or YAML.
+     * TODO
      */
     public function getSerializableData()
     {
         $data = [];
-        foreach ($this->_securitySchemes as $securityScheme) {
-            /** @var $securityScheme SecurityScheme */
-            $data[$securityScheme->name] = $securityScheme->scheme;
+        foreach ($this->_securitySchemes as $name => $securityScheme) {
+            /** @var SecurityScheme $securityScheme */
+            $data[$name] = $securityScheme->getSerializableData();
         }
         return (object) $data;
     }

@@ -17,6 +17,14 @@ use cebe\openapi\SpecBaseObject;
  */
 class SecurityRequirements extends SpecBaseObject
 {
+    private $_securityRequirements;
+
+    public function __construct(array $data)
+    {
+        parent::__construct($data);
+        $this->_securityRequirements = $data;
+    }
+
     /**
      * @return array array of attributes available in this object.
      */
@@ -36,5 +44,20 @@ class SecurityRequirements extends SpecBaseObject
      */
     protected function performValidation()
     {
+    }
+
+    /**
+     * @return mixed returns the serializable data of this object for converting it
+     * to JSON or YAML.
+     * TODO
+     */
+    public function getSerializableData()
+    {
+        $data = [];
+        foreach ($this->_securityRequirements as $name => $securityRequirement) {
+            /** @var SecurityRequirement $securityRequirement */
+            $data[] = [$name => json_decode(json_encode($securityRequirement->getSerializableData()), true)];
+        }
+        return $data;
     }
 }
