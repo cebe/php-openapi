@@ -24,7 +24,7 @@ class SecurityRequirements extends SpecBaseObject
         parent::__construct($data);
 
         $read = true;
-        foreach($data as $index => $value) {
+        foreach ($data as $index => $value) {
             if (is_numeric($index)) { // read
                 $requirements = $value;
                 $this->_securityRequirements[array_keys($value)[0]] = new SecurityRequirement(array_values($value)[0]);
@@ -33,6 +33,9 @@ class SecurityRequirements extends SpecBaseObject
                 $requirements = $data;
                 $this->_securityRequirements[$index] = $value;
             }
+        }
+        if ($data === []) {
+            $this->_securityRequirements = [];
         }
     }
 
@@ -71,6 +74,11 @@ class SecurityRequirements extends SpecBaseObject
 
     public function getRequirement(string $name)
     {
-        return $this->_securityRequirements[$name] ?? 'nul5l';
+        return $this->_securityRequirements[$name] ?? null;
+    }
+
+    public function getRequirements()
+    {
+        return $this->_securityRequirements;
     }
 }

@@ -8,7 +8,6 @@ use cebe\openapi\spec\Responses;
 use cebe\openapi\spec\SecurityRequirement;
 use cebe\openapi\spec\SecurityRequirements;
 use cebe\openapi\spec\SecurityScheme;
-use cebe\openapi\spec\SecuritySchemes;
 
 class WriterTest extends \PHPUnit\Framework\TestCase
 {
@@ -204,13 +203,13 @@ YAML
     {
         $openapi = $this->createOpenAPI([
             'components' => new Components([
-                'securitySchemes' => new SecuritySchemes([
+                'securitySchemes' => [
                     'BearerAuth' => new SecurityScheme([
                         'type' => 'http',
                         'scheme' => 'bearer',
                         'bearerFormat' => 'AuthToken and JWT Format' # optional, arbitrary value for documentation purposes
                     ]),
-                ]),
+                ],
             ]),
             'paths' => [
                 '/test' => new PathItem([
