@@ -10,7 +10,7 @@ namespace cebe\openapi\spec;
 use cebe\openapi\SpecBaseObject;
 
 /**
- * Lists the required security schemes to execute this operation.
+ * Lists the required security requirement to execute this operation.
  *
  * @link https://github.com/OAI/OpenAPI-Specification/blob/3.0.2/versions/3.0.2.md#securityRequirementObject
  * TODO docs
@@ -22,7 +22,18 @@ class SecurityRequirements extends SpecBaseObject
     public function __construct(array $data)
     {
         parent::__construct($data);
-        $this->_securityRequirements = $data;
+
+        $read = true;
+        foreach($data as $index => $value) {
+            if (is_numeric($index)) { // read
+                $requirements = $value;
+                $this->_securityRequirements[array_keys($value)[0]] = new SecurityRequirement(array_values($value)[0]);
+            } else { // write
+                $read = false;
+                $requirements = $data;
+                $this->_securityRequirements[$index] = $value;
+            }
+        }
     }
 
     /**
@@ -30,11 +41,8 @@ class SecurityRequirements extends SpecBaseObject
      */
     protected function attributes(): array
     {
-//        (Type::STRING => Type::ANY)[]
-
         // this object does not have a fixed set of attribute names
         return [];
-//        return [Type::STRING, SecurityRequirement::class];
     }
 
     /**
@@ -54,10 +62,15 @@ class SecurityRequirements extends SpecBaseObject
     public function getSerializableData()
     {
         $data = [];
-        foreach ($this->_securityRequirements as $name => $securityRequirement) {
+        foreach ($this->_securityRequirements ?? [] as $name => $securityRequirement) {
             /** @var SecurityRequirement $securityRequirement */
-            $data[] = [$name => json_decode(json_encode($securityRequirement->getSerializableData()), true)];
+            $data[] = [$name => $securityRequirement->getSerializableData()];
         }
         return $data;
+    }
+
+    public function getRequirement(string $name)
+    {
+        return $this->_securityRequirements[$name] ?? 'nul5l';
     }
 }

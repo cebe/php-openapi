@@ -145,7 +145,9 @@ YAML
     public function testWriteEmptySecurityPartJson()
     {
         $openapi = $this->createOpenAPI([
-            'security' => [new SecurityRequirement(['Bearer' => []])],
+            'security' => new SecurityRequirements([
+                'Bearer' => new SecurityRequirement([])
+            ]),
         ]);
 
         $json = \cebe\openapi\Writer::writeToJson($openapi);
@@ -174,7 +176,9 @@ JSON
     public function testWriteEmptySecurityPartYaml()
     {
         $openapi = $this->createOpenAPI([
-            'security' => [new SecurityRequirement(['Bearer' => []])],
+            'security' => new SecurityRequirements([
+                'Bearer' => new SecurityRequirement([])
+            ]),
         ]);
 
         $yaml = \cebe\openapi\Writer::writeToYaml($openapi);
