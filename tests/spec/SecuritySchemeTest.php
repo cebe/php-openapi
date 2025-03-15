@@ -11,6 +11,7 @@ use cebe\openapi\spec\SecurityScheme;
  * @covers \cebe\openapi\spec\OAuthFlows
  * @covers \cebe\openapi\spec\OAuthFlow
  * @covers \cebe\openapi\spec\SecurityRequirement
+ * @covers \cebe\openapi\spec\SecurityRequirements
  */
 class SecuritySchemeTest extends \PHPUnit\Framework\TestCase
 {
