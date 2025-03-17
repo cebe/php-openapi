@@ -44,6 +44,7 @@ class SecurityRequirement extends SpecBaseObject
 
     public function getSerializableData()
     {
+        parent::getSerializableData();
         return $this->_securityRequirement;
     }
 }

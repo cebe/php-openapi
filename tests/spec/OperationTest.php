@@ -79,6 +79,7 @@ YAML
 
         $this->assertInstanceOf(\cebe\openapi\spec\Responses::class, $operation->responses);
 
+        $this->assertCount(1, $operation->security->getRequirements());
         $this->assertInstanceOf(\cebe\openapi\spec\SecurityRequirements::class, $operation->security);
         $this->assertInstanceOf(\cebe\openapi\spec\SecurityRequirement::class, $operation->security->getRequirement('petstore_auth'));
         $this->assertCount(2, $operation->security->getRequirement('petstore_auth')->getSerializableData());

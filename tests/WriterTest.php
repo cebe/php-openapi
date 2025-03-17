@@ -255,6 +255,7 @@ YAML
         );
     }
 
+    // TODO
 //    public function testSecurityAtGlobalLevel()
 //    {
 //        $openapi = $this->createOpenAPI([
