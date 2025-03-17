@@ -10,10 +10,10 @@ namespace cebe\openapi\spec;
 use cebe\openapi\SpecBaseObject;
 
 /**
- * Lists the required security requirement to execute this operation.
+ * Lists the required security schemes to execute this operation.
  *
  * @link https://github.com/OAI/OpenAPI-Specification/blob/3.0.2/versions/3.0.2.md#securityRequirementObject
- * TODO docs
+ *
  */
 class SecurityRequirements extends SpecBaseObject
 {
@@ -51,13 +51,10 @@ class SecurityRequirements extends SpecBaseObject
      */
     protected function performValidation()
     {
-        // TODO
     }
 
     /**
-     * @return mixed returns the serializable data of this object for converting it
-     * to JSON or YAML.
-     * TODO
+     * {@inheritDoc}
      */
     public function getSerializableData()
     {
