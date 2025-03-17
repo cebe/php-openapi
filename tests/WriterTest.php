@@ -255,46 +255,46 @@ YAML
         );
     }
 
-    // TODO
-//    public function testSecurityAtGlobalLevel()
-//    {
-//        $openapi = $this->createOpenAPI([
-//            'components' => new Components([
-//                'securitySchemes' => [
-//                    'BearerAuth' => new SecurityScheme([
-//                        'type' => 'http',
-//                        'scheme' => 'bearer',
-//                        'bearerFormat' => 'AuthToken and JWT Format' # optional, arbitrary value for documentation purposes
-//                    ])
-//                ],
-//            ]),
-//            'security' => [
-//                'BearerAuth' => new SecurityRequirement([])
-//            ],
-//            'paths' => [],
-//        ]);
-//
-//        $yaml = \cebe\openapi\Writer::writeToYaml($openapi);
-//
-//
-//        $this->assertEquals(preg_replace('~\R~', "\n", <<<YAML
-//openapi: 3.0.0
-//info:
-//  title: 'Test API'
-//  version: 1.0.0
-//paths: {  }
-//components:
-//  securitySchemes:
-//    BearerAuth:
-//      type: http
-//      scheme: bearer
-//      bearerFormat: 'AuthToken and JWT Format'
-//security:
-//  BearerAuth: {  }
-//
-//YAML
-//        ),
-//            $yaml
-//        );
-//    }
+    public function testSecurityAtGlobalLevel()
+    {
+        $openapi = $this->createOpenAPI([
+            'components' => new Components([
+                'securitySchemes' => [
+                    'BearerAuth' => new SecurityScheme([
+                        'type' => 'http',
+                        'scheme' => 'bearer',
+                        'bearerFormat' => 'AuthToken and JWT Format' # optional, arbitrary value for documentation purposes
+                    ])
+                ],
+            ]),
+            'security' => new SecurityRequirements([
+                'BearerAuth' => new SecurityRequirement([])
+            ]),
+            'paths' => [],
+        ]);
+
+        $yaml = \cebe\openapi\Writer::writeToYaml($openapi);
+
+
+        $this->assertEquals(preg_replace('~\R~', "\n", <<<YAML
+openapi: 3.0.0
+info:
+  title: 'Test API'
+  version: 1.0.0
+paths: {  }
+components:
+  securitySchemes:
+    BearerAuth:
+      type: http
+      scheme: bearer
+      bearerFormat: 'AuthToken and JWT Format'
+security:
+  -
+    BearerAuth: []
+
+YAML
+        ),
+            $yaml
+        );
+    }
 }
