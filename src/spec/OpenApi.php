@@ -78,5 +78,13 @@ class OpenApi extends SpecBaseObject
         if (!empty($this->openapi) && !preg_match('/^3\.0\.\d+(-rc\d)?$/i', $this->openapi)) {
             $this->addError('Unsupported openapi version: ' . $this->openapi);
         }
+
+        $providedFields = array_keys(json_decode(json_encode($this->getSerializableData()), true)); # TODO this getSerializableData() can be eliminated if  
+        $allowedFields = array_keys($this->attributes());
+        foreach ($providedFields as $field) {
+            if (!in_array($field, $allowedFields)) {
+                $this->addError('Invalid top level fields: ' . $field);
+            }
+        }
     }
 }
