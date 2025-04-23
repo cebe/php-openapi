@@ -14,12 +14,12 @@ use cebe\openapi\SpecBaseObject;
  *
  * @link https://github.com/OAI/OpenAPI-Specification/blob/3.0.2/versions/3.0.2.md#operationObject
  *
- * @property string[] $tags
+ * @property list<string> $tags
  * @property string $summary
  * @property string $description
  * @property ExternalDocumentation|null $externalDocs
  * @property string $operationId
- * @property Parameter[]|Reference[] $parameters
+ * @property list<Parameter|Reference> $parameters
  * @property RequestBody|Reference|null $requestBody
  * @property Responses|Response[]|null $responses
  * @property Callback[]|Reference[] $callbacks
