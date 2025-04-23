@@ -122,6 +122,40 @@ foreach($openapi->paths as $path => $definition) {
 Object properties are exactly like in the [OpenAPI Specification](https://github.com/OAI/OpenAPI-Specification/blob/3.0.2/versions/3.0.2.md#openapi-specification).
 You may also access additional properties added by [specification extensions](https://github.com/OAI/OpenAPI-Specification/blob/3.0.2/versions/3.0.2.md#specificationExtensions).
 
+Read a component schema and its properties for below spec:
+
+```yaml
+openapi: 3.0.0
+info:
+  title: Test API
+  version: 1.0.0
+paths:
+  /foo:
+    put:
+      description: create foo
+      responses:
+        '200':
+          description: request succeeded          
+components:  
+  schemas:
+    Foo:
+      description: This is an description
+      type: object
+      properties:
+        message:
+          type: string
+        code:
+          type: number
+```
+
+```php
+# read a component schema
+$foo = $openapi->components->schemas['Foo'];
+
+# read a property of schema
+$foo->properties['message']
+```
+
 ### Writing API Description Files
 
 ```php
