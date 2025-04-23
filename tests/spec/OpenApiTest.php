@@ -236,7 +236,7 @@ class OpenApiTest extends \PHPUnit\Framework\TestCase
     public function testInvalidTopLevelField()
     {
         $openapi = new OpenApi([
-            'AAcomponents' => [
+            'AAAAAcomponents' => [
                 'User' => [
                     'type' => 'object',
                     'properties' => [
@@ -247,12 +247,12 @@ class OpenApiTest extends \PHPUnit\Framework\TestCase
                 ]
             ]
         ]);
-        $isValid = $openapi->validate();
-//        $this->assertTrue($openapi->validate());
+        $this->assertFalse($openapi->validate());
         $this->assertEquals([
             'OpenApi is missing required property: openapi',
             'OpenApi is missing required property: info',
             'OpenApi is missing required property: paths',
+            'Invalid top level field: "AAAAAcomponents". More information can be obtained at https://spec.openapis.org/oas/v3.0.3.html#fixed-fields',
         ], $openapi->getErrors());
 
 //        // check default value of servers

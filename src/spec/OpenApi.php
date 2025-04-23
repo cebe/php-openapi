@@ -7,7 +7,6 @@
 
 namespace cebe\openapi\spec;
 
-use cebe\openapi\exceptions\TypeErrorException;
 use cebe\openapi\SpecBaseObject;
 
 /**
@@ -79,11 +78,11 @@ class OpenApi extends SpecBaseObject
             $this->addError('Unsupported openapi version: ' . $this->openapi);
         }
 
-        $providedFields = array_keys(json_decode(json_encode($this->getSerializableData()), true)); # TODO this getSerializableData() can be eliminated if  
+        $providedFields = array_keys($this->getRawSpecData());
         $allowedFields = array_keys($this->attributes());
         foreach ($providedFields as $field) {
             if (!in_array($field, $allowedFields)) {
-                $this->addError('Invalid top level fields: ' . $field);
+                $this->addError('Invalid top level field: "' . $field . '". More information can be obtained at https://spec.openapis.org/oas/v3.0.3.html#fixed-fields');
             }
         }
     }
