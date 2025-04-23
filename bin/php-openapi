@@ -124,7 +124,7 @@ switch ($command) {
         $openApi = read_input($inputFile, $inputFormat);
         $referenceContext = new ReferenceContext($openApi, $inputFile ? realpath($inputFile) : '');
         $referenceContext->throwException = false;
-        $referenceContext->mode = ReferenceContext::RESOLVE_MODE_INLINE;
+        $referenceContext->mode = $referenceMode;
         $openApi->resolveReferences($referenceContext);
 
         $openApi->setDocumentContext($openApi, new \cebe\openapi\json\JsonPointer(''));
