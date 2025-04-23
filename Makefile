@@ -37,7 +37,7 @@ fix-style: php-cs-fixer.phar
 	$(DOCKER_PHP) vendor/bin/indent --spaces .php_cs.dist
 	$(DOCKER_PHP) ./php-cs-fixer.phar fix src/ --diff
 
-install: composer.lock yarn.lock
+install:
 	$(DOCKER_PHP) composer install --prefer-dist --no-interaction --no-progress --ansi
 	$(DOCKER_NODE) yarn install
 

@@ -128,6 +128,114 @@ JSON
         $this->assertEquals($expectedArray, $inlineYamlExample);
     }
 
+    public function testGetRawSpecData()
+    {
+        $spec = <<<YML
+openapi: "3.0.0"
+info:
+  version: 1.0.0
+  title: Check storage of raw spec data
+
+paths:
+  /:
+    get:
+      summary: List
+      operationId: list
+      responses:
+        '200':
+          description: The information
+
+components:
+  schemas:
+    User:
+      type: object
+      properties:
+        id:
+          type: integer
+        name:
+          type: string
+    
+    Post:
+      type: object
+      properties:
+        id:
+          type: integer
+        title:
+          type: string
+        user:
+          \$ref: "#/components/schemas/User"
+
+YML;
+
+        $openapi = \cebe\openapi\Reader::readFromYaml($spec);
+        $this->assertSame($openapi->getRawSpecData(), [
+            'openapi' => '3.0.0',
+            'info' => [
+                'version' => '1.0.0',
+                'title' => 'Check storage of raw spec data',
+            ],
+            'paths' => [
+                '/' => [
+                    'get' => [
+                        'summary' => 'List',
+                        'operationId' => 'list',
+                        'responses' => [
+                            '200' => [
+                                'description' => 'The information',
+                            ]
+                        ]
+                    ]
+                ]
+            ],
+            'components' => [
+                'schemas' => [
+                    'User' => [
+                        'type' => 'object',
+                        'properties' => [
+                            'id' => [
+                                'type' => 'integer',
+                            ],
+                            'name' => [
+                                'type' => 'string',
+                            ]
+                        ]
+                    ],
+                    'Post' => [
+                        'type' => 'object',
+                        'properties' => [
+                            'id' => [
+                                'type' => 'integer',
+                            ],
+                            'title' => [
+                                'type' => 'string',
+                            ],
+                            'user' => [
+                                '$ref' => '#/components/schemas/User',
+                            ]
+                        ]
+                    ]
+                ]
+            ]
+        ]);
+
+        $this->assertSame($openapi->components->schemas['User']->getRawSpecData(), [
+            'type' => 'object',
+            'properties' => [
+                'id' => [
+                    'type' => 'integer',
+                ],
+                'name' => [
+                    'type' => 'string',
+                ]
+            ]
+        ]);
+
+        $this->assertSame($openapi->components->schemas['Post']->properties['user']->getRawSpecData(), [
+            '$ref' => '#/components/schemas/User',
+        ]);
+
+    }
+
 
     // TODO test invalid JSON
     // TODO test invalid YAML

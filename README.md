@@ -26,6 +26,8 @@ do awesome work:
 - [cebe/yii2-app-api](https://github.com/cebe/yii2-app-api) Yii framework application template for developing API-first applications.
 - [league/openapi-psr7-validator](https://github.com/thephpleague/openapi-psr7-validator) validates PSR-7 messages (HTTP request/response) against OpenAPI descriptions.
 - [dsuurlant/response2schema](https://github.com/dsuurlant/response2schema) a quick and easy tool for generating OpenAPI schemas based on example data.
+- [hotmeteor/spectator](https://github.com/hotmeteor/spectator) a light-weight OpenAPI testing tool for existing Laravel test suite.
+- [googoogajoob/openapi-slim4](https://github.com/googoogajoob/openapi-slim4) Configure the paths of a slim4 application from an openapi definition.
 - ... ([add yours](https://github.com/cebe/php-openapi/edit/master/README.md#L24))
 
 ## Usage
@@ -119,6 +121,40 @@ foreach($openapi->paths as $path => $definition) {
 
 Object properties are exactly like in the [OpenAPI Specification](https://github.com/OAI/OpenAPI-Specification/blob/3.0.2/versions/3.0.2.md#openapi-specification).
 You may also access additional properties added by [specification extensions](https://github.com/OAI/OpenAPI-Specification/blob/3.0.2/versions/3.0.2.md#specificationExtensions).
+
+Read a component schema and its properties for below spec:
+
+```yaml
+openapi: 3.0.0
+info:
+  title: Test API
+  version: 1.0.0
+paths:
+  /foo:
+    put:
+      description: create foo
+      responses:
+        '200':
+          description: request succeeded          
+components:  
+  schemas:
+    Foo:
+      description: This is an description
+      type: object
+      properties:
+        message:
+          type: string
+        code:
+          type: number
+```
+
+```php
+# read a component schema
+$foo = $openapi->components->schemas['Foo'];
+
+# read a property of schema
+$foo->properties['message']
+```
 
 ### Writing API Description Files
 
