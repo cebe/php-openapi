@@ -19,11 +19,14 @@ RUN apt-get update && \
             curl \
             libcurl4-openssl-dev \
             libssl-dev \
+            libyaml-dev \
         --no-install-recommends && \
         apt-get clean && \
         rm -rf /var/lib/apt/lists/* /tmp/* /var/tmp/* \
         && pecl install xdebug-2.9.6 \
+        && pecl install yaml \
         && docker-php-ext-enable xdebug \
+        && docker-php-ext-enable yaml \
         && docker-php-ext-install \
                 zip \
                 curl \
