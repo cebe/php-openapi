@@ -54,7 +54,7 @@ paths:
         200:
           $ref: "#/components/responses/Pet"
 YAML
-            , OpenApi::class);
+            , OpenApi::class, false);
 
         $result = $openapi->validate();
         $this->assertEquals([], $openapi->getErrors());
@@ -113,7 +113,7 @@ paths:
                 frog:
                   $ref: "#/components/examples/frog-example"
 YAML
-            , OpenApi::class);
+            , OpenApi::class, false);
 
         $result = $openapi->validate();
         $this->assertEquals([], $openapi->getErrors());
@@ -311,7 +311,7 @@ components:
             - "Six"
 
 YAML;
-        $openapi = Reader::readFromYaml($schema);
+        $openapi = Reader::readFromYaml($schema, OpenApi::class, false);
         $openapi->resolveReferences(new \cebe\openapi\ReferenceContext($openapi, $this->createFileUri(__DIR__ . '/data/reference/definitions.yaml')));
 
         $this->assertTrue(isset($openapi->components->schemas['Pet']));
@@ -392,7 +392,7 @@ components:
 
 YAML;
 
-        $openapi = Reader::readFromYaml($schema);
+        $openapi = Reader::readFromYaml($schema, OpenApi::class, false);
         $openapi->resolveReferences(new \cebe\openapi\ReferenceContext($openapi, $this->createFileUri(__DIR__ . '/data/reference/definitions.yaml')));
 
         $this->assertTrue(isset($openapi->components->schemas['Dog']));

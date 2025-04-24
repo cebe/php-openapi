@@ -3,6 +3,7 @@
 use cebe\openapi\Reader;
 use cebe\openapi\ReferenceContext;
 use cebe\openapi\spec\Discriminator;
+use cebe\openapi\spec\OpenApi;
 use cebe\openapi\spec\Reference;
 use cebe\openapi\spec\Schema;
 use cebe\openapi\spec\Type;
@@ -278,7 +279,7 @@ YAML
   }
 }
 JSON;
-        $openApi = Reader::readFromJson($json);
+        $openApi = Reader::readFromJson($json, OpenApi::class, false);
         $this->assertInstanceOf(Schema::class, $identifier = $openApi->components->schemas['identifier']);
         $this->assertInstanceOf(Schema::class, $person = $openApi->components->schemas['person']);
 
@@ -371,7 +372,7 @@ JSON;
   }
 }
 JSON;
-        $openApi = Reader::readFromJson($json);
+        $openApi = Reader::readFromJson($json, OpenApi::class, false);
         $this->assertInstanceOf(Schema::class, $booleanProperties = $openApi->components->schemas['booleanProperties']);
         $this->assertInstanceOf(Schema::class, $person = $openApi->components->schemas['person']);
 
