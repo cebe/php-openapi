@@ -234,7 +234,12 @@ abstract class SpecBaseObject implements SpecObjectInterface, DocumentContextInt
         }
         $this->_recursingValidate = true;
         $valid = true;
-        foreach ($this->_properties as $v) {
+        $allowedFields = array_keys($this->attributes());
+        foreach ($this->_properties as $k => $v) {
+            if ($allowedFields && !in_array($k, $allowedFields, true) && substr($k, 0, 2) !== 'x-' ) {
+                $valid = false;
+                $this->addError('Invalid field: "' . $k . '"');
+            }
             if ($v instanceof SpecObjectInterface) {
                 if (!$v->validate()) {
                     $valid = false;
