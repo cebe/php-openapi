@@ -192,4 +192,35 @@ JSON
         $this->assertEquals('A bar', $barPath->get->responses['200']->description);
         $this->assertEquals('non-existing resource', $barPath->get->responses['404']->description);
     }
+
+    public function testPathParametersAreArrays()
+    {
+        $file = __DIR__ . '/data/path-params/openapi.yaml';
+        /** @var $openapi \cebe\openapi\spec\OpenApi */
+        $openapi = Reader::readFromYamlFile($file, \cebe\openapi\spec\OpenApi::class, true);
+
+        $result = $openapi->validate();
+        $this->assertEquals([], $openapi->getErrors(), print_r($openapi->getErrors(), true));
+        $this->assertTrue($result);
+
+        $this->assertInstanceOf(Paths::class, $openapi->paths);
+        $this->assertIsArray($openapi->paths->getPaths());
+        $this->assertInstanceOf(PathItem::class, $usersPath = $openapi->paths['/v1/{organizationId}/user']);
+        $this->assertInstanceOf(PathItem::class, $userIdPath = $openapi->paths['/v1/{organizationId}/user/{id}']);
+
+        $result = $usersPath->validate();
+        $this->assertTrue($result);
+        $this->assertIsArray($usersPath->parameters);
+        $this->assertInstanceOf(\cebe\openapi\spec\Parameter::class, $usersPath->parameters[0]);
+        $this->assertInstanceOf(\cebe\openapi\spec\Parameter::class, $usersPath->parameters[1]);
+        $this->assertEquals($usersPath->parameters[0]->name, 'api-version');
+
+        $result = $userIdPath->validate();
+        $this->assertTrue($result);
+        $this->assertIsArray($userIdPath->parameters);
+        $this->assertInstanceOf(\cebe\openapi\spec\Parameter::class, $userIdPath->parameters[0]);
+        $this->assertInstanceOf(\cebe\openapi\spec\Parameter::class, $userIdPath->parameters[1]);
+        $this->assertEquals($userIdPath->parameters[2]->name, 'id');        
+
+    }    
 }
