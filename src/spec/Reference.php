@@ -8,16 +8,15 @@
 namespace cebe\openapi\spec;
 
 use cebe\openapi\DocumentContextInterface;
-use cebe\openapi\exceptions\IOException;
 use cebe\openapi\exceptions\TypeErrorException;
 use cebe\openapi\exceptions\UnresolvableReferenceException;
 use cebe\openapi\json\InvalidJsonPointerSyntaxException;
 use cebe\openapi\json\JsonPointer;
 use cebe\openapi\json\JsonReference;
 use cebe\openapi\json\NonexistentJsonPointerReferenceException;
+use cebe\openapi\RawSpecDataInterface;
 use cebe\openapi\ReferenceContext;
 use cebe\openapi\SpecObjectInterface;
-use Symfony\Component\Yaml\Yaml;
 
 /**
  * Reference Object
@@ -27,8 +26,14 @@ use Symfony\Component\Yaml\Yaml;
  * @link https://tools.ietf.org/html/rfc6901
  *
  */
-class Reference implements SpecObjectInterface, DocumentContextInterface
+class Reference implements SpecObjectInterface, DocumentContextInterface, RawSpecDataInterface
 {
+    /**
+     * Holds raw spec data
+     * @var array
+     */
+    private $_rawSpec;
+
     /**
      * @var string
      */
@@ -61,11 +66,12 @@ class Reference implements SpecObjectInterface, DocumentContextInterface
     /**
      * Create an object from spec data.
      * @param array $data spec data read from YAML or JSON
-     * @param string $to class name of the type referenced by this Reference
+     * @param string|null $to class name of the type referenced by this Reference
      * @throws TypeErrorException in case invalid data is supplied.
      */
     public function __construct(array $data, string $to = null)
     {
+        $this->_rawSpec = $data;
         if (!isset($data['$ref'])) {
             throw new TypeErrorException(
                 "Unable to instantiate Reference Object with data '" . print_r($data, true) . "'."
@@ -401,5 +407,10 @@ class Reference implements SpecObjectInterface, DocumentContextInterface
     public function getDocumentPosition(): ?JsonPointer
     {
         return $this->_jsonPointer;
+    }
+
+    public function getRawSpecData(): array
+    {
+        return $this->_rawSpec;
     }
 }
