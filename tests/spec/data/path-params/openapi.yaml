@@ -11,8 +11,8 @@ servers:
   - url: 'http://localhost:8000'
     description: 'Test'
 
-paths: 
-  /v1/{organizationId}/user:
+paths:
+  /v1/organizations/{organizationId}/user:
     $ref: 'user.yaml#/paths/Users'
-  /v1/{organizationId}/user/{id}:
+  /v1/organizations/{organizationId}/user/{id}:
     $ref: 'user.yaml#/paths/UserId'
