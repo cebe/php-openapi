@@ -53,14 +53,16 @@ paths:
         -
           BearerAuth: []
     parameters:
-      - name: organizationId
+      '1':
+        name: organizationId
         in: path
         description: 'The Organization ID'
         required: true
         schema:
           type: string
           format: uuid
-      - name: api-version
+      '0':
+        name: api-version
         in: header
         description: 'The API version'
         required: false
@@ -73,7 +75,7 @@ paths:
       summary: 'Gets a user'
       responses:
         '200':
-          description: hi there
+          description: 'A bar'
           content:
             application/json:
               schema:
@@ -97,7 +99,7 @@ paths:
         -
           BearerAuth: []
     parameters:
-      -
+      '1':
         name: organizationId
         in: path
         description: 'The Organization ID'
@@ -105,7 +107,7 @@ paths:
         schema:
           type: string
           format: uuid
-      -
+      '0':
         name: api-version
         in: header
         description: 'The API version'
@@ -114,7 +116,7 @@ paths:
           type: string
           format: date
           example: '2021-05-18'
-      -
+      '2':
         name: id
         in: path
         description: 'User''s ID'
