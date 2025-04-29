@@ -58,8 +58,6 @@ class SecurityRequirements extends SpecBaseObject
      */
     public function getSerializableData()
     {
-        parent::getSerializableData();
-
         $data = [];
         foreach ($this->_securityRequirements ?? [] as $name => $securityRequirement) {
             /** @var SecurityRequirement $securityRequirement */
