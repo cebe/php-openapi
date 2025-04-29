@@ -215,7 +215,7 @@ switch ($command) {
 
         if ($outputFile === null) {
             if ($outputFormat === null) {
-                error("No output fromat specified, please specify --write-json or --write-yaml.", "usage");
+                error("No output format specified, please specify --write-json or --write-yaml.", "usage");
             } elseif ($outputFormat === 'json') {
                 fwrite(STDOUT, \cebe\openapi\Writer::writeToJson($openApi));
             } else {
