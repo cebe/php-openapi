@@ -221,6 +221,7 @@ JSON
         $this->assertInstanceOf(\cebe\openapi\spec\Parameter::class, $userIdPath->parameters[0]);
         $this->assertInstanceOf(\cebe\openapi\spec\Parameter::class, $userIdPath->parameters[1]);
         $this->assertEquals('id', $userIdPath->parameters[2]->name);
-
+        shell_exec(dirname(__DIR__, 2) . '/bin/php-openapi inline ' . $file . ' ' . dirname(__DIR__) . '/tmp/compiled.yml');
+        $this->assertFileEquals(dirname(__DIR__) . '/tmp/compiled.yml', dirname(__DIR__) . '/data/issue/155/compiled.yml');
     }    
 }
