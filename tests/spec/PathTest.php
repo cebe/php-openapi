@@ -232,7 +232,7 @@ JSON
             $expected = "{$dirSep}data{$dirSep}issue{$dirSep}155/compiled-symfony-5.yml";
         }
 
-        $this->assertFileEquals(dirname(__DIR__) . $dirSep.'compiled.yml', dirname(__DIR__) . $expected);
+        $this->assertFileEquals(dirname(__DIR__) . $expected, dirname(__DIR__) . $dirSep.'compiled.yml');
         unlink(dirname(__DIR__) . '/compiled.yml');
     }
 
