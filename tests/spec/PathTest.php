@@ -204,7 +204,7 @@ JSON
         $this->assertTrue($result);
 
         $this->assertInstanceOf(Paths::class, $openapi->paths);
-        $this->assertIsArray($openapi->paths->getPaths());
+        $this->assertSame(gettype($openapi->paths->getPaths()), 'array');
         $this->assertInstanceOf(PathItem::class, $usersPath = $openapi->paths['/v1/organizations/{organizationId}/user']);
         $this->assertInstanceOf(PathItem::class, $userIdPath = $openapi->paths['/v1/organizations/{organizationId}/user/{id}']);
 
@@ -213,14 +213,14 @@ JSON
         $this->assertIsArray($usersPath->parameters);
         $this->assertInstanceOf(\cebe\openapi\spec\Parameter::class, $usersPath->parameters[0]);
         $this->assertInstanceOf(\cebe\openapi\spec\Parameter::class, $usersPath->parameters[1]);
-        $this->assertEquals($usersPath->parameters[0]->name, 'api-version');
+        $this->assertEquals('api-version', $usersPath->parameters[0]->name);
 
         $result = $userIdPath->validate();
         $this->assertTrue($result);
         $this->assertIsArray($userIdPath->parameters);
         $this->assertInstanceOf(\cebe\openapi\spec\Parameter::class, $userIdPath->parameters[0]);
         $this->assertInstanceOf(\cebe\openapi\spec\Parameter::class, $userIdPath->parameters[1]);
-        $this->assertEquals($userIdPath->parameters[2]->name, 'id');
+        $this->assertEquals('id', $userIdPath->parameters[2]->name);
 
     }    
 }
