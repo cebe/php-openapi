@@ -121,7 +121,7 @@ paths:
       -
         name: id
         in: path
-        description: 'User''s ID'
+        description: "User's ID"
         required: true
         schema:
           type: string
