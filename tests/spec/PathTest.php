@@ -223,7 +223,30 @@ JSON
         $this->assertEquals('id', $userIdPath->parameters[2]->name);
         $dirSep = DIRECTORY_SEPARATOR;
         shell_exec(dirname(__DIR__, 2) . "{$dirSep}bin{$dirSep}php-openapi inline " . $file . ' ' . dirname(__DIR__) . $dirSep.'/compiled.yml');
-        $this->assertFileEquals(dirname(__DIR__) . $dirSep.'compiled.yml', dirname(__DIR__) . "{$dirSep}data{$dirSep}issue{$dirSep}155{$dirSep}compiled.yml");
-        unlink(dirname(__DIR__) . $dirSep.'compiled.yml');
-    }    
+
+        $expected = "{$dirSep}data{$dirSep}issue{$dirSep}155/compiled-symfony-7.yml";
+
+        if (static::majorSymfonyYamlVersion() == 6) {
+            $expected = "{$dirSep}data{$dirSep}issue{$dirSep}155/compiled-symfony-6.yml";
+        } elseif (static::majorSymfonyYamlVersion() == 7) {
+            $expected = "{$dirSep}data{$dirSep}issue{$dirSep}155/compiled-symfony-6.yml";
+        }
+
+        $this->assertFileEquals(dirname(__DIR__) . $dirSep.'compiled.yml', dirname(__DIR__) . $expected);
+        unlink(dirname(__DIR__) . '/compiled.yml');
+    }
+
+    public static function majorSymfonyYamlVersion()
+    {
+        $package = 'symfony/yaml';
+        $installed = json_decode(file_get_contents(__DIR__ . '/../../composer.lock'), true);
+
+        foreach ($installed['packages'] as $pkg) {
+            if ($pkg['name'] === $package) {
+                $version = explode('.', $pkg['version'])[0];
+                return str_replace('v', '', $version);
+            }
+        }
+        return 7;
+    }
 }
