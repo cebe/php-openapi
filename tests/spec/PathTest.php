@@ -221,8 +221,9 @@ JSON
         $this->assertInstanceOf(\cebe\openapi\spec\Parameter::class, $userIdPath->parameters[0]);
         $this->assertInstanceOf(\cebe\openapi\spec\Parameter::class, $userIdPath->parameters[1]);
         $this->assertEquals('id', $userIdPath->parameters[2]->name);
-        shell_exec(dirname(__DIR__, 2) . '/bin/php-openapi inline ' . $file . ' ' . dirname(__DIR__) . '/compiled.yml');
-        $this->assertFileEquals(dirname(__DIR__) . '/compiled.yml', dirname(__DIR__) . '/data/issue/155/compiled.yml');
-        unlink(dirname(__DIR__) . '/compiled.yml');
+        $dirSep = DIRECTORY_SEPARATOR;
+        shell_exec(dirname(__DIR__, 2) . "{$dirSep}bin{$dirSep}php-openapi inline " . $file . ' ' . dirname(__DIR__) . $dirSep.'/compiled.yml');
+        $this->assertFileEquals(dirname(__DIR__) . $dirSep.'compiled.yml', dirname(__DIR__) . "{$dirSep}data{$dirSep}issue{$dirSep}155{$dirSep}compiled.yml");
+        unlink(dirname(__DIR__) . $dirSep.'compiled.yml');
     }    
 }
