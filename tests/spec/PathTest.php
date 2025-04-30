@@ -210,14 +210,14 @@ JSON
 
         $result = $usersPath->validate();
         $this->assertTrue($result);
-        $this->assertIsArray($usersPath->parameters);
+        $this->assertSame(gettype($usersPath->parameters), 'array');
         $this->assertInstanceOf(\cebe\openapi\spec\Parameter::class, $usersPath->parameters[0]);
         $this->assertInstanceOf(\cebe\openapi\spec\Parameter::class, $usersPath->parameters[1]);
         $this->assertEquals('api-version', $usersPath->parameters[0]->name);
 
         $result = $userIdPath->validate();
         $this->assertTrue($result);
-        $this->assertIsArray($userIdPath->parameters);
+        $this->assertSame(gettype($userIdPath->parameters), 'array');
         $this->assertInstanceOf(\cebe\openapi\spec\Parameter::class, $userIdPath->parameters[0]);
         $this->assertInstanceOf(\cebe\openapi\spec\Parameter::class, $userIdPath->parameters[1]);
         $this->assertEquals('id', $userIdPath->parameters[2]->name);
