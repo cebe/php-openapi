@@ -210,10 +210,6 @@ abstract class SpecBaseObject implements SpecObjectInterface, DocumentContextInt
                     // case 2: Attribute type is an object (specified in attributes() by an array which specifies two items (key and value type)
                     $toObject = true;
                 }
-                if ($k === 'parameters') {
-                    ksort($data[$k]);
-                    $toObject = false;
-                }
                 if ($toObject) {
                     $data[$k] = (object) $data[$k];
                 }
