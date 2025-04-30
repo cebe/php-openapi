@@ -6,6 +6,8 @@ paths:
       - $ref: 'global.yaml#/components/parameters/OrganizationId'
     post:
       summary: Creates a user
+      tags:
+        - pets
       security:
         - BearerAuth: []
       requestBody:

@@ -13,6 +13,8 @@ servers:
 paths:
   '/v1/organizations/{organizationId}/user':
     post:
+      tags:
+        - pets
       summary: 'Creates a user'
       requestBody:
         content:
@@ -53,15 +55,7 @@ paths:
         -
           BearerAuth: []
     parameters:
-      '1':
-        name: organizationId
-        in: path
-        description: 'The Organization ID'
-        required: true
-        schema:
-          type: string
-          format: uuid
-      '0':
+      -
         name: api-version
         in: header
         description: 'The API version'
@@ -70,6 +64,14 @@ paths:
           type: string
           format: date
           example: '2021-05-18'
+      -
+        name: organizationId
+        in: path
+        description: 'The Organization ID'
+        required: true
+        schema:
+          type: string
+          format: uuid
   '/v1/organizations/{organizationId}/user/{id}':
     get:
       summary: 'Gets a user'
@@ -99,15 +101,7 @@ paths:
         -
           BearerAuth: []
     parameters:
-      '1':
-        name: organizationId
-        in: path
-        description: 'The Organization ID'
-        required: true
-        schema:
-          type: string
-          format: uuid
-      '0':
+      -
         name: api-version
         in: header
         description: 'The API version'
@@ -116,7 +110,15 @@ paths:
           type: string
           format: date
           example: '2021-05-18'
-      '2':
+      -
+        name: organizationId
+        in: path
+        description: 'The Organization ID'
+        required: true
+        schema:
+          type: string
+          format: uuid
+      -
         name: id
         in: path
         description: 'User''s ID'
