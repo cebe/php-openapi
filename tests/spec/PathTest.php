@@ -222,7 +222,7 @@ JSON
         $this->assertInstanceOf(\cebe\openapi\spec\Parameter::class, $userIdPath->parameters[1]);
         $this->assertEquals('id', $userIdPath->parameters[2]->name);
         $dirSep = DIRECTORY_SEPARATOR;
-        shell_exec(dirname(__DIR__, 2) . "{$dirSep}bin{$dirSep}php-openapi inline " . $file . ' ' . dirname(__DIR__) . $dirSep.'/compiled.yml');
+        shell_exec('php '.dirname(__DIR__, 2) . "{$dirSep}bin{$dirSep}php-openapi inline " . $file . ' ' . dirname(__DIR__) . $dirSep.'/compiled.yml');
 
         $expected = "{$dirSep}data{$dirSep}issue{$dirSep}155/compiled-symfony-7.yml";
         $version = static::symfonyYamlVersion();
