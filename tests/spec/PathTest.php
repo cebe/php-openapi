@@ -225,13 +225,15 @@ JSON
         shell_exec(dirname(__DIR__, 2) . "{$dirSep}bin{$dirSep}php-openapi inline " . $file . ' ' . dirname(__DIR__) . $dirSep.'/compiled.yml');
 
         $expected = "{$dirSep}data{$dirSep}issue{$dirSep}155/compiled-symfony-7.yml";
+        $version = static::symfonyYamlVersion();
+        $majorVersion = explode('.', $version)[0];
 
-        if (static::majorSymfonyYamlVersion() == 6) {
+        if ($majorVersion == 6) {
             $expected = "{$dirSep}data{$dirSep}issue{$dirSep}155/compiled-symfony-6.yml";
-            if (version_compare(PHP_VERSION, '8.1', '>=')) {
+            if (version_compare(PHP_VERSION, '8.1', '>=') && version_compare($version, '6.0.0', '!=')) {
                 $expected = "{$dirSep}data{$dirSep}issue{$dirSep}155/compiled-symfony-7.yml";
             }
-        } elseif (static::majorSymfonyYamlVersion() == 5) {
+        } elseif ($majorVersion == 5) {
             $expected = "{$dirSep}data{$dirSep}issue{$dirSep}155/compiled-symfony-5.yml";
         }
 
@@ -239,17 +241,16 @@ JSON
         unlink(dirname(__DIR__) . '/compiled.yml');
     }
 
-    public static function majorSymfonyYamlVersion()
+    public static function symfonyYamlVersion()
     {
         $package = 'symfony/yaml';
         $installed = json_decode(file_get_contents(__DIR__ . '/../../composer.lock'), true);
 
         foreach ($installed['packages'] as $pkg) {
             if ($pkg['name'] === $package) {
-                $version = explode('.', $pkg['version'])[0];
-                return str_replace('v', '', $version);
+                return str_replace('v', '', $pkg['version']);
             }
         }
-        return 7;
+        return '7.0.0';
     }
 }
