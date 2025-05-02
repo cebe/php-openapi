@@ -228,6 +228,9 @@ JSON
 
         if (static::majorSymfonyYamlVersion() == 6) {
             $expected = "{$dirSep}data{$dirSep}issue{$dirSep}155/compiled-symfony-6.yml";
+            if (version_compare(PHP_VERSION, '8.1', '>=')) {
+                $expected = "{$dirSep}data{$dirSep}issue{$dirSep}155/compiled-symfony-7.yml";
+            }
         } elseif (static::majorSymfonyYamlVersion() == 5) {
             $expected = "{$dirSep}data{$dirSep}issue{$dirSep}155/compiled-symfony-5.yml";
         }
