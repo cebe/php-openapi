@@ -240,7 +240,7 @@ JSON
             $expected = $baseExpected."compiled-symfony-6.yml";
         }
         if (stripos(PHP_OS, 'WIN') === 0) { # fixes https://github.com/cebe/php-openapi/actions/runs/14808968938/job/41581244210
-            file_put_contents($output, preg_replace('~\R~', "\n", file_get_contents($output)));
+//            file_put_contents($output, preg_replace('~\R~', "\n", file_get_contents($output)));
             file_put_contents($expected, preg_replace('~\R~', "\n", file_get_contents($expected)));
         }
 
