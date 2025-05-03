@@ -221,6 +221,7 @@ JSON
         $this->assertInstanceOf(\cebe\openapi\spec\Parameter::class, $userIdPath->parameters[0]);
         $this->assertInstanceOf(\cebe\openapi\spec\Parameter::class, $userIdPath->parameters[1]);
         $this->assertEquals('id', $userIdPath->parameters[2]->name);
+
         $dirSep = DIRECTORY_SEPARATOR;
         $output = dirname(__DIR__) . $dirSep . 'compiled.yml';
         shell_exec('php ' . dirname(__DIR__, 2) . "{$dirSep}bin{$dirSep}php-openapi inline " . $file . ' ' . $output);
@@ -238,10 +239,7 @@ JSON
         } elseif ($majorVersion == 5) {
             $expected = $baseExpected."compiled-symfony-6.yml";
         }
-        if (stripos(PHP_OS, 'WIN') === 0) {
-
-//            $expected = "{$dirSep}data{$dirSep}issue{$dirSep}155{$dirSep}compiled-symfony-6-windows-lf.yml";
-            ;
+        if (stripos(PHP_OS, 'WIN') === 0) { # fixes https://github.com/cebe/php-openapi/actions/runs/14808968938/job/41581244210
             file_put_contents($output, preg_replace('~\R~', "\n", file_get_contents($output)));
             file_put_contents($expected, preg_replace('~\R~', "\n", file_get_contents($expected)));
         }
