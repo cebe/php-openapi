@@ -248,7 +248,7 @@ JSON
         unlink($output);
     }
 
-    public static function symfonyYamlVersion()
+    protected static function symfonyYamlVersion()
     {
         $package = 'symfony/yaml';
         $installed = json_decode(file_get_contents(__DIR__ . '/../../composer.lock'), true);
