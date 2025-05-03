@@ -222,26 +222,29 @@ JSON
         $this->assertInstanceOf(\cebe\openapi\spec\Parameter::class, $userIdPath->parameters[1]);
         $this->assertEquals('id', $userIdPath->parameters[2]->name);
         $dirSep = DIRECTORY_SEPARATOR;
-        shell_exec('php '.dirname(__DIR__, 2) . "{$dirSep}bin{$dirSep}php-openapi inline " . $file . ' ' . dirname(__DIR__) . $dirSep.'/compiled.yml');
+        $output = dirname(__DIR__) . $dirSep . 'compiled.yml';
+        shell_exec('php ' . dirname(__DIR__, 2) . "{$dirSep}bin{$dirSep}php-openapi inline " . $file . ' ' . $output);
 
-        $expected = "{$dirSep}data{$dirSep}issue{$dirSep}155/compiled-symfony-7.yml";
+        $expected = "{$dirSep}data{$dirSep}issue{$dirSep}155{$dirSep}compiled-symfony-7.yml";
         $version = static::symfonyYamlVersion();
         $majorVersion = explode('.', $version)[0];
 
         if ($majorVersion == 6) {
-            $expected = "{$dirSep}data{$dirSep}issue{$dirSep}155/compiled-symfony-6.yml";
+            $expected = "{$dirSep}data{$dirSep}issue{$dirSep}155{$dirSep}compiled-symfony-6.yml";
             if (version_compare(PHP_VERSION, '8.1', '>=') && version_compare($version, '6.0.0', '!=')) {
-                $expected = "{$dirSep}data{$dirSep}issue{$dirSep}155/compiled-symfony-7.yml";
+                $expected = "{$dirSep}data{$dirSep}issue{$dirSep}155{$dirSep}compiled-symfony-7.yml";
             }
         } elseif ($majorVersion == 5) {
-            $expected = "{$dirSep}data{$dirSep}issue{$dirSep}155/compiled-symfony-6.yml";
+            $expected = "{$dirSep}data{$dirSep}issue{$dirSep}155{$dirSep}compiled-symfony-6.yml";
         }
-//        if (stripos(PHP_OS, 'WIN') === 0) {
-////            $expected = "{$dirSep}data{$dirSep}issue{$dirSep}155/compiled-symfony-6-windows-lf.yml";
-//        }
+        if (stripos(PHP_OS, 'WIN') === 0) {
+//            $expected = "{$dirSep}data{$dirSep}issue{$dirSep}155{$dirSep}compiled-symfony-6-windows-lf.yml";
+            ;
+            file_put_contents($output, preg_replace('~\R~', "\n", file_get_contents($output)));
+        }
 
-        $this->assertFileEquals(dirname(__DIR__) . $dirSep.'compiled.yml', dirname(__DIR__) . $expected);
-        unlink(dirname(__DIR__) . '/compiled.yml');
+        $this->assertFileEquals($output, dirname(__DIR__) . $expected);
+        unlink($output);
     }
 
     public static function symfonyYamlVersion()
