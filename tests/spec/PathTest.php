@@ -225,25 +225,28 @@ JSON
         $output = dirname(__DIR__) . $dirSep . 'compiled.yml';
         shell_exec('php ' . dirname(__DIR__, 2) . "{$dirSep}bin{$dirSep}php-openapi inline " . $file . ' ' . $output);
 
-        $expected = "{$dirSep}data{$dirSep}issue{$dirSep}155{$dirSep}compiled-symfony-7.yml";
+        $baseExpected = dirname(__DIR__)."{$dirSep}data{$dirSep}issue{$dirSep}155{$dirSep}";
+        $expected = $baseExpected.'compiled-symfony-7.yml';
         $version = static::symfonyYamlVersion();
         $majorVersion = explode('.', $version)[0];
 
         if ($majorVersion == 6) {
-            $expected = "{$dirSep}data{$dirSep}issue{$dirSep}155{$dirSep}compiled-symfony-6.yml";
+            $expected = $baseExpected."compiled-symfony-6.yml";
             if (version_compare(PHP_VERSION, '8.1', '>=') && version_compare($version, '6.0.0', '!=')) {
-                $expected = "{$dirSep}data{$dirSep}issue{$dirSep}155{$dirSep}compiled-symfony-7.yml";
+                $expected = $baseExpected."compiled-symfony-7.yml";
             }
         } elseif ($majorVersion == 5) {
-            $expected = "{$dirSep}data{$dirSep}issue{$dirSep}155{$dirSep}compiled-symfony-6.yml";
+            $expected = $baseExpected."compiled-symfony-6.yml";
         }
         if (stripos(PHP_OS, 'WIN') === 0) {
+
 //            $expected = "{$dirSep}data{$dirSep}issue{$dirSep}155{$dirSep}compiled-symfony-6-windows-lf.yml";
             ;
             file_put_contents($output, preg_replace('~\R~', "\n", file_get_contents($output)));
+            file_put_contents($expected, preg_replace('~\R~', "\n", file_get_contents($expected)));
         }
 
-        $this->assertFileEquals($output, dirname(__DIR__) . $expected);
+        $this->assertFileEquals($output, $expected);
         unlink($output);
     }
 
