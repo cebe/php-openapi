@@ -1,0 +1,128 @@
+openapi: 3.0.0
+info:
+  title: 'Test REST API'
+  description: 'Specifications for the Test REST API.'
+  contact:
+    name: bplainia
+    email: bplainia@lhespotlight.org
+  version: '2021-05-18'
+servers:
+  -
+    url: 'http://localhost:8000'
+    description: Test
+paths:
+  '/v1/organizations/{organizationId}/user':
+    post:
+      tags:
+        - pets
+      summary: 'Creates a user'
+      requestBody:
+        content:
+          application/json:
+            schema:
+              type: object
+              properties:
+                data:
+                  type: object
+                  properties:
+                    id:
+                      type: string
+                      format: uuid
+                    name:
+                      type: string
+        required: true
+      responses:
+        '201':
+          description: Created
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  data:
+                    type: object
+                    properties:
+                      id:
+                        type: string
+                        format: uuid
+                      name:
+                        type: string
+        '400':
+          description: 'Bad Request'
+        '403':
+          description: Forbidden
+      security:
+        -
+          BearerAuth: []
+    parameters:
+      -
+        name: api-version
+        in: header
+        description: 'The API version'
+        required: false
+        schema:
+          type: string
+          format: date
+          example: '2021-05-18'
+      -
+        name: organizationId
+        in: path
+        description: 'The Organization ID'
+        required: true
+        schema:
+          type: string
+          format: uuid
+  '/v1/organizations/{organizationId}/user/{id}':
+    get:
+      summary: 'Gets a user'
+      responses:
+        '200':
+          description: 'A bar'
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  data:
+                    type: object
+                    properties:
+                      id:
+                        type: string
+                        format: uuid
+                      name:
+                        type: string
+        '400':
+          description: 'Bad Request'
+        '403':
+          description: Forbidden
+        '404':
+          description: 'Not Found'
+      security:
+        -
+          BearerAuth: []
+    parameters:
+      -
+        name: api-version
+        in: header
+        description: 'The API version'
+        required: false
+        schema:
+          type: string
+          format: date
+          example: '2021-05-18'
+      -
+        name: organizationId
+        in: path
+        description: 'The Organization ID'
+        required: true
+        schema:
+          type: string
+          format: uuid
+      -
+        name: id
+        in: path
+        description: 'User''s ID'
+        required: true
+        schema:
+          type: string
+          format: uuid

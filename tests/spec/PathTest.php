@@ -234,7 +234,10 @@ JSON
                 $expected = "{$dirSep}data{$dirSep}issue{$dirSep}155/compiled-symfony-7.yml";
             }
         } elseif ($majorVersion == 5) {
-            $expected = "{$dirSep}data{$dirSep}issue{$dirSep}155/compiled-symfony-5.yml";
+            $expected = "{$dirSep}data{$dirSep}issue{$dirSep}155/compiled-symfony-6.yml";
+        }
+        if (stripos(PHP_OS, 'WIN') === 0) {
+            $expected = "{$dirSep}data{$dirSep}issue{$dirSep}155/compiled-symfony-6-windows-lf.yml";
         }
 
         $this->assertFileEquals(dirname(__DIR__) . $expected, dirname(__DIR__) . $dirSep.'compiled.yml');
