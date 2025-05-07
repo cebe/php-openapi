@@ -40,7 +40,7 @@ fix-style: php-cs-fixer.phar
 cli:
 	docker-compose run --rm php bash
 
-install:
+install: composer.json package.json
 	$(DOCKER_PHP) composer install --prefer-dist --no-interaction --no-progress --ansi
 	$(DOCKER_NODE) yarn install
 
