@@ -192,4 +192,71 @@ JSON
         $this->assertEquals('A bar', $barPath->get->responses['200']->description);
         $this->assertEquals('non-existing resource', $barPath->get->responses['404']->description);
     }
+
+    public function testPathParametersAreArrays()
+    {
+        $file = __DIR__ . '/data/path-params/openapi.yaml';
+        /** @var $openapi \cebe\openapi\spec\OpenApi */
+        $openapi = Reader::readFromYamlFile($file, \cebe\openapi\spec\OpenApi::class, true);
+
+        $result = $openapi->validate();
+        $this->assertEquals([], $openapi->getErrors(), print_r($openapi->getErrors(), true));
+        $this->assertTrue($result);
+
+        $this->assertInstanceOf(Paths::class, $openapi->paths);
+        $this->assertSame(gettype($openapi->paths->getPaths()), 'array');
+        $this->assertInstanceOf(PathItem::class, $usersPath = $openapi->paths['/v1/organizations/{organizationId}/user']);
+        $this->assertInstanceOf(PathItem::class, $userIdPath = $openapi->paths['/v1/organizations/{organizationId}/user/{id}']);
+
+        $result = $usersPath->validate();
+        $this->assertTrue($result);
+        $this->assertSame(gettype($usersPath->parameters), 'array');
+        $this->assertInstanceOf(\cebe\openapi\spec\Parameter::class, $usersPath->parameters[0]);
+        $this->assertInstanceOf(\cebe\openapi\spec\Parameter::class, $usersPath->parameters[1]);
+        $this->assertEquals('api-version', $usersPath->parameters[0]->name);
+
+        $result = $userIdPath->validate();
+        $this->assertTrue($result);
+        $this->assertSame(gettype($userIdPath->parameters), 'array');
+        $this->assertInstanceOf(\cebe\openapi\spec\Parameter::class, $userIdPath->parameters[0]);
+        $this->assertInstanceOf(\cebe\openapi\spec\Parameter::class, $userIdPath->parameters[1]);
+        $this->assertEquals('id', $userIdPath->parameters[2]->name);
+
+        $dirSep = DIRECTORY_SEPARATOR;
+        $output = dirname(__DIR__) . $dirSep . 'compiled.yml';
+        shell_exec('php ' . dirname(__DIR__, 2) . "{$dirSep}bin{$dirSep}php-openapi inline " . $file . ' ' . $output);
+
+        $baseExpected = dirname(__DIR__)."{$dirSep}data{$dirSep}issue{$dirSep}155{$dirSep}";
+        $expected = $baseExpected.'compiled-symfony-7.yml';
+        $version = static::symfonyYamlVersion();
+        $majorVersion = explode('.', $version)[0];
+
+        if ($majorVersion == 6) {
+            $expected = $baseExpected."compiled-symfony-6.yml";
+            if (version_compare(PHP_VERSION, '8.1', '>=') && version_compare($version, '6.0.0', '!=')) {
+                $expected = $baseExpected."compiled-symfony-7.yml";
+            }
+        } elseif ($majorVersion == 5) {
+            $expected = $baseExpected."compiled-symfony-6.yml";
+        }
+        if (stripos(PHP_OS, 'WIN') === 0) { # fixes https://github.com/cebe/php-openapi/actions/runs/14808968938/job/41581244210
+            file_put_contents($expected, preg_replace('~\R~', "\n", file_get_contents($expected))); # not an ideal solution, can be refactored  
+        }
+
+        $this->assertFileEquals($output, $expected);
+        unlink($output);
+    }
+
+    protected static function symfonyYamlVersion()
+    {
+        $package = 'symfony/yaml';
+        $installed = json_decode(file_get_contents(__DIR__ . '/../../composer.lock'), true);
+
+        foreach ($installed['packages'] as $pkg) {
+            if ($pkg['name'] === $package) {
+                return str_replace('v', '', $pkg['version']);
+            }
+        }
+        return '7.0.0';
+    }
 }

@@ -1,0 +1,79 @@
+
+paths:
+  Users:
+    parameters:
+      - $ref: 'global.yaml#/components/parameters/Version'
+      - $ref: 'global.yaml#/components/parameters/OrganizationId'
+    post:
+      summary: Creates a user
+      tags:
+        - pets
+      security:
+        - BearerAuth: []
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              type: object
+              properties:
+                data:
+                  $ref: '#/components/schemas/User'
+      responses:
+        '201':
+          description: Created
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  data:
+                    $ref: '#/components/schemas/User'
+        '400':
+          $ref: 'global.yaml#/components/responses/BadRequest'
+        '403':
+          $ref: 'global.yaml#/components/responses/Forbidden'
+  UserId:
+    parameters:
+      - $ref: 'global.yaml#/components/parameters/Version'
+      - $ref: 'global.yaml#/components/parameters/OrganizationId'
+      - $ref: '#/components/parameters/UserId'
+    get:
+      summary: Gets a user
+      security:
+        - BearerAuth: []
+      responses:
+        '200':
+          description: A bar
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  data:
+                    $ref: '#/components/schemas/User'
+        '400':
+          $ref: 'global.yaml#/components/responses/BadRequest'
+        '403':
+          $ref: 'global.yaml#/components/responses/Forbidden'
+        '404':
+          $ref: 'global.yaml#/components/responses/NotFound'
+components:
+  schemas:
+    User:
+      type: object
+      properties:
+        id:
+          type: string
+          format: uuid
+        name:
+          type: string
+  parameters:
+    UserId:
+      in: path
+      name: id
+      required: true
+      schema:
+        type: string
+        format: uuid
+      description: User's ID

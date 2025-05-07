@@ -1,0 +1,28 @@
+components:
+  parameters:
+    Version:
+      in: header
+      name: api-version
+      required: false
+      schema:
+        type: string
+        format: date
+        example: '2021-05-18'
+      description: The API version
+    OrganizationId:
+      in: path
+      name: organizationId
+      required: true
+      schema:
+        type: string
+        format: uuid
+      description: The Organization ID
+  responses:
+    BadRequest:
+      description: Bad Request
+    Forbidden:
+      description: Forbidden
+    NotFound:
+      description: Not Found
+    Success:
+      description: Success
