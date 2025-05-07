@@ -131,16 +131,22 @@ switch ($command) {
 
         // Validate
 
+        // OpenAPI version check
+        $openApiVersion = $openApi->getMajorVersion();
+        if ($openApiVersion === \cebe\openapi\spec\OpenApi::VERSION_UNSUPPORTED) {
+            error("Unsupported OpenAPI version: " . $openApi->openapi);
+        }
+
         $openApi->validate();
         $errors = array_merge($errors, $openApi->getErrors());
 
         $validator = new JsonSchema\Validator;
         $openApiData = $openApi->getSerializableData();
-        $validator->validate($openApiData, (object)['$ref' => 'file://' . dirname(__DIR__) . '/schemas/openapi-v3.0.json']);
+        $validator->validate($openApiData, (object)['$ref' => 'file://' . dirname(__DIR__) . "/schemas/openapi-v{$openApiVersion}.json"]);
 
         if ($validator->isValid() && empty($errors)) {
             if(!$silentMode) {
-                print_formatted("The supplied API Description \B\Gvalidates\C against the OpenAPI v3.0 schema.\n", STDERR);
+                print_formatted("The supplied API Description \B\Gvalidates\C against the OpenAPI v{$openApiVersion} schema.\n", STDERR);
             }
             exit(0);
         }
@@ -163,7 +169,7 @@ switch ($command) {
             }
         }
         if (!$validator->isValid()) {
-            print_formatted("\BOpenAPI v3.0 schema violations:\C\n", STDERR);
+            print_formatted("\BOpenAPI v{$openApiVersion} schema violations:\C\n", STDERR);
             $errors = $validator->getErrors();
             foreach ($errors as $error) {
                 // hide some errors triggered by other errors further down the path

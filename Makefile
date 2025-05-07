@@ -66,10 +66,13 @@ stan:
 	$(DOCKER_PHP) php $(PHPARGS) vendor/bin/phpstan analyse -l 5 src
 
 # copy openapi3 json schema
-schemas/openapi-v3.0.json: vendor/oai/openapi-specification/schemas/v3.0/schema.json
+schemas/openapi-v3.0.json: vendor/oai/openapi-specification-3.0/schemas/v3.0/schema.json
 	cp $< $@
-
-schemas/openapi-v3.0.yaml: vendor/oai/openapi-specification/schemas/v3.0/schema.yaml
+schemas/openapi-v3.0.yaml: vendor/oai/openapi-specification-3.0/schemas/v3.0/schema.yaml
+	cp $< $@
+schemas/openapi-v3.1.json: vendor/oai/openapi-specification-3.1/schemas/v3.1/schema.json
+	cp $< $@
+schemas/openapi-v3.1.yaml: vendor/oai/openapi-specification-3.1/schemas/v3.1/schema.yaml
 	cp $< $@
 
 php-cs-fixer.phar:

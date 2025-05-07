@@ -26,7 +26,10 @@
 	"require-dev": {
 		"cebe/indent": "*",
 		"phpunit/phpunit": "^6.5 || ^7.5 || ^8.5 || ^9.4",
-		"oai/openapi-specification": "3.0.3",
+
+		"oai/openapi-specification-3.0": "3.0.3",
+		"oai/openapi-specification-3.1": "3.1.0",
+
 		"mermade/openapi3-examples": "1.0.0",
 		"apis-guru/openapi-directory": "1.0.0",
 		"nexmo/api-specification": "1.0.0",
@@ -52,7 +55,7 @@
 		{
 			"type": "package",
 			"package": {
-				"name": "oai/openapi-specification",
+				"name": "oai/openapi-specification-3.0",
 				"version": "3.0.3",
 				"source": {
 					"url": "https://github.com/OAI/OpenAPI-Specification",
@@ -64,12 +67,24 @@
 		{
 			"type": "package",
 			"package": {
+				"name": "oai/openapi-specification-3.1",
+				"version": "3.1.0",
+				"source": {
+					"url": "https://github.com/OAI/OpenAPI-Specification",
+					"type": "git",
+					"reference": "v3.1.1-dev"
+				}
+			}
+		},
+		{
+			"type": "package",
+			"package": {
 				"name": "mermade/openapi3-examples",
 				"version": "1.0.0",
 				"source": {
 					"url": "https://github.com/Mermade/openapi3-examples",
 					"type": "git",
-					"reference": "3e8740c4994310a5d6a35d9b19e405862326f149"
+					"reference": "9c2997e1a25919a8182080cc43a4db06d2dc775d"
 				}
 			}
 		},
