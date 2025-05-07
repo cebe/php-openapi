@@ -37,7 +37,10 @@ fix-style: php-cs-fixer.phar
 	$(DOCKER_PHP) vendor/bin/indent --spaces .php_cs.dist
 	$(DOCKER_PHP) ./php-cs-fixer.phar fix src/ --diff
 
-install:
+cli:
+	docker-compose run --rm php bash
+
+install: composer.json package.json
 	$(DOCKER_PHP) composer install --prefer-dist --no-interaction --no-progress --ansi
 	$(DOCKER_NODE) yarn install
 
@@ -82,4 +85,3 @@ coverage: .php-openapi-covA .php-openapi-covB
 	grep -rhPo '^class \w+' src/spec/ | awk '{print $$2}' |grep -v '^Type$$' | sort > $@
 
 .PHONY: all check-style fix-style install test lint coverage
-

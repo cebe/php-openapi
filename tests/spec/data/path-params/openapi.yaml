@@ -1,0 +1,18 @@
+openapi: 3.0.0
+info:
+  version: "2021-05-18"
+  title: Test REST API
+  description: Specifications for the Test REST API.
+  contact:
+    name: bplainia
+    email: bplainia@lhespotlight.org
+
+servers:
+  - url: 'http://localhost:8000'
+    description: 'Test'
+
+paths:
+  /v1/organizations/{organizationId}/user:
+    $ref: 'user.yaml#/paths/Users'
+  /v1/organizations/{organizationId}/user/{id}:
+    $ref: 'user.yaml#/paths/UserId'
