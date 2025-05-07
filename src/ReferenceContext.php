@@ -125,11 +125,11 @@ class ReferenceContext
             if ($i > 0 && $parts[$i] === '..') {
                 $parent = $i - $parentOffset;
                 //Make sure parent exists, if not, check the next parent etc
-                while($parent >= 0 && empty($parts[$parent])){
-                        $parent--;
+                while ($parent >= 0 && empty($parts[$parent])) {
+                    $parent--;
                 }
                 //Confirm parent is valid
-                if(!empty($parts[$parent]) && $parts[$parent] !== '..'){
+                if (!empty($parts[$parent]) && $parts[$parent] !== '..') {
                     unset($parts[$parent]);
                 }
                 unset($parts[$i]);
