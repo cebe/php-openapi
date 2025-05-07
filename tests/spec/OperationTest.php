@@ -79,10 +79,11 @@ YAML
 
         $this->assertInstanceOf(\cebe\openapi\spec\Responses::class, $operation->responses);
 
-        $this->assertCount(1, $operation->security);
-        $this->assertInstanceOf(\cebe\openapi\spec\SecurityRequirement::class, $operation->security[0]);
-        $this->assertCount(2, $operation->security[0]->petstore_auth);
-        $this->assertEquals(['write:pets', 'read:pets'], $operation->security[0]->petstore_auth);
+        $this->assertCount(1, $operation->security->getRequirements());
+        $this->assertInstanceOf(\cebe\openapi\spec\SecurityRequirements::class, $operation->security);
+        $this->assertInstanceOf(\cebe\openapi\spec\SecurityRequirement::class, $operation->security->getRequirement('petstore_auth'));
+        $this->assertCount(2, $operation->security->getRequirement('petstore_auth')->getSerializableData());
+        $this->assertEquals(['write:pets', 'read:pets'], $operation->security->getRequirement('petstore_auth')->getSerializableData());
 
         $this->assertInstanceOf(ExternalDocumentation::class, $operation->externalDocs);
         $this->assertEquals('Find more info here', $operation->externalDocs->description);
