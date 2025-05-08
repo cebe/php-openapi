@@ -172,6 +172,7 @@ YAML
 
         $result = $schema->validate();
         $this->assertEquals([
+            'Invalid field: "map"',
             'Discriminator is missing required property: propertyName'
         ], $schema->getErrors());
         $this->assertFalse($result);
