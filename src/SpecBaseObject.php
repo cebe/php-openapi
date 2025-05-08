@@ -393,7 +393,7 @@ abstract class SpecBaseObject implements SpecObjectInterface, DocumentContextInt
      * Resolves all Reference Objects in this object and replaces them with their resolution.
      * @throws exceptions\UnresolvableReferenceException in case resolving a reference fails.
      */
-    public function resolveReferences(ReferenceContext $context = null)
+    public function resolveReferences(?ReferenceContext $context = null)
     {
         // avoid recursion to get stuck in a loop
         if ($this->_recursingReferences) {
