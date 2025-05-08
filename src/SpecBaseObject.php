@@ -280,7 +280,7 @@ abstract class SpecBaseObject implements SpecObjectInterface, DocumentContextInt
         if (($pos = $this->getDocumentPosition()) !== null) {
             $errors = [
                 array_map(function ($e) use ($pos) {
-                    return "[{$pos->getPointer()}] $e";
+                    return $pos->getPointer() ? "[{$pos->getPointer()}] $e" : $e;
                 }, $this->_errors)
             ];
         } else {

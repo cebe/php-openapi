@@ -141,8 +141,11 @@ JSON
         $openapi = Reader::readFromYamlFile($file, \cebe\openapi\spec\OpenApi::class, false);
 
         $result = $openapi->validate();
-        $this->assertEquals([], $openapi->getErrors(), print_r($openapi->getErrors(), true));
-        $this->assertTrue($result);
+        $this->assertEquals([
+            'Invalid field: "X-EXTENSION"',
+            'Invalid field: "xyz-extension"'
+        ], $openapi->getErrors(), print_r($openapi->getErrors(), true));
+        $this->assertFalse($result);
 
         $this->assertInstanceOf(Paths::class, $openapi->paths);
         $this->assertInstanceOf(PathItem::class, $fooPath = $openapi->paths['/foo']);
@@ -173,12 +176,16 @@ JSON
         $this->assertInstanceOf(Response::class, $path200);
         $this->assertEquals('A bar', $path200->description);
 
+        unset($openapi);
         /** @var $openapi OpenApi */
         $openapi = Reader::readFromYamlFile($file, \cebe\openapi\spec\OpenApi::class, true);
 
         $result = $openapi->validate();
-        $this->assertEquals([], $openapi->getErrors(), print_r($openapi->getErrors(), true));
-        $this->assertTrue($result);
+        $this->assertEquals([
+            'Invalid field: "X-EXTENSION"',
+            'Invalid field: "xyz-extension"'
+        ], $openapi->getErrors());
+        $this->assertFalse($result);
 
         $this->assertInstanceOf(Paths::class, $openapi->paths);
         $this->assertInstanceOf(PathItem::class, $fooPath = $openapi->paths['/foo']);
