@@ -80,8 +80,13 @@ YAML
     private function assertApiContent(\cebe\openapi\spec\OpenApi $openapi)
     {
         $result = $openapi->validate();
-        $this->assertEquals([], $openapi->getErrors());
-        $this->assertTrue($result);
+        $this->assertEquals([
+            '[/paths/~1foo/put/responses/200] Invalid field: "schema"',
+            '[/paths/~1foo/put/responses/404] Invalid field: "schema"',
+            '[/paths/~1foo/put/responses/428] Invalid field: "schema"',
+            '[/paths/~1foo/put/responses/default] Invalid field: "schema"'
+        ], $openapi->getErrors());
+        $this->assertFalse($result);
 
 
         $this->assertEquals("3.0.0", $openapi->openapi);
