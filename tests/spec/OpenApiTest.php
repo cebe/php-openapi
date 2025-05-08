@@ -233,4 +233,27 @@ class OpenApiTest extends \PHPUnit\Framework\TestCase
         }
 
     }
+
+    public function testInvalidTopLevelField()
+    {
+        $openapi = new OpenApi([
+            'AAAAAcomponents' => [
+                'User' => [
+                    'type' => 'object',
+                    'properties' => [
+                        'id' => [
+                            'type' => 'integer'
+                        ],
+                    ]
+                ]
+            ]
+        ]);
+        $this->assertFalse($openapi->validate());
+        $this->assertEquals([
+            'Invalid field: "AAAAAcomponents"',
+            'OpenApi is missing required property: openapi',
+            'OpenApi is missing required property: info',
+            'OpenApi is missing required property: paths',
+        ], $openapi->getErrors());
+    }
 }

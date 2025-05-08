@@ -12,6 +12,7 @@ use cebe\openapi\exceptions\UnknownPropertyException;
 use cebe\openapi\json\JsonPointer;
 use cebe\openapi\json\JsonReference;
 use cebe\openapi\spec\Reference;
+use cebe\openapi\spec\Schema;
 use cebe\openapi\spec\Type;
 
 /**
@@ -234,7 +235,15 @@ abstract class SpecBaseObject implements SpecObjectInterface, DocumentContextInt
         }
         $this->_recursingValidate = true;
         $valid = true;
-        foreach ($this->_properties as $v) {
+        $allowedFields = array_keys($this->attributes());
+        if (static::class === Schema::class) {
+            $allowedFields[] = 'additionalProperties';
+        }
+        foreach ($this->_properties as $k => $v) {
+            if ($allowedFields && !in_array($k, $allowedFields, true) && substr($k, 0, 2) !== 'x-') {
+                $valid = false;
+                $this->addError('Invalid field: "' . $k . '"');
+            }
             if ($v instanceof SpecObjectInterface) {
                 if (!$v->validate()) {
                     $valid = false;
@@ -275,7 +284,7 @@ abstract class SpecBaseObject implements SpecObjectInterface, DocumentContextInt
         if (($pos = $this->getDocumentPosition()) !== null) {
             $errors = [
                 array_map(function ($e) use ($pos) {
-                    return "[{$pos->getPointer()}] $e";
+                    return $pos->getPointer() ? "[{$pos->getPointer()}] $e" : $e;
                 }, $this->_errors)
             ];
         } else {
