@@ -255,11 +255,5 @@ class OpenApiTest extends \PHPUnit\Framework\TestCase
             'OpenApi is missing required property: info',
             'OpenApi is missing required property: paths',
         ], $openapi->getErrors());
-
-//        // check default value of servers
-//        // https://github.com/OAI/OpenAPI-Specification/blob/3.0.2/versions/3.0.2.md#openapiObject
-//        // If the servers property is not provided, or is an empty array, the default value would be a Server Object with a url value of /.
-//        $this->assertCount(1, $openapi->servers);
-//        $this->assertEquals('/', $openapi->servers[0]->url);
     }
 }
