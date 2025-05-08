@@ -176,7 +176,6 @@ JSON
         $this->assertInstanceOf(Response::class, $path200);
         $this->assertEquals('A bar', $path200->description);
 
-        unset($openapi);
         /** @var $openapi OpenApi */
         $openapi = Reader::readFromYamlFile($file, \cebe\openapi\spec\OpenApi::class, true);
 
