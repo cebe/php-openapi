@@ -44,7 +44,12 @@ YAML
         $openApiFile = __DIR__ . '/spec/data/traits-mixins.yaml';
         $openapi = \cebe\openapi\Reader::readFromYamlFile($openApiFile);
 
-        $this->assertApiContent($openapi);
+        $this->assertApiContent($openapi, [
+            '[/paths/~1foo/put/responses/200] Invalid field: "schema"',
+            '[/paths/~1foo/put/responses/404] Invalid field: "schema"',
+            '[/paths/~1foo/put/responses/428] Invalid field: "schema"',
+            '[/paths/~1foo/put/responses/default] Invalid field: "schema"'
+        ]);
 
         $putOperation = $openapi->paths['/foo']->put;
         $this->assertEquals('create foo', $putOperation->description);
@@ -77,16 +82,11 @@ YAML
         $this->assertEquals('uuid of the resource', $foo->properties['uuid']->description);
     }
 
-    private function assertApiContent(\cebe\openapi\spec\OpenApi $openapi)
+    private function assertApiContent(\cebe\openapi\spec\OpenApi $openapi, $expected = [])
     {
         $result = $openapi->validate();
-        $this->assertEquals([
-            '[/paths/~1foo/put/responses/200] Invalid field: "schema"',
-            '[/paths/~1foo/put/responses/404] Invalid field: "schema"',
-            '[/paths/~1foo/put/responses/428] Invalid field: "schema"',
-            '[/paths/~1foo/put/responses/default] Invalid field: "schema"'
-        ], $openapi->getErrors());
-        $this->assertFalse($result);
+        $this->assertEquals($expected, $openapi->getErrors());
+        $expected ? $this->assertFalse($result) : $this->assertTrue($result);
 
 
         $this->assertEquals("3.0.0", $openapi->openapi);
