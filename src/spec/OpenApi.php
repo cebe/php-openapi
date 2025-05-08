@@ -77,7 +77,5 @@ class OpenApi extends SpecBaseObject
         if (!empty($this->openapi) && !preg_match('/^3\.0\.\d+(-rc\d)?$/i', $this->openapi)) {
             $this->addError('Unsupported openapi version: ' . $this->openapi);
         }
-
-
     }
 }

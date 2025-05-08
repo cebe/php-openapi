@@ -236,7 +236,7 @@ abstract class SpecBaseObject implements SpecObjectInterface, DocumentContextInt
         $valid = true;
         $allowedFields = array_keys($this->attributes());
         foreach ($this->_properties as $k => $v) {
-            if ($allowedFields && !in_array($k, $allowedFields, true) && substr($k, 0, 2) !== 'x-' ) {
+            if ($allowedFields && !in_array($k, $allowedFields, true) && substr($k, 0, 2) !== 'x-') {
                 $valid = false;
                 $this->addError('Invalid field: "' . $k . '"');
             }
