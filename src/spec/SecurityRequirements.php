@@ -26,8 +26,7 @@ class SecurityRequirements extends SpecBaseObject
         foreach ($data as $index => $value) {
             if (is_numeric($index)) { // read
                 if ($value === []) { # empty Security Requirement Object (`{}`) = anonymous access https://github.com/cebe/php-openapi/issues/238
-                    $this->_securityRequirements[$index] = new SecurityRequirement($value);
-//                    break;
+                    $this->_securityRequirements[$index] = $value;
                 } else {
                     $this->_securityRequirements[array_keys($value)[0]] = new SecurityRequirement(array_values($value)[0]);
                 }
@@ -69,7 +68,7 @@ class SecurityRequirements extends SpecBaseObject
             /** @var SecurityRequirement $securityRequirement */
 
             if (is_numeric($name)) {
-                $data[$name] = $securityRequirement->getSerializableData();
+                $data[$name] = (object) $securityRequirement; # case https://github.com/cebe/php-openapi/issues/238
             } else {
                 $data[] = [$name => $securityRequirement->getSerializableData()];
             }
