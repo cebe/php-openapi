@@ -1,0 +1,28 @@
+openapi: 3.0.0
+info:
+  title: Secured API
+  version: 1.0.0
+paths:
+  /global-secured:
+    get:
+      responses:
+        '200':
+          description: OK
+  /path-secured:
+    get:
+      security:
+        - {}
+      responses:
+        '200':
+          description: OK
+components:
+  securitySchemes:
+    ApiKeyAuth:
+      type: apiKey
+      in: header
+      name: X-API-Key
+    BearerAuth:
+      type: http
+      scheme: bearer
+security:
+  - ApiKeyAuth: []
