@@ -22,6 +22,7 @@ jobs:
           - "8.1"
           - "8.2"
           - "8.3"
+          - "8.4"
         dependencies:
           - "lowest"
           - "highest"
@@ -79,7 +80,7 @@ jobs:
 
       - name: Require newer phpunit/phpunit version
         run: "composer require phpunit/phpunit '^9.5' --dev --no-interaction --ansi --no-install"
-        if: matrix.php == '8.1' || matrix.php == '8.2' || matrix.php == '8.3'
+        if: matrix.php == '8.1' || matrix.php == '8.2' || matrix.php == '8.3' || matrix.php == '8.4'
 
       - name: "Install dependencies with Composer"
         uses: "ramsey/composer-install@v2"
