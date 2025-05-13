@@ -15,9 +15,62 @@ class Issue238Test extends \PHPUnit\Framework\TestCase
         $this->assertInstanceOf(\cebe\openapi\spec\SecurityRequirements::class, $openapi->paths->getPath('/path-secured')->getOperations()['get']->security);
         $this->assertSame(json_decode(json_encode($openapi->paths->getPath('/path-secured')->getOperations()['get']->security->getSerializableData()), true), [[]]);
 
-//        return; # TODO
-//        $openapi = Reader::readFromJsonFile(__DIR__.'/data/issue/238/spec.json');
-//        $this->assertInstanceOf(\cebe\openapi\SpecObjectInterface::class, $openapi);
+        $openapiJson = Reader::readFromJson(<<<JSON
+        {
+  "openapi": "3.0.0",
+  "info": {
+    "title": "Secured API",
+    "version": "1.0.0"
+  },
+  "paths": {
+    "/global-secured": {
+      "get": {
+        "responses": {
+          "200": {
+            "description": "OK"
+          }
+        }
+      }
+    },
+    "/path-secured": {
+      "get": {
+        "security": [
+          {}
+        ],
+        "responses": {
+          "200": {
+            "description": "OK"
+          }
+        }
+      }
+    }
+  },
+  "components": {
+    "securitySchemes": {
+      "ApiKeyAuth": {
+        "type": "apiKey",
+        "in": "header",
+        "name": "X-API-Key"
+      },
+      "BearerAuth": {
+        "type": "http",
+        "scheme": "bearer"
+      }
+    }
+  },
+  "security": [
+    {
+      "ApiKeyAuth": []
+    }
+  ]
+}
+
+JSON
+);
+
+        $this->assertInstanceOf(\cebe\openapi\SpecObjectInterface::class, $openapiJson);
+        $this->assertInstanceOf(\cebe\openapi\spec\SecurityRequirements::class, $openapiJson->paths->getPath('/path-secured')->getOperations()['get']->security);
+        $this->assertSame(json_decode(json_encode($openapiJson->paths->getPath('/path-secured')->getOperations()['get']->security->getSerializableData()), true), [[]]);
     }
 
     public function test238AddSupportForEmptySecurityRequirementObjectInSecurityRequirementWrite()
@@ -42,6 +95,31 @@ security:
 YAML
         ),
             $yaml
+        );
+
+        $openapiJson = $this->createOpenAPI([
+            'security' => new SecurityRequirements([
+                []
+            ]),
+        ]);
+
+        $json = Writer::writeToJson($openapiJson);
+
+        $this->assertEquals(preg_replace('~\R~', "\n", <<<JSON
+{
+    "openapi": "3.0.0",
+    "info": {
+        "title": "Test API",
+        "version": "1.0.0"
+    },
+    "paths": {},
+    "security": [
+        {}
+    ]
+}
+JSON
+        ),
+            $json
         );
     }
 
