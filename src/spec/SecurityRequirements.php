@@ -70,7 +70,7 @@ class SecurityRequirements extends SpecBaseObject
             if (is_numeric($name)) {
                 $data[$name] = (object) $securityRequirement; # case https://github.com/cebe/php-openapi/issues/238
             } else {
-                $data[] = [$name => $securityRequirement->getSerializableData()];
+                $data[] = (object) [$name => $securityRequirement->getSerializableData()];
             }
         }
         return $data;
