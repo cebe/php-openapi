@@ -69,7 +69,6 @@ class SecurityRequirements extends SpecBaseObject
         $data = [];
 
         foreach ($this->_securityRequirements ?? [] as $outerIndex => $content) {
-
             if (is_string($outerIndex)) {
                 $data[] = [$outerIndex => $content->getSerializableData()];
             } elseif (is_numeric($outerIndex)) {
