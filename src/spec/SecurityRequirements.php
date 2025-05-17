@@ -24,14 +24,17 @@ class SecurityRequirements extends SpecBaseObject
         parent::__construct($data);
 
         foreach ($data as $index => $value) {
-            if (is_numeric($index)) { // read
-                if ($value === []) { # empty Security Requirement Object (`{}`) = anonymous access https://github.com/cebe/php-openapi/issues/238
-                    $this->_securityRequirements[$index] = $value;
-                } else {
-                    $this->_securityRequirements[array_keys($value)[0]] = new SecurityRequirement(array_values($value)[0]);
+            if (is_numeric($index) && $value === []) { # empty Security Requirement Object (`{}`) = anonymous access
+                $this->_securityRequirements[$index] = [];
+                continue;
+            }
+
+            if (is_string($index)) {
+                $this->_securityRequirements[] = [$index => $value instanceof SecurityRequirement ? $value : new SecurityRequirement($value)];
+            } elseif (is_numeric($index)) {
+                foreach ($value as $innerIndex => $subValue) {
+                    $this->_securityRequirements[$index][$innerIndex] = $subValue instanceof SecurityRequirement ? $subValue : new SecurityRequirement($subValue);
                 }
-            } else { // write
-                $this->_securityRequirements[$index] = $value;
             }
         }
 
@@ -64,13 +67,22 @@ class SecurityRequirements extends SpecBaseObject
     public function getSerializableData()
     {
         $data = [];
-        foreach ($this->_securityRequirements ?? [] as $name => $securityRequirement) {
-            /** @var SecurityRequirement $securityRequirement */
 
-            if (is_numeric($name)) {
-                $data[$name] = (object) $securityRequirement; # case https://github.com/cebe/php-openapi/issues/238
-            } else {
-                $data[] = (object) [$name => $securityRequirement->getSerializableData()];
+        foreach ($this->_securityRequirements ?? [] as $outerIndex => $content) {
+
+            if (is_string($outerIndex)) {
+                $data[] = [$outerIndex => $content->getSerializableData()];
+            } elseif (is_numeric($outerIndex)) {
+                if ($content === []) {
+                    $data[$outerIndex] = (object)$content;
+                    continue;
+                }
+                $innerResult = [];
+                foreach ($content as $innerIndex => $innerContent) {
+                    $result = is_object($innerContent) && method_exists($innerContent, 'getSerializableData') ? $innerContent->getSerializableData() : $innerContent;
+                    $innerResult[$innerIndex] = $result;
+                }
+                $data[$outerIndex] = (object)$innerResult;
             }
         }
         return $data;
@@ -78,11 +90,28 @@ class SecurityRequirements extends SpecBaseObject
 
     public function getRequirement(string $name)
     {
-        return $this->_securityRequirements[$name] ?? null;
+        return static::searchKey($this->_securityRequirements, $name);
     }
 
     public function getRequirements()
     {
         return $this->_securityRequirements;
+    }
+
+    private static function searchKey(array $array, string $searchKey)
+    {
+        foreach ($array as $key => $value) {
+            if ($key === $searchKey) {
+                return $value;
+            }
+            if (is_array($value)) {
+                $mt = __METHOD__;
+                $result = $mt($value, $searchKey);
+                if ($result !== null) {
+                    return $result; // key found in deeply nested/associative array
+                }
+            }
+        }
+        return null; // key not found
     }
 }
