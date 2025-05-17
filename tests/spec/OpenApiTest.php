@@ -88,6 +88,21 @@ class OpenApiTest extends \PHPUnit\Framework\TestCase
         }
     }
 
+    public function assertFewInstanceOf($className, $array)
+    {
+        foreach($array as $k => $v) {
+            if (is_numeric($k) && $v === []) { # https://github.com/cebe/php-openapi/issues/238
+                continue;
+            }
+
+            if (is_array($v)) {
+                $this->{__FUNCTION__}($className, $v);
+            } else {
+                $this->assertInstanceOf($className, $v, "Asserting that item with key '$k' is instance of $className");
+            }
+        }
+    }
+
     public function specProvider()
     {
         // examples from https://github.com/OAI/OpenAPI-Specification/tree/master/examples/v3.0
@@ -222,7 +237,7 @@ class OpenApiTest extends \PHPUnit\Framework\TestCase
 
         // security
         $openapi->security !== null && $this->assertInstanceOf(\cebe\openapi\spec\SecurityRequirements::class, $openapi->security);
-        $openapi->security !== null && $this->assertAllInstanceOf(\cebe\openapi\spec\SecurityRequirement::class, $openapi->security->getRequirements());
+        $openapi->security !== null && $this->assertFewInstanceOf(\cebe\openapi\spec\SecurityRequirement::class, $openapi->security->getRequirements());
 
         // tags
         $this->assertAllInstanceOf(\cebe\openapi\spec\Tag::class, $openapi->tags);
