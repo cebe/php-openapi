@@ -1,7 +1,5 @@
 # php-openapi
 
-TODO docs related to issue 242, 238
-
 Read and write [OpenAPI](https://www.openapis.org/) 3.0.x YAML and JSON files and make the content accessible in PHP objects.
 
 It also provides a CLI tool for validating and converting OpenAPI 3.0.x Description files.
