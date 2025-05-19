@@ -223,6 +223,116 @@ $openapi = new OpenApi([
 $json = \cebe\openapi\Writer::writeToJson($openapi);
 ```
 
+Write empty Security Requirement Object (`{}`):
+
+```php
+$openapi = new OpenApi([
+    ...
+    'security' => new SecurityRequirements([
+        []
+    ]
+    ...
+]);
+```
+
+```yaml
+...
+security:
+  - {}
+...
+```
+
+Write security for multiple authentication:
+
+```php
+$openapi = new OpenApi([
+    ...
+    'components' => new Components([
+        'securitySchemes' => [
+            'BearerAuth' => new SecurityScheme([
+                'type' => 'http',
+                'scheme' => 'bearer',
+            ]),
+            'BasicAuth' => new SecurityScheme([
+                'type' => 'http',
+                'scheme' => 'basic',
+            ]),
+            'ApiKeyAuth' => new SecurityScheme([
+                'type' => 'apiKey',
+                'name' => 'X-API-Key',
+                'in' => 'header'
+            ])
+        ],
+    ]),
+    'security' => new SecurityRequirements([
+        [
+            'BearerAuth' => new SecurityRequirement([]),
+            'BasicAuth' => new SecurityRequirement([])
+        ],
+        [
+            'ApiKeyAuth' => new SecurityRequirement([])
+        ]
+    ]),
+    ...
+]);
+```
+
+```yaml
+security:
+  -
+    BearerAuth: []
+    BasicAuth: []
+  -
+    ApiKeyAuth: []
+
+```
+
+Write single authentication (note that both below case will yield same output):
+
+```php
+$openapi = new OpenApi([
+    ...
+    'components' => new Components([
+        'securitySchemes' => [
+            'BearerAuth' => new SecurityScheme([
+                'type' => 'http',
+                'scheme' => 'bearer',
+            ])
+        ],
+    ]),
+    'security' => new SecurityRequirements([
+        'BearerAuth' => new SecurityRequirement([])
+    ]),
+    ...
+]);
+```
+
+```php
+$openapi = new OpenApi([
+    ...
+    'components' => new Components([
+        'securitySchemes' => [
+            'BearerAuth' => new SecurityScheme([
+                'type' => 'http',
+                'scheme' => 'bearer',
+            ])
+        ],
+    ]),
+    'security' => new SecurityRequirements([
+        [
+            'BearerAuth' => new SecurityRequirement([])
+        ]
+    ]),
+    ...
+]);
+```
+
+```yaml
+security:
+  -
+    BearerAuth: []
+```
+
 ### Reading API Description Files and Resolving References
 
 In the above we have passed the raw JSON or YAML data to the Reader. In order to be able to resolve

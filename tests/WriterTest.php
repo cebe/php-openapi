@@ -8,6 +8,7 @@ use cebe\openapi\spec\Responses;
 use cebe\openapi\spec\SecurityRequirement;
 use cebe\openapi\spec\SecurityRequirements;
 use cebe\openapi\spec\SecurityScheme;
+use cebe\openapi\Writer;
 
 class WriterTest extends \PHPUnit\Framework\TestCase
 {
@@ -27,7 +28,7 @@ class WriterTest extends \PHPUnit\Framework\TestCase
     {
         $openapi = $this->createOpenAPI();
 
-        $json = \cebe\openapi\Writer::writeToJson($openapi);
+        $json = Writer::writeToJson($openapi);
 
         $this->assertEquals(preg_replace('~\R~', "\n", <<<JSON
 {
@@ -52,7 +53,7 @@ JSON
             'description' => 'something'
         ]);
 
-        $json = \cebe\openapi\Writer::writeToJson($openapi);
+        $json = Writer::writeToJson($openapi);
 
         $this->assertEquals(preg_replace('~\R~', "\n", <<<JSON
 {
@@ -77,7 +78,7 @@ JSON
     {
         $openapi = $this->createOpenAPI();
 
-        $yaml = \cebe\openapi\Writer::writeToYaml($openapi);
+        $yaml = Writer::writeToYaml($openapi);
 
 
         $this->assertEquals(preg_replace('~\R~', "\n", <<<YAML
@@ -99,7 +100,7 @@ YAML
             'security' => [],
         ]);
 
-        $json = \cebe\openapi\Writer::writeToJson($openapi);
+        $json = Writer::writeToJson($openapi);
 
         $this->assertEquals(preg_replace('~\R~', "\n", <<<JSON
 {
@@ -124,7 +125,7 @@ JSON
             'security' => [],
         ]);
 
-        $yaml = \cebe\openapi\Writer::writeToYaml($openapi);
+        $yaml = Writer::writeToYaml($openapi);
 
 
         $this->assertEquals(preg_replace('~\R~', "\n", <<<YAML
@@ -149,7 +150,7 @@ YAML
             ]),
         ]);
 
-        $json = \cebe\openapi\Writer::writeToJson($openapi);
+        $json = Writer::writeToJson($openapi);
 
         $this->assertEquals(preg_replace('~\R~', "\n", <<<JSON
 {
@@ -180,7 +181,7 @@ JSON
             ]),
         ]);
 
-        $yaml = \cebe\openapi\Writer::writeToYaml($openapi);
+        $yaml = Writer::writeToYaml($openapi);
 
 
         $this->assertEquals(preg_replace('~\R~', "\n", <<<YAML
@@ -225,7 +226,7 @@ YAML
             ]
         ]);
 
-        $yaml = \cebe\openapi\Writer::writeToYaml($openapi);
+        $yaml = Writer::writeToYaml($openapi);
 
 
         $this->assertEquals(preg_replace('~\R~', "\n", <<<YAML
@@ -272,11 +273,30 @@ YAML
             ]),
             'paths' => [],
         ]);
+        $yaml = Writer::writeToYaml($openapi);
 
-        $yaml = \cebe\openapi\Writer::writeToYaml($openapi);
+        // case 2
+        $openapi2 = $this->createOpenAPI([
+            'components' => new Components([
+                'securitySchemes' => [
+                    'BearerAuth' => new SecurityScheme([
+                        'type' => 'http',
+                        'scheme' => 'bearer',
+                        'bearerFormat' => 'AuthToken and JWT Format' # optional, arbitrary value for documentation purposes
+                    ])
+                ],
+            ]),
+            'security' => new SecurityRequirements([
+                [
+                    'BearerAuth' => new SecurityRequirement([])
+                ]
+            ]),
+            'paths' => [],
+        ]);
+        $yaml2 = Writer::writeToYaml($openapi2);
 
 
-        $this->assertEquals(preg_replace('~\R~', "\n", <<<YAML
+        $expected = <<<YAML
 openapi: 3.0.0
 info:
   title: 'Test API'
@@ -292,9 +312,9 @@ security:
   -
     BearerAuth: []
 
-YAML
-        ),
-            $yaml
-        );
+YAML;
+
+        $this->assertEquals(preg_replace('~\R~', "\n", $expected), $yaml);
+        $this->assertEquals(preg_replace('~\R~', "\n", $expected), $yaml2);
     }
 }
