@@ -1,6 +1,10 @@
 <?php
 
 use cebe\openapi\Reader;
+use cebe\openapi\spec\Components;
+use cebe\openapi\spec\SecurityRequirement;
+use cebe\openapi\spec\SecurityRequirements;
+use cebe\openapi\spec\SecurityScheme;
 use cebe\openapi\SpecObjectInterface;
 use cebe\openapi\Writer;
 use PHPUnit\Framework\TestCase;
@@ -41,7 +45,7 @@ class Issue242Test extends TestCase
         ]);
 
         # write back to yml
-        $json = Writer::writeToYaml($openapi);
+        $yaml = Writer::writeToYaml($openapi);
         $this->assertEquals(preg_replace('~\R~', "\n", <<<YAML
 openapi: 3.0.0
 info:
@@ -75,7 +79,7 @@ components:
 
 YAML
         ),
-            $json
+            $yaml
         );
 
         // read in json
@@ -90,7 +94,7 @@ YAML
         ]);
 
         // write back in json
-        $json = Writer::writeToJson($openapi);
+        $yaml = Writer::writeToJson($openapi);
         $this->assertEquals(preg_replace('~\R~', "\n", <<<JSON
 {
     "openapi": "3.0.0",
@@ -139,7 +143,141 @@ YAML
 }
 JSON
         ),
-            $json
+            $yaml
         );
+    }
+
+    public function test242Case3MultipleAuth()
+    {
+        $file = dirname(__DIR__, 2) . '/data/issue/242/multiple_auth.yml';
+        $openapi = Reader::readFromYamlFile($file);
+        $this->assertInstanceOf(SpecObjectInterface::class, $openapi);
+        $act = json_decode(json_encode($openapi->security->getSerializableData()), true);
+        $this->assertSame([], $act[0]['BasicAuth']);
+
+        # write back to yml
+        $yaml = Writer::writeToYaml($openapi);
+        $this->assertEquals(preg_replace('~\R~', "\n", <<<YAML
+openapi: 3.0.0
+info:
+  title: 'Multiple auth'
+  version: 1.0.0
+paths: {  }
+components:
+  securitySchemes:
+    BasicAuth:
+      type: http
+      scheme: basic
+    BearerAuth:
+      type: http
+      scheme: bearer
+    ApiKeyAuth:
+      type: apiKey
+      name: X-API-Key
+      in: header
+    OpenID:
+      type: openIdConnect
+      openIdConnectUrl: 'https://example.com/.well-known/openid-configuration'
+    OAuth2:
+      type: oauth2
+      flows:
+        authorizationCode:
+          authorizationUrl: 'https://example.com/oauth/authorize'
+          tokenUrl: 'https://example.com/oauth/token'
+          scopes:
+            read: 'Grants read access'
+            write: 'Grants write access'
+            admin: 'Grants access to admin operations'
+security:
+  -
+    BasicAuth: []
+    BearerAuth: []
+  -
+    ApiKeyAuth: []
+    OAuth2:
+      - read
+
+YAML
+        ),
+            $yaml
+        );
+    }
+
+    public function test242Case4WriteMultipleAuth()
+    {
+        $openapi = $this->createOpenAPI([
+            'components' => new Components([
+                'securitySchemes' => [
+                    'BearerAuth' => new SecurityScheme([
+                        'type' => 'http',
+                        'scheme' => 'bearer',
+                    ]),
+                    'BasicAuth' => new SecurityScheme([
+                        'type' => 'http',
+                        'scheme' => 'basic',
+                    ]),
+                    'ApiKeyAuth' => new SecurityScheme([
+                        'type' => 'apiKey',
+                        'name' => 'X-API-Key',
+                        'in' => 'header'
+                    ])
+                ],
+            ]),
+            'security' => new SecurityRequirements([
+                [
+                    'BearerAuth' => new SecurityRequirement([]),
+                    'BasicAuth' => new SecurityRequirement([])
+                ],
+                [
+                    'ApiKeyAuth' => new SecurityRequirement([])
+                ]
+            ]),
+            'paths' => [],
+        ]);
+
+
+        $yaml = \cebe\openapi\Writer::writeToYaml($openapi);
+
+        $this->assertEquals(preg_replace('~\R~', "\n", <<<YAML
+openapi: 3.0.0
+info:
+  title: 'Test API'
+  version: 1.0.0
+paths: {  }
+components:
+  securitySchemes:
+    BearerAuth:
+      type: http
+      scheme: bearer
+    BasicAuth:
+      type: http
+      scheme: basic
+    ApiKeyAuth:
+      type: apiKey
+      name: X-API-Key
+      in: header
+security:
+  -
+    BearerAuth: []
+    BasicAuth: []
+  -
+    ApiKeyAuth: []
+
+YAML
+        ),
+            $yaml
+        );
+    }
+
+    private function createOpenAPI($merge = [])
+    {
+        return new \cebe\openapi\spec\OpenApi(array_merge([
+            'openapi' => '3.0.0',
+            'info' => [
+                'title' => 'Test API',
+                'version' => '1.0.0',
+            ],
+            'paths' => [],
+        ], $merge));
     }
 }
