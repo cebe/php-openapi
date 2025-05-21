@@ -59,8 +59,8 @@ lint: install
 	$(DOCKER_PHP) php $(PHPARGS) $(XPHPARGS) bin/php-openapi validate tests/spec/data/recursion.json
 	$(DOCKER_PHP) php $(PHPARGS) $(XPHPARGS) bin/php-openapi validate tests/spec/data/recursion2.yaml
 	$(DOCKER_PHP) php $(PHPARGS) $(XPHPARGS) bin/php-openapi validate tests/spec/data/empty-maps.json
-	$(DOCKER_NODE) ./node_modules/.bin/spectral lint tests/spec/data/reference/playlist.json
-	$(DOCKER_NODE) ./node_modules/.bin/spectral lint tests/spec/data/recursion.json
+	$(DOCKER_NODE) node_modules/.bin/spectral lint tests/spec/data/reference/playlist.json
+	$(DOCKER_NODE) node_modules/.bin/spectral lint tests/spec/data/recursion.json
 
 stan:
 	$(DOCKER_PHP) php $(PHPARGS) vendor/bin/phpstan analyse -l 5 src
