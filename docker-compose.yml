@@ -16,6 +16,6 @@ services:
             - PHP_IDE_CONFIG="serverName=Docker"
         tty: true
     node:
-        image: node:12
+        image: node:20.17
         volumes:
             - .:/app
