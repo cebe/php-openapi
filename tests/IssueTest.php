@@ -1,6 +1,7 @@
 <?php
 
 use cebe\openapi\Reader;
+use cebe\openapi\spec\OpenApi;
 
 class IssueTest extends \PHPUnit\Framework\TestCase
 {
@@ -15,6 +16,14 @@ class IssueTest extends \PHPUnit\Framework\TestCase
     public function test224FailsOnLargeDefinitions()
     {
         $openapi = Reader::readFromJsonFile(__DIR__.'/data/issue/224/cloudflare.json');
+        $this->readLargeFiles($openapi);
+
+        $openapiYml = Reader::readFromYamlFile(__DIR__.'/data/issue/224/cloudflare.yml');
+        $this->readLargeFiles($openapiYml);
+    }
+
+    private function readLargeFiles(OpenApi $openapi): void
+    {
         $this->assertInstanceOf(\cebe\openapi\SpecObjectInterface::class, $openapi);
         $this->assertSame($openapi->openapi, '3.0.3');
         $this->assertSame(
