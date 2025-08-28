@@ -1,13 +1,14 @@
 <?php
 
 use cebe\openapi\Reader;
+use cebe\openapi\ReferenceContext;
+use cebe\openapi\spec\Example;
 use cebe\openapi\spec\OpenApi;
 use cebe\openapi\spec\Parameter;
 use cebe\openapi\spec\Reference;
 use cebe\openapi\spec\RequestBody;
 use cebe\openapi\spec\Response;
 use cebe\openapi\spec\Schema;
-use cebe\openapi\spec\Example;
 
 /**
  * @covers \cebe\openapi\spec\Reference
@@ -66,7 +67,7 @@ YAML
         $this->assertInstanceOf(Reference::class, $petResponse->content['application/json']->examples['frog']);
         $this->assertInstanceOf(Reference::class, $openapi->paths->getPath('/pet/1')->get->responses['200']);
 
-        $openapi->resolveReferences(new \cebe\openapi\ReferenceContext($openapi, 'file:///tmp/openapi.yaml'));
+        $openapi->resolveReferences(new ReferenceContext($openapi, 'file:///tmp/openapi.yaml'));
 
         $this->assertInstanceOf(Schema::class, $refSchema = $petResponse->content['application/json']->schema);
         $this->assertInstanceOf(Example::class, $refExample = $petResponse->content['application/json']->examples['frog']);
@@ -125,7 +126,7 @@ YAML
         $this->assertInstanceOf(Reference::class, $response->content['application/json']->examples['frog']);
 
 //        $this->expectException(\cebe\openapi\exceptions\UnresolvableReferenceException::class);
-        $openapi->resolveReferences(new \cebe\openapi\ReferenceContext($openapi, 'file:///tmp/openapi.yaml'));
+        $openapi->resolveReferences(new ReferenceContext($openapi, 'file:///tmp/openapi.yaml'));
 
         $this->assertInstanceOf(Schema::class, $petItems = $openapi->components->schemas['Pet']->properties['id']->items);
         $this->assertInstanceOf(Schema::class, $refSchema = $response->content['application/json']->schema);
@@ -160,7 +161,7 @@ YAML
         $this->assertInstanceOf(Reference::class, $petItems = $openapi->components->schemas['Pet']);
         $this->assertInstanceOf(Reference::class, $petItems = $openapi->components->schemas['Dog']);
 
-        $openapi->resolveReferences(new \cebe\openapi\ReferenceContext($openapi, $file));
+        $openapi->resolveReferences(new ReferenceContext($openapi, $file));
 
         $this->assertInstanceOf(Schema::class, $petItems = $openapi->components->schemas['Pet']);
         $this->assertInstanceOf(Schema::class, $petItems = $openapi->components->schemas['Dog']);
@@ -189,7 +190,7 @@ YAML
         $this->assertInstanceOf(Reference::class, $openapi->components->schemas['Dog']);
         $this->assertInstanceOf(Reference::class, $openapi->components->parameters['Parameter.PetId']);
 
-        $openapi->resolveReferences(new \cebe\openapi\ReferenceContext($openapi, $file));
+        $openapi->resolveReferences(new ReferenceContext($openapi, $file));
 
         $this->assertInstanceOf(Schema::class, $openapi->components->schemas['Pet']);
         $this->assertInstanceOf(Schema::class, $openapi->components->schemas['Dog']);
@@ -233,7 +234,21 @@ YAML
 
     public function testResolveFileHttp()
     {
-        $file = 'https://raw.githubusercontent.com/cebe/php-openapi/290389bbd337cf4d70ecedfd3a3d886715e19552/tests/spec/data/reference/base.yaml';
+        $host = 'localhost:8787'; # create mock web server to avoid calling real GitHub URL and rate limit hit
+        // $file = 'https://raw.githubusercontent.com/cebe/php-openapi/290389bbd337cf4d70ecedfd3a3d886715e19552/tests/spec/data/reference/base.yaml';
+        if (stripos(PHP_OS_FAMILY, 'Windows') !== false) {
+            $cmd = 'powershell -Command "Start-Process php -ArgumentList \'-S '.$host.'\' -NoNewWindow"';
+            $res = popen($cmd, "r");
+        } else {
+            exec('nohup php -S '.$host.' > /dev/null 2>&1 &');
+        }
+        // ENH: turn off the server
+        // ENH: avoid displaying stdout in CI while starting the server
+        sleep(2);
+
+        // $path = '/cebe/php-openapi/290389bbd337cf4d70ecedfd3a3d886715e19552/tests/spec/data/reference/base.yaml';
+        $path = '/tests/data/issue/236/base.yaml';
+        $file = 'http://' . $host . $path;
         /** @var $openapi OpenApi */
         $openapi = Reader::readFromYaml(str_replace('##ABSOLUTEPATH##', dirname($file), file_get_contents($file)));
 
@@ -244,12 +259,16 @@ YAML
         $this->assertInstanceOf(Reference::class, $petItems = $openapi->components->schemas['Pet']);
         $this->assertInstanceOf(Reference::class, $petItems = $openapi->components->schemas['Dog']);
 
-        $openapi->resolveReferences(new \cebe\openapi\ReferenceContext($openapi, $file));
+        $openapi->resolveReferences(new ReferenceContext($openapi, $file));
 
         $this->assertInstanceOf(Schema::class, $petItems = $openapi->components->schemas['Pet']);
         $this->assertInstanceOf(Schema::class, $petItems = $openapi->components->schemas['Dog']);
         $this->assertArrayHasKey('id', $openapi->components->schemas['Pet']->properties);
         $this->assertArrayHasKey('name', $openapi->components->schemas['Dog']->properties);
+
+        if (isset($res) && is_resource($petItems)) {
+            pclose($res);
+        }
     }
 
     public function testResolvePaths()
@@ -312,7 +331,7 @@ components:
 
 YAML;
         $openapi = Reader::readFromYaml($schema);
-        $openapi->resolveReferences(new \cebe\openapi\ReferenceContext($openapi, $this->createFileUri(__DIR__ . '/data/reference/definitions.yaml')));
+        $openapi->resolveReferences(new ReferenceContext($openapi, $this->createFileUri(__DIR__ . '/data/reference/definitions.yaml')));
 
         $this->assertTrue(isset($openapi->components->schemas['Pet']));
         $this->assertEquals(['One', 'Two'], $openapi->components->schemas['Pet']->properties['typeA']->enum);
@@ -354,7 +373,7 @@ components:
 YAML;
 
         $openapi = Reader::readFromYaml($schema);
-        $openapi->resolveReferences(new \cebe\openapi\ReferenceContext($openapi, 'file:///tmp/openapi.yaml'));
+        $openapi->resolveReferences(new ReferenceContext($openapi, 'file:///tmp/openapi.yaml'));
 
         $this->assertTrue(isset($openapi->components->schemas['City']));
         $this->assertTrue(isset($openapi->components->schemas['Named']));
@@ -393,7 +412,7 @@ components:
 YAML;
 
         $openapi = Reader::readFromYaml($schema);
-        $openapi->resolveReferences(new \cebe\openapi\ReferenceContext($openapi, $this->createFileUri(__DIR__ . '/data/reference/definitions.yaml')));
+        $openapi->resolveReferences(new ReferenceContext($openapi, $this->createFileUri(__DIR__ . '/data/reference/definitions.yaml')));
 
         $this->assertTrue(isset($openapi->components->schemas['Dog']));
         $this->assertEquals('object', $openapi->components->schemas['Dog']->type);
@@ -431,12 +450,12 @@ YAML;
         $this->expectException(\cebe\openapi\exceptions\UnresolvableReferenceException::class);
         $this->expectExceptionMessage('Cyclic reference detected on a Reference Object.');
 
-        $openapi->resolveReferences(new \cebe\openapi\ReferenceContext($openapi, 'file:///tmp/openapi.yaml'));
+        $openapi->resolveReferences(new ReferenceContext($openapi, 'file:///tmp/openapi.yaml'));
     }
 
     public function testTransitiveReferenceOverTwoFiles()
     {
-        $openapi = Reader::readFromYamlFile(__DIR__ . '/data/reference/structure.yaml', OpenApi::class, \cebe\openapi\ReferenceContext::RESOLVE_MODE_INLINE);
+        $openapi = Reader::readFromYamlFile(__DIR__ . '/data/reference/structure.yaml', OpenApi::class, ReferenceContext::RESOLVE_MODE_INLINE);
 
         $yaml = \cebe\openapi\Writer::writeToYaml($openapi);
 
@@ -471,7 +490,7 @@ YAML;
 
     public function testReferencedCommonParamsInReferencedPath()
     {
-        $openapi = Reader::readFromYamlFile(__DIR__ . '/data/reference/ReferencedCommonParamsInReferencedPath.yml', OpenApi::class, \cebe\openapi\ReferenceContext::RESOLVE_MODE_INLINE);
+        $openapi = Reader::readFromYamlFile(__DIR__ . '/data/reference/ReferencedCommonParamsInReferencedPath.yml', OpenApi::class, ReferenceContext::RESOLVE_MODE_INLINE);
         $yaml = \cebe\openapi\Writer::writeToYaml($openapi);
         $expected = <<<YAML
 openapi: 3.0.0
@@ -536,7 +555,7 @@ YAML;
 
     public function testResolveRelativePathInline()
     {
-        $openapi = Reader::readFromYamlFile(__DIR__ . '/data/reference/openapi_models.yaml', OpenApi::class, \cebe\openapi\ReferenceContext::RESOLVE_MODE_INLINE);
+        $openapi = Reader::readFromYamlFile(__DIR__ . '/data/reference/openapi_models.yaml', OpenApi::class, ReferenceContext::RESOLVE_MODE_INLINE);
 
         $yaml = \cebe\openapi\Writer::writeToYaml($openapi);
 
@@ -589,7 +608,7 @@ YAML;
 
     public function testResolveRelativePathAll()
     {
-        $openapi = Reader::readFromYamlFile(__DIR__ . '/data/reference/openapi_models.yaml', OpenApi::class, \cebe\openapi\ReferenceContext::RESOLVE_MODE_ALL);
+        $openapi = Reader::readFromYamlFile(__DIR__ . '/data/reference/openapi_models.yaml', OpenApi::class, ReferenceContext::RESOLVE_MODE_ALL);
 
         $yaml = \cebe\openapi\Writer::writeToYaml($openapi);
 
@@ -656,5 +675,4 @@ YAML;
             $this->assertEquals($expected, $yaml, $yaml);
         }
     }
-
 }
