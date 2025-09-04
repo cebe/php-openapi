@@ -107,11 +107,11 @@ final class JsonPointer
 
         foreach ($this->getPath() as $part) {
             if (is_array($currentReference)) {
-//                if (!preg_match('~^([1-9]*[0-9]|-)$~', $part)) {
-//                    throw new NonexistentJsonPointerReferenceException(
-//                        "Failed to evaluate pointer '$this->_pointer'. Invalid pointer path '$part' for Array at path '$currentPath'."
-//                    );
-//                }
+                //                if (!preg_match('~^([1-9]*[0-9]|-)$~', $part)) {
+                //                    throw new NonexistentJsonPointerReferenceException(
+                //                        "Failed to evaluate pointer '$this->_pointer'. Invalid pointer path '$part' for Array at path '$currentPath'."
+                //                    );
+                //                }
                 if ($part === '-' || !array_key_exists($part, $currentReference)) {
                     throw new NonexistentJsonPointerReferenceException(
                         "Failed to evaluate pointer '$this->_pointer'. Array has no member $part at path '$currentPath'."
