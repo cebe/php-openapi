@@ -160,7 +160,7 @@ class Reference implements SpecObjectInterface, DocumentContextInterface, RawSpe
     /**
      * @return ReferenceContext
      */
-    public function getContext() : ?ReferenceContext
+    public function getContext(): ?ReferenceContext
     {
         return $this->_context;
     }
@@ -192,53 +192,58 @@ class Reference implements SpecObjectInterface, DocumentContextInterface, RawSpe
             return $this;
         }
         try {
-            if ($jsonReference->getDocumentUri() === '') {
-                if ($context->mode === ReferenceContext::RESOLVE_MODE_INLINE) {
-                    return $this;
-                }
-
-                // resolve in current document
-                $baseSpec = $context->getBaseSpec();
-                if ($baseSpec !== null) {
-                    // TODO type error if resolved object does not match $this->_to ?
-                    /** @var SpecObjectInterface $referencedObject */
-                    $referencedObject = $jsonReference->getJsonPointer()->evaluate($baseSpec);
-                    // transitive reference
-                    if ($referencedObject instanceof Reference) {
-                        $referencedObject = $this->resolveTransitiveReference($referencedObject, $context);
+            if ($context->isFromFile()) {
+                if ($jsonReference->getDocumentUri() === '') {
+                    if ($context->mode === ReferenceContext::RESOLVE_MODE_INLINE) {
+                        return $this;
                     }
-                    if ($referencedObject instanceof SpecObjectInterface) {
-                        $referencedObject->setReferenceContext($context);
+
+                    // resolve in current document
+                    $baseSpec = $context->getBaseSpec();
+                    if ($baseSpec !== null) {
+                        // TODO type error if resolved object does not match $this->_to ?
+                        /** @var SpecObjectInterface $referencedObject */
+                        $referencedObject = $jsonReference->getJsonPointer()->evaluate($baseSpec);
+                        // transitive reference
+                        if ($referencedObject instanceof Reference) {
+                            $referencedObject = $this->resolveTransitiveReference($referencedObject, $context);
+                        }
+                        if ($referencedObject instanceof SpecObjectInterface) {
+                            $referencedObject->setReferenceContext($context);
+                        }
+                        return $referencedObject;
+                    } else {
+                        // if current document was loaded via reference, it may be null,
+                        // so we load current document by URI instead.
+                        $jsonReference = JsonReference::createFromUri($context->getUri(), $jsonReference->getJsonPointer());
                     }
-                    return $referencedObject;
-                } else {
-                    // if current document was loaded via reference, it may be null,
-                    // so we load current document by URI instead.
-                    $jsonReference = JsonReference::createFromUri($context->getUri(), $jsonReference->getJsonPointer());
                 }
-            }
 
-            // resolve in external document
-            $file = $context->resolveRelativeUri($jsonReference->getDocumentUri());
-            try {
-                $referencedDocument = $context->fetchReferencedFile($file);
-            } catch (\Throwable $e) {
-                $exception = new UnresolvableReferenceException(
-                    "Failed to resolve Reference '$this->_ref' to $this->_to Object: " . $e->getMessage(),
-                    $e->getCode(),
-                    $e
-                );
-                $exception->context = $this->getDocumentPosition();
-                throw $exception;
-            }
-
-            $referencedDocument = $this->adjustRelativeReferences($referencedDocument, $file, null, $context);
-            $referencedObject = $context->resolveReferenceData($file, $jsonReference->getJsonPointer(), $referencedDocument, $this->_to);
-
-            if ($referencedObject instanceof DocumentContextInterface) {
-                if ($referencedObject->getDocumentPosition() === null && $this->getDocumentPosition() !== null) {
-                    $referencedObject->setDocumentContext($context->getBaseSpec(), $this->getDocumentPosition());
+                // resolve in external document
+                $file = $context->resolveRelativeUri($jsonReference->getDocumentUri());
+                try {
+                    $referencedDocument = $context->fetchReferencedFile($file);
+                } catch (\Throwable $e) {
+                    $exception = new UnresolvableReferenceException(
+                        "Failed to resolve Reference '$this->_ref' to $this->_to Object: " . $e->getMessage(),
+                        $e->getCode(),
+                        $e
+                    );
+                    $exception->context = $this->getDocumentPosition();
+                    throw $exception;
                 }
+
+                $referencedDocument = $this->adjustRelativeReferences($referencedDocument, $file, null, $context);
+                $referencedObject = $context->resolveReferenceData($file, $jsonReference->getJsonPointer(), $referencedDocument, $this->_to);
+
+                if ($referencedObject instanceof DocumentContextInterface) {
+                    if ($referencedObject->getDocumentPosition() === null && $this->getDocumentPosition() !== null) {
+                        $referencedObject->setDocumentContext($context->getBaseSpec(), $this->getDocumentPosition());
+                    }
+                }
+            } else {
+                $referencedDocument = $context->fetchReferencedFile('');
+                $referencedObject = $context->resolveReferenceData('', $jsonReference->getJsonPointer(), $referencedDocument, $this->_to);
             }
 
             // transitive reference
