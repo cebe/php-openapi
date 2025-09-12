@@ -14,6 +14,8 @@ use cebe\openapi\json\InvalidJsonPointerSyntaxException;
 use cebe\openapi\json\JsonPointer;
 use cebe\openapi\spec\OpenApi;
 use Symfony\Component\Yaml\Yaml;
+use JsonStreamingParser\Parser;
+use JsonStreamingParser\Listener\InMemoryListener;
 
 /**
  * Utility class to simplify reading JSON or YAML OpenAPI specs.
@@ -26,7 +28,7 @@ class Reader
      * @phpstan-template T of SpecObjectInterface
      * @phpstan-param class-string<T> $baseType
      * @phpstan-return T
-     * @param string $json the JSON string to decode.
+     * @param string $filename the JSON string to decode.
      * @param string $baseType the base Type to instantiate. This must be an instance of [[SpecObjectInterface]].
      * The default is [[OpenApi]] which is the base type of a OpenAPI specification file.
      * You may choose a different type if you instantiate objects from sub sections of a specification.
@@ -34,9 +36,17 @@ class Reader
      * The type of the returned object depends on the `$baseType` argument.
      * @throws TypeErrorException in case invalid spec data is supplied.
      */
-    public static function readFromJson(string $json, string $baseType = OpenApi::class): SpecObjectInterface
+    public static function readFromJson(string $filename, string $baseType = OpenApi::class): SpecObjectInterface
     {
-        return new $baseType(json_decode($json, true));
+        $fp = fopen($filename, 'r');
+        $listener = new InMemoryListener();
+        $parser = new Parser($fp, $listener);
+        $parser->parse();
+        fclose($fp);
+
+        $data = $listener->getJson();
+
+        return new $baseType($data);
     }
 
     /**
@@ -83,13 +93,7 @@ class Reader
      */
     public static function readFromJsonFile(string $fileName, string $baseType = OpenApi::class, $resolveReferences = true): SpecObjectInterface
     {
-        $fileContent = file_get_contents($fileName);
-        if ($fileContent === false) {
-            $e = new IOException("Failed to read file: '$fileName'");
-            $e->fileName = $fileName;
-            throw $e;
-        }
-        $spec = static::readFromJson($fileContent, $baseType);
+        $spec = static::readFromJson($fileName, $baseType);
         $context = new ReferenceContext($spec, $fileName);
         $spec->setReferenceContext($context);
         if ($resolveReferences !== false) {
@@ -97,7 +101,7 @@ class Reader
                 $context->mode = $resolveReferences;
             }
             if ($spec instanceof DocumentContextInterface) {
-                $spec->setDocumentContext($spec, new JsonPointer(''));
+//                $spec->setDocumentContext($spec, new JsonPointer('')); # TODO
             }
             $spec->resolveReferences();
         }
