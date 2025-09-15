@@ -92,5 +92,8 @@ jobs:
       - name: PHPUnit tests
         run: make test
 
+      - name: PHPUnit gigantic tests
+        run: "composer require --dev apis-guru/openapi-directory nexmo/api-specification; make unit_gigantic"
+
       - name: Code coverage
         run: make coverage

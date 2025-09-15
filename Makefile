@@ -47,7 +47,10 @@ install: composer.json package.json
 test: unit test-recursion.json test-recursion2.yaml test-recursion3_index.yaml test-empty-maps.json
 
 unit:
-	$(DOCKER_PHP) php $(PHPARGS) $(XPHPARGS) vendor/bin/phpunit --verbose --colors=always $(TESTCASE)
+	$(DOCKER_PHP) php $(PHPARGS) $(XPHPARGS) vendor/bin/phpunit --exclude-group gigantic --verbose --colors=always $(TESTCASE)
+
+unit_gigantic: # run test which requires big packages (>778 MB): apis-guru/openapi-directory, nexmo/api-specification
+	$(DOCKER_PHP) php $(PHPARGS) $(XPHPARGS) vendor/bin/phpunit --group gigantic --verbose --colors=always
 
 # test specific JSON files in tests/spec/data/
 # e.g. test-recursion will run validation on tests/spec/data/recursion.json

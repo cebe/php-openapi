@@ -320,6 +320,8 @@ You may use the docker environment for local development:
     docker-compose build
     make IN_DOCKER=1 install
     make IN_DOCKER=1 test
+    make IN_DOCKER=1 unit # run all tests except a big test (below)
+    make IN_DOCKER=1 unit_gigantic # run only a big test
     ...
 
 

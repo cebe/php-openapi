@@ -184,7 +184,9 @@ class OpenApiTest extends \PHPUnit\Framework\TestCase
     }
 
     /**
+     * This test requires 2 big packages (>778 MB): apis-guru/openapi-directory, nexmo/api-specification. So it is separated from running with other PHPUnit tests
      * @dataProvider specProvider
+     * @group gigantic
      */
     public function testSpecs($openApiFile)
     {
