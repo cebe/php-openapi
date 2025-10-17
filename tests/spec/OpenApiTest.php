@@ -83,7 +83,7 @@ class OpenApiTest extends \PHPUnit\Framework\TestCase
 
     public function assertAllInstanceOf($className, $array)
     {
-        foreach($array as $k => $v) {
+        foreach ($array as $k => $v) {
             $this->assertInstanceOf($className, $v, "Asserting that item with key '$k' is instance of $className");
         }
     }
@@ -147,7 +147,7 @@ class OpenApiTest extends \PHPUnit\Framework\TestCase
         /** @var $it RecursiveDirectoryIterator|RecursiveIteratorIterator */
         $it = new RecursiveIteratorIterator(new RecursiveDirectoryIterator(__DIR__ . '/../../vendor/apis-guru/openapi-directory/APIs'));
         $it->rewind();
-        while($it->valid()) {
+        while ($it->valid()) {
             if ($it->getBasename() === 'openapi.yaml') {
                 $apisGuruExamples[] = $it->key();
             }
@@ -159,10 +159,10 @@ class OpenApiTest extends \PHPUnit\Framework\TestCase
         /** @var $it RecursiveDirectoryIterator|RecursiveIteratorIterator */
         $it = new RecursiveIteratorIterator(new RecursiveDirectoryIterator(__DIR__ . '/../../vendor/nexmo/api-specification/definitions'));
         $it->rewind();
-        while($it->valid()) {
+        while ($it->valid()) {
             if ($it->getExtension() === 'yml'
-             && strpos($it->getSubPath(), 'common') === false
-             && $it->getBasename() !== 'voice.v2.yml' // contains invalid references
+                && strpos($it->getSubPath(), 'common') === false
+                && $it->getBasename() !== 'voice.v2.yml' // contains invalid references
             ) {
                 $nexmoExamples[] = $it->key();
             }
@@ -175,7 +175,7 @@ class OpenApiTest extends \PHPUnit\Framework\TestCase
             $apisGuruExamples,
             $nexmoExamples
         );
-        foreach($all as $path) {
+        foreach ($all as $path) {
             yield [
                 substr($path, strlen(__DIR__ . '/../../vendor/')),
                 basename(dirname($path, 2)) . DIRECTORY_SEPARATOR . basename(dirname($path, 1)) . DIRECTORY_SEPARATOR . basename($path)
@@ -232,5 +232,27 @@ class OpenApiTest extends \PHPUnit\Framework\TestCase
             $this->assertInstanceOf(\cebe\openapi\spec\ExternalDocumentation::class, $openapi->externalDocs);
         }
 
+    }
+
+    public function testJsonSerialize()
+    {
+        $spec = <<<YML
+openapi: 3.0.0
+info:
+  title: Minimal API
+  version: 1.0.0
+paths:
+  /:
+    get:
+      summary: Retrieves a minimal response
+      responses:
+        '200':
+          description: OK
+
+YML;
+        $yaml = Yaml::parse($spec);
+        $openapi = new OpenApi($yaml);
+
+        $this->assertSame(json_encode($openapi), '{"openapi":"3.0.0","info":{"title":"Minimal API","version":"1.0.0"},"paths":{"\/":{"get":{"summary":"Retrieves a minimal response","responses":{"200":{"description":"OK"}}}}}}');
     }
 }
