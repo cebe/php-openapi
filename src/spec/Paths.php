@@ -246,7 +246,7 @@ class Paths implements SpecObjectInterface, DocumentContextInterface, ArrayAcces
      * Resolves all Reference Objects in this object and replaces them with their resolution.
      * @throws UnresolvableReferenceException
      */
-    public function resolveReferences(ReferenceContext $context = null)
+    public function resolveReferences(?ReferenceContext $context = null)
     {
         foreach ($this->_paths as $key => $path) {
             if ($path === null) {

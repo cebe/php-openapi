@@ -363,7 +363,7 @@ class Reference implements SpecObjectInterface, DocumentContextInterface, RawSpe
      * Resolves all Reference Objects in this object and replaces them with their resolution.
      * @throws UnresolvableReferenceException
      */
-    public function resolveReferences(ReferenceContext $context = null)
+    public function resolveReferences(?ReferenceContext $context = null)
     {
         throw new UnresolvableReferenceException('Cyclic reference detected, resolveReferences() called on a Reference Object.');
     }
