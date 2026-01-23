@@ -11,8 +11,8 @@ DOCKER_PHP=
 DOCKER_NODE=
 IN_DOCKER=0
 ifeq ($(IN_DOCKER),1)
-DOCKER_PHP=docker-compose run --rm php
-DOCKER_NODE=docker-compose run --rm -w /app node
+DOCKER_PHP=docker compose run --rm php
+DOCKER_NODE=docker compose run --rm -w /app node
 endif
 
 all:
@@ -66,16 +66,6 @@ lint: install
 
 stan:
 	$(DOCKER_PHP) php $(PHPARGS) vendor/bin/phpstan analyse -l 5 src
-
-# copy openapi3 json schema
-schemas/openapi-v3.0.json: vendor/oai/openapi-specification-3.0/schemas/v3.0/schema.json
-	cp $< $@
-schemas/openapi-v3.0.yaml: vendor/oai/openapi-specification-3.0/schemas/v3.0/schema.yaml
-	cp $< $@
-schemas/openapi-v3.1.json: vendor/oai/openapi-specification-3.1/schemas/v3.1/schema.json
-	cp $< $@
-schemas/openapi-v3.1.yaml: vendor/oai/openapi-specification-3.1/schemas/v3.1/schema.yaml
-	cp $< $@
 
 php-cs-fixer.phar:
 	wget -q https://github.com/FriendsOfPHP/PHP-CS-Fixer/releases/download/v2.16.7/php-cs-fixer.phar && chmod +x php-cs-fixer.phar
