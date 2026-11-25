@@ -236,7 +236,7 @@ class Responses implements SpecObjectInterface, DocumentContextInterface, ArrayA
      * Resolves all Reference Objects in this object and replaces them with their resolution.
      * @throws UnresolvableReferenceException
      */
-    public function resolveReferences(ReferenceContext $context = null)
+    public function resolveReferences(?ReferenceContext $context = null)
     {
         foreach ($this->_responses as $key => $response) {
             if ($response instanceof Reference) {
